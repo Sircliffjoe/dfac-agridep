@@ -1,0 +1,41 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<section style="padding-block: 72px; min-height: 75vh; display: flex; align-items: center;">
+    <div class="container" style="max-width: 480px;">
+        <div class="form-card">
+            <div style="text-align: center; margin-bottom: 28px;">
+                <div style="width: 54px; height: 54px; background: #e8f5e9; color: #007a33; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 14px;">
+                    🛡️
+                </div>
+                <h2>Stakeholder Portal</h2>
+                <p style="font-size: 0.95rem; color: #64748b; margin-top: 6px;">Sign in to access your role-scoped operational view</p>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="form-label" for="username">Username or Phone</label>
+                    <input type="text" id="username" name="username" class="form-input" required placeholder="Enter username (e.g. officer_delta)">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required placeholder="••••••••••••">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding-block: 13px; font-size: 1rem; margin-top: 10px;">
+                    Sign In
+                </button>
+            </form>
+
+            <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #f1f5f9; text-align: center; font-size: 0.85rem; color: #64748b;">
+                <p>Authorized access only. All sessions are monitored and logged under NDPA 2023 compliance.</p>
+                <div style="margin-top: 12px;">
+                    <a href="{% url 'contact' %}" style="color: var(--color-primary); font-weight: 600;">Need an account? Request field access</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

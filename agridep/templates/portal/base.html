@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page_title %}{{ page_title }}{% else %}DFAC AgriDEP - Agricultural Data Ecosystem Platform{% endif %}</title>
+    <meta name="description" content="Doctor Fish Agricultural Consult (DFAC) AgriDEP platform connects smallholders, off-takers, lenders, and extension agents across the Niger Delta.">
+    <link rel="stylesheet" href="{% static 'css/portal.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class="site-header">
+        <div class="container nav-container">
+            <a href="{% url 'home' %}" class="brand-logo">
+                <div class="brand-icon">🐟</div>
+                <div class="brand-text-wrap">
+                    <span class="brand-name">DFAC AgriDEP</span>
+                    <span class="brand-sub">Doctor Fish Agricultural Consult</span>
+                </div>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
+                    <li><a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About DFAC</a></li>
+                    <li><a href="{% url 'value-chains' %}" class="nav-link {% if request.resolver_match.url_name == 'value-chains' %}active{% endif %}">Value Chains</a></li>
+                    <li><a href="{% url 'solutions' %}" class="nav-link {% if request.resolver_match.url_name == 'solutions' %}active{% endif %}">Solutions</a></li>
+                    <li><a href="{% url 'impact' %}" class="nav-link {% if request.resolver_match.url_name == 'impact' %}active{% endif %}">Impact</a></li>
+                    <li><a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                {% if user.is_authenticated %}
+                    {% if user.is_staff or user.role == 'DFAC_ADMIN' %}
+                        <a href="/admin/" class="btn btn-primary">Operations Console</a>
+                    {% else %}
+                        <a href="{% url 'portal-login' %}" class="btn btn-secondary">My Account</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'portal-login' %}" class="btn btn-secondary">Sign In</a>
+                    <a href="{% url 'contact' %}" class="btn btn-primary">Partner With Us</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main>
+        {% if messages %}
+            <div class="container" style="margin-top: 24px;">
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 24px;">🐟</span>
+                        <h4 style="color: #ffffff; font-size: 1.2rem;">DFAC AgriDEP</h4>
+                    </div>
+                    <p>Doctor Fish Agricultural Consult (DFAC) connects farmers, data, finance, and commercial markets across the Niger Delta agricultural ecosystem.</p>
+                    <p style="margin-top: 14px; font-size: 0.85rem; color: #10b981;">
+                        🛡️ Aligned with the Nigeria Data Protection Act (NDPA, 2023).
+                    </p>
+                </div>
+
+                <div>
+                    <h5 class="footer-heading">Platform</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'home' %}" class="footer-link">Overview</a></li>
+                        <li><a href="{% url 'value-chains' %}" class="footer-link">Aquaculture & Crops</a></li>
+                        <li><a href="{% url 'solutions' %}" class="footer-link">Off-taker Linkages</a></li>
+                        <li><a href="{% url 'solutions' %}" class="footer-link">Agri-Credit Monitoring</a></li>
+                        <li><a href="{% url 'portal-login' %}" class="footer-link">Stakeholder Portal</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="footer-heading">Organization</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'about' %}" class="footer-link">About DFAC</a></li>
+                        <li><a href="{% url 'impact' %}" class="footer-link">Impact Metrics</a></li>
+                        <li><a href="{% url 'contact' %}" class="footer-link">Field Coordination</a></li>
+                        <li><a href="{% url 'contact' %}" class="footer-link">Partnerships</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="footer-heading">Regional Presence</h5>
+                    <ul class="footer-links" style="color: #94a3b8; font-size: 0.9rem;">
+                        <li><strong>Delta State:</strong> Warri & Ughelli</li>
+                        <li><strong>Bayelsa State:</strong> Yenagoa & Ogbia</li>
+                        <li><strong>Rivers State:</strong> Port Harcourt & Obio-Akpor</li>
+                        <li style="margin-top: 8px;"><strong>Email:</strong> info@dfac.ng</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div>&copy; 2026 Doctor Fish Agricultural Consult (DFAC). All rights reserved.</div>
+                <div>Operational System for the Niger Delta Agricultural Ecosystem</div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

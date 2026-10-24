@@ -1,0 +1,88 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<section style="padding-block: 64px; background: #ffffff; border-bottom: 1px solid var(--color-border);">
+    <div class="container" style="max-width: 840px; text-align: center;">
+        <div class="section-tag">Get in Touch</div>
+        <h1 style="margin-bottom: 20px;">Contact DFAC & Partner With Us</h1>
+        <p style="font-size: 1.2rem; color: var(--color-text-muted);">
+            Whether you are a commercial off-taker, agricultural financial institution, or smallholder cooperative leader, our field coordinators are ready to assist.
+        </p>
+    </div>
+</section>
+
+<section style="padding-block: 64px;">
+    <div class="container">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: flex-start;">
+            <!-- Form -->
+            <div class="form-card" style="margin-inline: 0; max-width: 100%;">
+                <h3 style="margin-bottom: 20px;">Send Us an Inquiry</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label" for="id_name">Full Name *</label>
+                        <input type="text" id="id_name" name="name" class="form-input" required placeholder="e.g. Chief Kenneth Ovie">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="id_email">Email Address *</label>
+                        <input type="email" id="id_email" name="email" class="form-input" required placeholder="name@organization.ng">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="id_category">Stakeholder Category *</label>
+                        <select id="id_category" name="category" class="form-select">
+                            <option value="Commercial Off-taker / Processor">Commercial Off-taker / Processor</option>
+                            <option value="Agricultural Lender / Bank">Agricultural Lender / Bank</option>
+                            <option value="Smallholder Producer / Cooperative">Smallholder Producer / Cooperative</option>
+                            <option value="Development Partner / Donor Agency">Development Partner / Donor Agency</option>
+                            <option value="Extension Agent / Specialist">Extension Agent / Specialist</option>
+                            <option value="General Inquiry">General Inquiry</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="id_message">Message & Inquiry Details *</label>
+                        <textarea id="id_message" name="message" class="form-textarea" rows="4" required placeholder="Tell us about your volume requirements, farm location, or financing partnership scope..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding-block: 14px;">
+                        Submit Inquiry
+                    </button>
+                </form>
+            </div>
+
+            <!-- Regional Offices -->
+            <div>
+                <h3 style="margin-bottom: 24px;">Our Field Coordination Hubs</h3>
+
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div style="background: white; border-radius: var(--radius-md); border: 1px solid var(--color-border); padding: 24px;">
+                        <h4 style="color: var(--color-primary-dark); margin-bottom: 6px;">Delta State Central Office</h4>
+                        <p style="margin-bottom: 8px; font-size: 0.95rem;">Warri South & Ughelli Coordination Hub</p>
+                        <p style="font-size: 0.85rem; color: #64748b;">Aquaculture clusters, pond bio-inspections & fingerling verification</p>
+                    </div>
+
+                    <div style="background: white; border-radius: var(--radius-md); border: 1px solid var(--color-border); padding: 24px;">
+                        <h4 style="color: var(--color-primary-dark); margin-bottom: 6px;">Bayelsa State Office</h4>
+                        <p style="margin-bottom: 8px; font-size: 0.95rem;">Yenagoa Waterfront & Swali Fisheries Center</p>
+                        <p style="font-size: 0.85rem; color: #64748b;">Riverine smallholder enrollment, water quality testing & feed linkages</p>
+                    </div>
+
+                    <div style="background: white; border-radius: var(--radius-md); border: 1px solid var(--color-border); padding: 24px;">
+                        <h4 style="color: var(--color-primary-dark); margin-bottom: 6px;">Rivers State Office</h4>
+                        <p style="margin-bottom: 8px; font-size: 0.95rem;">Port Harcourt Agribusiness Center</p>
+                        <p style="font-size: 0.85rem; color: #64748b;">Off-taker commercial aggregation, processing linkages & lender relations</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 32px; background: #f8fafc; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 20px;">
+                    <h5 style="color: var(--color-text-main); margin-bottom: 6px;">Operational Enquiries</h5>
+                    <p style="font-size: 0.9rem; margin-bottom: 4px;"><strong>Email:</strong> operations@dfac.ng</p>
+                    <p style="font-size: 0.9rem;"><strong>Direct Line:</strong> +234 803 000 0001</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

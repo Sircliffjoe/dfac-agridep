@@ -1,0 +1,230 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-grid">
+            <div>
+                <div class="hero-badge">
+                    <span>🌾</span> AgriDEP Ecosystem Operating Platform
+                </div>
+                <h1 class="hero-title">Connecting Farmers, Data, Finance and Markets.</h1>
+                <p class="hero-lead">
+                    Doctor Fish Agricultural Consult (DFAC) powers the agricultural backbone of the Niger Delta. We capture data once at the point of activity and route actionable intelligence to producers, lenders, commercial off-takers, and extension agents.
+                </p>
+                <div class="hero-cta-group">
+                    <a href="{% url 'solutions' %}" class="btn btn-primary btn-lg">Explore Solutions</a>
+                    <a href="{% url 'portal-login' %}" class="btn btn-secondary btn-lg">Access Portal</a>
+                </div>
+            </div>
+
+            <div>
+                <div class="hero-card">
+                    <div class="hero-card-header">
+                        <div class="hero-card-icon">📊</div>
+                        <div>
+                            <h3 style="font-size: 1.15rem; margin-bottom: 2px;">Ecosystem Pulse</h3>
+                            <p style="font-size: 0.85rem; color: #64748b;">Live Aggregated Metrics across the Niger Delta</p>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-number">{{ stats.farmers_count }}+</div>
+                            <div class="stat-label">Verified Smallholders</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">{{ stats.ponds_count }}+</div>
+                            <div class="stat-label">Operational Ponds & Plots</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">{{ stats.active_cycles }}</div>
+                            <div class="stat-label">Active Monitored Cycles</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">{{ stats.harvest_tonnes }} t</div>
+                            <div class="stat-label">Projected Harvest Volume</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Solutions Grid -->
+<section style="padding-block: 80px; background: #ffffff;">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-tag">Multi-Stakeholder Architecture</div>
+            <h2 class="section-title">Built for Every Actor in the Value Chain</h2>
+            <p>From muddy farm embankments in Delta State to bank boardrooms and commercial processing facilities, AgriDEP turns field data into mutual trust and shared prosperity.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">👨‍🌾</div>
+                <h3>For Smallholder Farmers</h3>
+                <p>Log pond stocking, water quality, and feeding schedules with zero connectivity. Receive automated harvest alerts, fair commodity market pricing, and direct off-taker commitments.</p>
+                <div style="margin-top: 20px;">
+                    <a href="{% url 'solutions' %}" style="font-weight: 700; font-size: 0.9rem;">Learn More &rarr;</a>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">🏭</div>
+                <h3>For Buyers & Processors</h3>
+                <p>Source aggregated, table-size catfish and agricultural commodities weeks ahead of harvest. Specify volume, location, and quality grade to pre-contract verified smallholder clusters.</p>
+                <div style="margin-top: 20px;">
+                    <a href="{% url 'solutions' %}" style="font-weight: 700; font-size: 0.9rem;">Learn More &rarr;</a>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">🏦</div>
+                <h3>For Lenders & Micro-Finance</h3>
+                <p>De-risk agricultural loan portfolios with transparent biometric verification. Track biological growth pace in real time and receive early risk flags long before loan repayment maturity.</p>
+                <div style="margin-top: 20px;">
+                    <a href="{% url 'solutions' %}" style="font-weight: 700; font-size: 0.9rem;">Learn More &rarr;</a>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon-wrapper">📋</div>
+                <h3>For Extension Officers & Trainers</h3>
+                <p>Ditch cumbersome paper sheets. Capture attendance, farm inspections, and disease outbreaks offline. Receive auto-prioritized farm visit queues based on emergency risk triggers.</p>
+                <div style="margin-top: 20px;">
+                    <a href="{% url 'solutions' %}" style="font-weight: 700; font-size: 0.9rem;">Learn More &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Value Chains Section -->
+<section style="padding-block: 80px; background: var(--color-bg-page);">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-tag">Key Enterprises</div>
+            <h2 class="section-title">End-to-End Value Chain Specialization</h2>
+            <p>DFAC specializes in high-value aquaculture alongside resilient livestock and staple crop value chains suited for the ecology of the Niger Delta.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+            <div class="value-chain-card">
+                <div class="value-chain-header">
+                    <span class="value-chain-icon">🐟</span>
+                    <div>
+                        <h4 style="font-size: 1.15rem;">African Catfish (Clarias)</h4>
+                        <span style="font-size: 0.85rem; color: #059669; font-weight: 600;">Flagship Aquaculture</span>
+                    </div>
+                </div>
+                <div class="value-chain-body">
+                    <p>Biometric pond monitoring from fingerlings to 1kg+ table size. Tracking water temperature, pH, feed conversion ratios (FCR), and mortality rate controls.</p>
+                    <div class="value-chain-metrics">
+                        <span class="metric-pill">Cycle: <strong>~150 Days</strong></span>
+                        <span class="metric-pill">Benchmark FCR: <strong>1.25</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="value-chain-card">
+                <div class="value-chain-header">
+                    <span class="value-chain-icon">🐠</span>
+                    <div>
+                        <h4 style="font-size: 1.15rem;">Nile Tilapia</h4>
+                        <span style="font-size: 0.85rem; color: #059669; font-weight: 600;">Freshwater Aquaculture</span>
+                    </div>
+                </div>
+                <div class="value-chain-body">
+                    <p>Controlled hatchery fingerling distribution, earthen and concrete pond management, and high-protein feed optimization tailored for regional freshwater streams.</p>
+                    <div class="value-chain-metrics">
+                        <span class="metric-pill">Cycle: <strong>~180 Days</strong></span>
+                        <span class="metric-pill">Benchmark FCR: <strong>1.40</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="value-chain-card">
+                <div class="value-chain-header">
+                    <span class="value-chain-icon">🐌</span>
+                    <div>
+                        <h4 style="font-size: 1.15rem;">Heliculture (Snail Farming)</h4>
+                        <span style="font-size: 0.85rem; color: #059669; font-weight: 600;">Specialty Livestock</span>
+                    </div>
+                </div>
+                <div class="value-chain-body">
+                    <p>High-value export and hospitality supply. Structured pen construction, climate-humidity monitoring, and organic calcium-fortified feed programs.</p>
+                    <div class="value-chain-metrics">
+                        <span class="metric-pill">Cycle: <strong>8-12 Months</strong></span>
+                        <span class="metric-pill">Market: <strong>Premium/Export</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="value-chain-card">
+                <div class="value-chain-header">
+                    <span class="value-chain-icon">🌱</span>
+                    <div>
+                        <h4 style="font-size: 1.15rem;">Cassava & Arable Crops</h4>
+                        <span style="font-size: 0.85rem; color: #059669; font-weight: 600;">Staple Food Security</span>
+                    </div>
+                </div>
+                <div class="value-chain-body">
+                    <p>Disease-resistant stem cutting propagation, soil preparation tracking, mechanized harvesting forecasts, and industrial starch off-taker linkage.</p>
+                    <div class="value-chain-metrics">
+                        <span class="metric-pill">Cycle: <strong>10-12 Months</strong></span>
+                        <span class="metric-pill">TME 419 <strong>High Yield</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Niger Delta Regional Hubs -->
+<div class="container">
+    <section class="regional-section">
+        <div style="padding-inline: 40px;">
+            <div class="regional-grid">
+                <div>
+                    <h2>Anchored in the Niger Delta</h2>
+                    <p>
+                        Agricultural production in riverine and coastal environments requires deep local context. DFAC operates field clusters across Delta, Bayelsa, and Rivers states, accommodating low digital literacy, irregular power, and remote water access.
+                    </p>
+                    <div class="state-badge-group">
+                        <span class="state-badge">📍 Delta: Warri & Ughelli</span>
+                        <span class="state-badge">📍 Bayelsa: Yenagoa & Ogbia</span>
+                        <span class="state-badge">📍 Rivers: Port Harcourt & Obio-Akpor</span>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.08); padding: 32px; border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.15);">
+                    <h3 style="color: #ffffff; margin-bottom: 12px; font-size: 1.25rem;">Why Decision Automation Matters</h3>
+                    <p style="color: #d1fae5; font-size: 0.95rem; margin-bottom: 16px;">
+                        Data stored in a spreadsheet is too late to save a crop or pond. AgriDEP’s automated rules engine actively evaluates biometric logs:
+                    </p>
+                    <ul style="color: #a7f3d0; font-size: 0.9rem; list-style-position: inside; line-height: 1.7;">
+                        <li><strong>14-Day Off-take Match:</strong> Automatically alerts verified buyers when ponds approach table-size maturity.</li>
+                        <li><strong>Early Warning System:</strong> Triggers prioritized field visits when growth falls behind baseline curves.</li>
+                        <li><strong>Input Gate Assurance:</strong> Locks subsequent credit disbursements until verified supplier delivery is confirmed.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- CTA Banner -->
+<section style="padding-block: 72px; text-align: center;">
+    <div class="container" style="max-width: 700px;">
+        <h2 style="margin-bottom: 16px;">Ready to Transform Your Agricultural Operations?</h2>
+        <p style="margin-bottom: 32px;">Join DFAC’s growing network of smallholders, food aggregators, and development partners driving food security and rural prosperity.</p>
+        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'contact' %}" class="btn btn-primary btn-lg">Partner With DFAC</a>
+            <a href="{% url 'portal-login' %}" class="btn btn-secondary btn-lg">Stakeholder Login</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

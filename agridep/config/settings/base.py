@@ -48,6 +48,7 @@ LOCAL_APPS = [
     'agridep.apps.reporting.apps.ReportingConfig',
     'agridep.apps.sync.apps.SyncConfig',
     'agridep.apps.audit.apps.AuditConfig',
+    'agridep.apps.portal.apps.PortalConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -119,7 +120,7 @@ USE_TZ = True
 # Static and media files
 STATIC_URL = '/static/'
 STATIC_ROOT = Path(os.environ.get('STATIC_ROOT', str(BASE_DIR / 'staticfiles')))
-STATICFILES_DIRS = [BASE_DIR / 'agridep' / 'static'] if (BASE_DIR / 'agridep' / 'static').exists() else []
+STATICFILES_DIRS = [BASE_DIR / 'agridep' / 'static']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = Path(os.environ.get('MEDIA_ROOT', str(BASE_DIR / 'media')))
