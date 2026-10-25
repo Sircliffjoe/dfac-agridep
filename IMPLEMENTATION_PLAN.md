@@ -428,12 +428,14 @@ gantt
   - Lightweight field officer web portal (HTMX) for online farmer registration and cycle logging.
   - Test suite covering duplicate-detection edge cases and spatial boundary validation.
 
-#### Milestone M2: Training Capacity Building & DFAC Operational Dashboard (Phase 1)
+#### Milestone M2: Training Capacity Building & DFAC Operational Dashboard (Phase 1) - COMPLETED
 - **Deliverables:**
-  - `TrainingProgramme`, `TrainingSession`, `Attendance`, `Assessment`, `Certificate`.
-  - Automated certificate PDF generator (WeasyPrint) with verification QR code.
-  - Bulk attendance importer supporting legacy CSV and Excel formats.
-  - DFAC Management Operational Cockpit: Leaflet-based spatial map of registered farms, farmer counts, cycle stages, and pending duplicate reviews.
+  - `TrainingProgramme`, `TrainingSession`, `Attendance`, `Assessment`, `Certificate` in `apps/training/`.
+  - Automated certificate PDF generator (ReportLab security layout) with embedded dynamic QR code and token verification.
+  - Bulk attendance importer supporting legacy CSV and Excel (.xlsx) formats with idempotent phone/code resolution.
+  - DFAC Management Operational Cockpit (`/cockpit/`): Leaflet-based PostGIS map of registered farms across the Niger Delta, live biomass harvest pipeline, NDPA duplicate verification queue, and KPI overview cards.
+  - Public credential verification portal (`/verify-certificate/`).
+  - Automated test suite in `tests/test_training_and_cockpit.py` and demo runner `docs/demo/m2_demo.py`.
 
 #### Milestone M3: Finance & Market Linkage Modules (Phase 2 Core)
 - **Deliverables:**

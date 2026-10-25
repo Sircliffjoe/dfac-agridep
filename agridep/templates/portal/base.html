@@ -23,10 +23,11 @@
             <nav>
                 <ul class="nav-links">
                     <li><a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
-                    <li><a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About DFAC</a></li>
+                    <li><a href="{% url 'cockpit' %}" class="nav-link {% if request.resolver_match.url_name == 'cockpit' %}active{% endif %}" style="font-weight: 700; color: #10b981;">⚡ Cockpit</a></li>
                     <li><a href="{% url 'value-chains' %}" class="nav-link {% if request.resolver_match.url_name == 'value-chains' %}active{% endif %}">Value Chains</a></li>
                     <li><a href="{% url 'solutions' %}" class="nav-link {% if request.resolver_match.url_name == 'solutions' %}active{% endif %}">Solutions</a></li>
-                    <li><a href="{% url 'impact' %}" class="nav-link {% if request.resolver_match.url_name == 'impact' %}active{% endif %}">Impact</a></li>
+                    <li><a href="{% url 'verify-certificate' %}" class="nav-link {% if 'verify' in request.resolver_match.url_name %}active{% endif %}">Verify Certificate</a></li>
+                    <li><a href="{% url 'about' %}" class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About DFAC</a></li>
                     <li><a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a></li>
                 </ul>
             </nav>

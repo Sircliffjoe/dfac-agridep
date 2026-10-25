@@ -69,13 +69,13 @@ Access the server at `http://localhost:8000`:
 
 ---
 
-## 4. End-to-End Milestone M0 & M1 Demonstration
+## 4. End-to-End Milestone Demonstrations
 
-Run the automated interactive demonstration script:
+### Milestone M0 & M1 Demo
 ```bash
 python docs/demo/m0_m1_demo.py
 ```
-This script exercises:
+Exercises:
 1. System health and OpenAPI schema generation.
 2. Field Officer JWT authentication.
 3. Smallholder farmer registration with encrypted NIN and address.
@@ -85,6 +85,18 @@ This script exercises:
 7. Flutter Drift SQLite batch push and delta pull.
 8. Commercial Buyer RBAC field-level data masking.
 9. NDPA 2023 immutable audit logging.
+
+### Milestone M2 Demo (Capacity Building, Verifiable Credentials & Operational Cockpit)
+```bash
+python docs/demo/m2_demo.py
+```
+Exercises:
+1. Trainer authentication and approved curriculum inspection.
+2. Bulk paper attendance sheet ingestion (CSV / Excel format) with smallholder resolution.
+3. Practical competency assessments and automated qualification scoring.
+4. Security-grade accreditation certificate generation (ReportLab A4 landscape PDF + dynamic QR code).
+5. Public and partner credential verification (`/verify-certificate/<token>/`).
+6. DFAC Management Operational Cockpit (`/cockpit/`) and PostGIS regional farm map.
 
 ---
 

@@ -6,6 +6,16 @@ from agridep.apps.accounts.models import UserRole, ConsentRecord, StakeholderCat
 from agridep.apps.registry.models import EnterpriseType, EnterpriseCategory, Cohort, Farmer, Farm, Buyer, VerificationStatus
 from agridep.apps.production.models import ProductionCycle, ProductionLog, ProduceBatch, ProduceQualityGrade, CycleStage, ProduceBatchStatus
 from agridep.apps.production.services import process_production_log
+from agridep.apps.training.models import (
+    TrainingProgramme,
+    TrainingSession,
+    Attendance,
+    AttendanceStatus,
+    Assessment,
+    Certificate,
+    SessionStatus,
+)
+from agridep.apps.training.services import issue_certificate
 
 User = get_user_model()
 
@@ -138,6 +148,17 @@ class Command(BaseCommand):
                 'reference_price_per_kg_naira': Decimal('3200.00'),
             }
         )
+        snail, _ = EnterpriseType.objects.get_or_create(
+            code='SNAIL',
+            defaults={
+                'name': 'Giant African Land Snail (Archachatina marginata)',
+                'category': EnterpriseCategory.LIVESTOCK,
+                'standard_cycle_days': 240,
+                'benchmark_fcr': Decimal('2.00'),
+                'expected_mortality_rate_pct': Decimal('5.00'),
+                'reference_price_per_kg_naira': Decimal('4500.00'),
+            }
+        )
 
         # 7. Cohort
         cohort_delta, _ = Cohort.objects.get_or_create(
@@ -145,6 +166,14 @@ class Command(BaseCommand):
             defaults={
                 'state': 'Delta',
                 'lga': 'Warri South',
+                'lead_officer': officer
+            }
+        )
+        cohort_bayelsa, _ = Cohort.objects.get_or_create(
+            name='Bayelsa Aquaculture & Snail Hub',
+            defaults={
+                'state': 'Bayelsa',
+                'lga': 'Yenagoa',
                 'lead_officer': officer
             }
         )
@@ -292,5 +321,174 @@ class Command(BaseCommand):
                 }
             )
             process_production_log(log)
+
+        # -------------------------------------------------------------
+        # Milestone M2: Capacity Building Programmes & Certifications
+        # -------------------------------------------------------------
+        self.stdout.write("Seeding Milestone M2 Training Programmes and Accreditation...")
+
+        prog_catfish, _ = TrainingProgramme.objects.get_or_create(
+            title="Commercial Catfish Hatchery & Fingerling Management",
+            defaults={
+                'enterprise_type': catfish,
+                'description': "Comprehensive training on broodstock selection, induced spawning, hatching biosecurity, and nursery feeding.",
+                'curriculum_summary': "1. Broodstock Hormone Conditioning\n2. Incubation & Water Quality Monitoring\n3. Live Feed (Artemia) Management\n4. Grading & Cannibalism Prevention",
+                'duration_days': 5,
+                'min_attendance_pct': Decimal('80.00'),
+                'min_pass_score': Decimal('60.00'),
+                'validity_months': 24,
+                'is_active': True
+            }
+        )
+
+        prog_ras, _ = TrainingProgramme.objects.get_or_create(
+            title="Modern Recirculating Aquaculture Systems (RAS) & Water Chemistry",
+            defaults={
+                'enterprise_type': catfish,
+                'description': "Advanced biofiltration, mechanical solids removal, aeration optimization, and ammonia nitrification cycle management.",
+                'curriculum_summary': "1. Biological Filter Inoculation\n2. Dissolved Oxygen & Nitrite Control\n3. High-Density Stocking Economics\n4. Power Redundancy Systems",
+                'duration_days': 7,
+                'min_attendance_pct': Decimal('85.00'),
+                'min_pass_score': Decimal('65.00'),
+                'validity_months': 24,
+                'is_active': True
+            }
+        )
+
+        prog_snail, _ = TrainingProgramme.objects.get_or_create(
+            title="Intensive Commercial Snail Farming & Snailery Design",
+            defaults={
+                'enterprise_type': snail,
+                'description': "Archachatina marginata breeding, paddock greenhouse design, calcium soil conditioning, and pest exclusion.",
+                'curriculum_summary': "1. Paddock Microclimate Control\n2. Soil Treatment & Calcium Fortification\n3. Incubation Box Moisture Management\n4. Snail Slime Harvest & Hygiene",
+                'duration_days': 4,
+                'min_attendance_pct': Decimal('75.00'),
+                'min_pass_score': Decimal('60.00'),
+                'validity_months': 24,
+                'is_active': True
+            }
+        )
+
+        prog_poultry, _ = TrainingProgramme.objects.get_or_create(
+            title="Smallholder Broiler Biosecurity & Feed Formulation",
+            defaults={
+                'enterprise_type': poultry,
+                'description': "Brooding temperatures, Gumboro/Newcastle vaccination timing, on-farm feed mixing, and litter management.",
+                'curriculum_summary': "1. Brooder House Setup\n2. Vaccination Administration via Drinking Water\n3. Feed Conversion Ratio (FCR) Optimization\n4. Mortality Disposal Protocols",
+                'duration_days': 5,
+                'min_attendance_pct': Decimal('80.00'),
+                'min_pass_score': Decimal('60.00'),
+                'validity_months': 24,
+                'is_active': True
+            }
+        )
+
+        # Create Training Sessions
+        sess_warri, _ = TrainingSession.objects.get_or_create(
+            programme=prog_catfish,
+            venue="DFAC Fisheries Demonstration Farm, Effurun-Warri",
+            defaults={
+                'trainer': trainer,
+                'cohort': cohort_delta,
+                'lga': "Warri South",
+                'state': "Delta",
+                'start_date': date.today() - timedelta(days=20),
+                'end_date': date.today() - timedelta(days=16),
+                'max_capacity': 25,
+                'status': SessionStatus.COMPLETED,
+                'notes': "Intensive 5-day fingerling production masterclass with hands-on hatchery stripping."
+            }
+        )
+
+        sess_yenagoa, _ = TrainingSession.objects.get_or_create(
+            programme=prog_ras,
+            venue="Bayelsa State Agricultural Training Centre, Yenagoa",
+            defaults={
+                'trainer': trainer,
+                'cohort': cohort_bayelsa,
+                'lga': "Yenagoa",
+                'state': "Bayelsa",
+                'start_date': date.today() - timedelta(days=12),
+                'end_date': date.today() - timedelta(days=6),
+                'max_capacity': 30,
+                'status': SessionStatus.COMPLETED,
+                'notes': "Biofiltration and dissolved oxygen monitoring workshop for Niger Delta flood plains."
+            }
+        )
+
+        sess_ughelli, _ = TrainingSession.objects.get_or_create(
+            programme=prog_snail,
+            venue="Ughelli North Demonstration Farm, Agbarho",
+            defaults={
+                'trainer': trainer,
+                'cohort': cohort_delta,
+                'lga': "Ughelli North",
+                'state': "Delta",
+                'start_date': date.today() - timedelta(days=2),
+                'end_date': date.today() + timedelta(days=2),
+                'max_capacity': 20,
+                'status': SessionStatus.IN_PROGRESS,
+                'notes': "Hands-on greenhouse paddock construction."
+            }
+        )
+
+        # Log Attendance and Assessments for Seed Farmers
+        all_farmers = list(Farmer.objects.filter(is_deleted=False))
+        if all_farmers:
+            # Trainee 1: Emmanuel (full attendance, high score -> Cert issued)
+            f_emmanuel = all_farmers[0]
+            for day_offset in range(5):
+                Attendance.objects.get_or_create(
+                    session=sess_warri,
+                    farmer=f_emmanuel,
+                    date=sess_warri.start_date + timedelta(days=day_offset),
+                    defaults={'status': AttendanceStatus.PRESENT, 'created_by': trainer}
+                )
+            Assessment.objects.get_or_create(
+                session=sess_warri,
+                farmer=f_emmanuel,
+                defaults={
+                    'score': Decimal('88.50'),
+                    'max_score': Decimal('100.00'),
+                    'passed': True,
+                    'assessor': trainer,
+                    'assessment_date': sess_warri.end_date,
+                    'feedback': "Demonstrated exceptional mastery of pituitary gland extraction and egg fertilization."
+                }
+            )
+            # Generate official certificate
+            try:
+                cert1 = issue_certificate(sess_warri, f_emmanuel, issued_by=admin)
+                self.stdout.write(f"Issued accredited certificate: {cert1.certificate_number} to {f_emmanuel.full_name}")
+            except Exception as e:
+                self.stdout.write(f"Certificate note: {e}")
+
+            # Trainee 2: Ebiere (full attendance at Yenagoa RAS session -> Cert issued)
+            if len(all_farmers) > 1:
+                f_ebiere = all_farmers[1]
+                for day_offset in range(7):
+                    Attendance.objects.get_or_create(
+                        session=sess_yenagoa,
+                        farmer=f_ebiere,
+                        date=sess_yenagoa.start_date + timedelta(days=day_offset),
+                        defaults={'status': AttendanceStatus.PRESENT, 'created_by': trainer}
+                    )
+                Assessment.objects.get_or_create(
+                    session=sess_yenagoa,
+                    farmer=f_ebiere,
+                    defaults={
+                        'score': Decimal('92.00'),
+                        'max_score': Decimal('100.00'),
+                        'passed': True,
+                        'assessor': trainer,
+                        'assessment_date': sess_yenagoa.end_date,
+                        'feedback': "Mastered water quality testing kits and biofilter backwash sequencing."
+                    }
+                )
+                try:
+                    cert2 = issue_certificate(sess_yenagoa, f_ebiere, issued_by=admin)
+                    self.stdout.write(f"Issued accredited certificate: {cert2.certificate_number} to {f_ebiere.full_name}")
+                except Exception as e:
+                    self.stdout.write(f"Certificate note: {e}")
 
         self.stdout.write(self.style.SUCCESS("Demo Nigerian seed data successfully created!"))

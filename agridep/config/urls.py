@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
+from django.conf import settings
+from django.conf.urls.static import static
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -35,5 +37,10 @@ urlpatterns = [
     path('api/v1/auth/', include('agridep.apps.accounts.urls')),
     path('api/v1/registry/', include('agridep.apps.registry.urls')),
     path('api/v1/production/', include('agridep.apps.production.urls')),
+    path('api/v1/training/', include('agridep.apps.training.urls')),
     path('api/v1/sync/', include('agridep.apps.sync.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

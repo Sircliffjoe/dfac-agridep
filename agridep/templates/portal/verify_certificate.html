@@ -1,0 +1,186 @@
+{% extends "portal/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<style>
+    .verify-page-wrap {
+        padding: 50px 0 90px;
+        background: #f8fafc;
+        min-height: 80vh;
+    }
+    .verify-box {
+        max-width: 680px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+    }
+    .verify-header {
+        background: linear-gradient(135deg, #0b3d2e 0%, #15803d 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+    .verify-body {
+        padding: 35px 30px;
+    }
+    .credential-card {
+        margin-top: 30px;
+        border: 2px solid #22c55e;
+        background: #f0fdf4;
+        border-radius: 12px;
+        padding: 24px;
+        position: relative;
+    }
+    .credential-card.invalid {
+        border-color: #ef4444;
+        background: #fef2f2;
+    }
+    .meta-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px dashed #cbd5e1;
+        font-size: 0.92rem;
+    }
+    .meta-row:last-child {
+        border-bottom: none;
+    }
+    .meta-label {
+        color: #64748b;
+        font-weight: 500;
+    }
+    .meta-val {
+        color: #0f172a;
+        font-weight: 700;
+        text-align: right;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="verify-page-wrap">
+    <div class="container">
+        <div class="verify-box">
+            <div class="verify-header">
+                <div style="font-size: 32px; margin-bottom: 8px;">🛡️</div>
+                <h1 style="font-size: 1.6rem; font-weight: 800; margin: 0 0 6px;">
+                    DFAC Credential Verification
+                </h1>
+                <p style="font-size: 0.88rem; opacity: 0.9; margin: 0;">
+                    Instant blockchain-style verification of accredited smallholder training certificates.
+                </p>
+            </div>
+
+            <div class="verify-body">
+                <form method="GET" action="{% url 'verify-certificate' %}">
+                    <label style="display: block; font-size: 0.88rem; font-weight: 600; color: #334155; margin-bottom: 8px;">
+                        Enter Certificate Number or Verification Token:
+                    </label>
+                    <div style="display: flex; gap: 10px;">
+                        <input 
+                            type="text" 
+                            name="code" 
+                            value="{{ query_code|default:'' }}" 
+                            placeholder="e.g. DFAC-CERT-2026-XXXXXXXX or Token" 
+                            required
+                            class="form-input"
+                            style="flex: 1; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem;"
+                        >
+                        <button type="submit" class="btn btn-primary" style="padding: 12px 20px;">
+                            Verify Now
+                        </button>
+                    </div>
+                </form>
+
+                {% if result %}
+                    {% if result.is_valid %}
+                        <div class="credential-card">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                                <span style="font-size: 26px;">✅</span>
+                                <div>
+                                    <h3 style="color: #15803d; font-size: 1.15rem; font-weight: 800; margin: 0;">
+                                        AUTHENTIC ACCREDITATION CONFIRMED
+                                    </h3>
+                                    <span style="font-size: 0.8rem; color: #166534;">Verified in DFAC AgriDEP Central Register</span>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 14px;">
+                                <div class="meta-row">
+                                    <span class="meta-label">Certificate Number</span>
+                                    <span class="meta-val" style="color: #0b3d2e;">{{ result.details.certificate_number }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Certified Smallholder</span>
+                                    <span class="meta-val">{{ result.details.farmer_name }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Farmer Registry ID</span>
+                                    <span class="meta-val">{{ result.details.farmer_code }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Operational Location</span>
+                                    <span class="meta-val">{{ result.details.farmer_lga }}, {{ result.details.farmer_state }} State</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Accredited Programme</span>
+                                    <span class="meta-val" style="color: #047857;">{{ result.details.programme_title }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Value Chain / Enterprise</span>
+                                    <span class="meta-val">{{ result.details.enterprise_type }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Training Venue</span>
+                                    <span class="meta-val">{{ result.details.training_venue }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Issue Date</span>
+                                    <span class="meta-val">{{ result.details.issue_date }}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Validity Expiry</span>
+                                    <span class="meta-val">{{ result.details.expiry_date }}</span>
+                                </div>
+                            </div>
+
+                            {% if result.certificate and result.certificate.pdf_file %}
+                            <div style="margin-top: 20px; text-align: center;">
+                                <a href="{{ result.certificate.pdf_file.url }}" target="_blank" class="btn btn-primary" style="display: inline-flex;">
+                                    📄 Download Certified PDF Credential
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="credential-card invalid">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <span style="font-size: 26px;">⚠️</span>
+                                <div>
+                                    <h3 style="color: #b91c1c; font-size: 1.15rem; font-weight: 800; margin: 0;">
+                                        CREDENTIAL NOT VERIFIED
+                                    </h3>
+                                    <span style="font-size: 0.8rem; color: #991b1b;">{{ result.message }}</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 0.85rem; color: #7f1d1d; margin: 0;">
+                                Please check that the certificate number or verification token was entered accurately. If you believe this is an error, please contact Doctor Fish Agricultural Consult (DFAC) support.
+                            </p>
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                <div style="margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #64748b;">
+                    <span>Doctor Fish Agricultural Consult (DFAC)</span>
+                    <a href="{% url 'cockpit' %}" style="color: #0b3d2e; font-weight: 600; text-decoration: none;">
+                        ← Return to Cockpit
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
