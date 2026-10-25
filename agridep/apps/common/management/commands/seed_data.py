@@ -16,6 +16,37 @@ from agridep.apps.training.models import (
     SessionStatus,
 )
 from agridep.apps.training.services import issue_certificate
+from agridep.apps.finance.models import (
+    Lender,
+    LenderType,
+    LoanRecord,
+    LoanStatus,
+    LoanTranche,
+    TrancheType,
+    TrancheStatus,
+    RepaymentSchedule,
+    ScheduleStatus,
+    Repayment,
+    RiskFlag,
+    RiskSeverity,
+)
+from agridep.apps.finance.services import (
+    disburse_loan_facility,
+    calculate_loan_expected_value_and_risk,
+)
+from agridep.apps.market.models import (
+    BuyerDemand,
+    DemandStatus,
+    ProduceMatch,
+    MatchStatus,
+    OfftakeTransaction,
+    OfftakePaymentStatus,
+    CommodityPrice,
+)
+from agridep.apps.market.services import (
+    propose_buyer_matches_for_demand,
+    confirm_produce_match,
+)
 
 User = get_user_model()
 
@@ -490,5 +521,133 @@ class Command(BaseCommand):
                     self.stdout.write(f"Issued accredited certificate: {cert2.certificate_number} to {f_ebiere.full_name}")
                 except Exception as e:
                     self.stdout.write(f"Certificate note: {e}")
+
+        # -------------------------------------------------------------
+        # Milestone M3: Finance, Credit Portfolios & Market Linkages
+        # -------------------------------------------------------------
+        self.stdout.write("Seeding Milestone M3 Finance and Market Off-take Networks...")
+
+        # 1. Institutional Lender
+        lender_inst, _ = Lender.objects.get_or_create(
+            institution_name='Niger Delta Agricultural Credit Bank (NDACB)',
+            defaults={
+                'user': lender_user,
+                'institution_type': LenderType.DEVELOPMENT_FINANCE,
+                'contact_person': 'Mrs. Chinyere Nwosu',
+                'phone': '+2348030000004',
+                'email': 'agri.credit@nigerbank.ng',
+                'operating_states': 'Delta, Bayelsa, Rivers',
+                'concessionary_rate_pct': Decimal('9.00'),
+                'is_active': True
+            }
+        )
+
+        # 2. Benchmark Regional Commodity Prices
+        CommodityPrice.objects.get_or_create(
+            enterprise_type=catfish,
+            market_hub="Effurun Fish Market, Warri",
+            defaults={'state': 'Delta', 'price_per_kg_naira': Decimal('2600.00'), 'recorded_by': officer}
+        )
+        CommodityPrice.objects.get_or_create(
+            enterprise_type=catfish,
+            market_hub="Swali Regional Market, Yenagoa",
+            defaults={'state': 'Bayelsa', 'price_per_kg_naira': Decimal('2550.00'), 'recorded_by': officer}
+        )
+        CommodityPrice.objects.get_or_create(
+            enterprise_type=snail,
+            market_hub="Agbarho Snail & Bushmeat Hub, Ughelli",
+            defaults={'state': 'Delta', 'price_per_kg_naira': Decimal('4500.00'), 'recorded_by': officer}
+        )
+        CommodityPrice.objects.get_or_create(
+            enterprise_type=poultry,
+            market_hub="Oil Mill Regional Market, Port Harcourt",
+            defaults={'state': 'Rivers', 'price_per_kg_naira': Decimal('3200.00'), 'recorded_by': officer}
+        )
+
+        # 3. Transparent Loan Facility (₦200,000 Loan against ₦850,000 Harvest Model)
+        f_pere = all_farmers[0] if all_farmers else None
+        if f_pere:
+            pere_farm = f_pere.farms.first()
+            pere_cycle = pere_farm.production_cycles.first() if pere_farm else None
+
+            loan1, _ = LoanRecord.objects.get_or_create(
+                farmer=f_pere,
+                facility_name="Smallholder Catfish Working Capital Facility",
+                defaults={
+                    'lender': lender_inst,
+                    'farm': pere_farm,
+                    'production_cycle': pere_cycle,
+                    'principal_amount_naira': Decimal('200000.00'),
+                    'interest_rate_percent': Decimal('9.00'),
+                    'tenure_months': 6,
+                    'credit_score': Decimal('85.00'),
+                    'status': LoanStatus.DISBURSED,
+                    'application_date': date.today() - timedelta(days=60),
+                    'approval_date': date.today() - timedelta(days=50),
+                    'disbursement_date': date.today() - timedelta(days=45),
+                    'total_repaid_naira': Decimal('36333.33'),
+                    'notes': "Concessionary facility benchmarked against ₦850,000 projected harvest value."
+                }
+            )
+
+            # Create Tranches (RULE-08 staging)
+            LoanTranche.objects.get_or_create(
+                loan=loan1,
+                tranche_number=1,
+                defaults={
+                    'amount_naira': Decimal('120000.00'),
+                    'tranche_type': TrancheType.IN_KIND_INPUTS,
+                    'milestone_conditions': 'Delivery of 5,000 fingerlings and 15 bags starter feed confirmed',
+                    'status': TrancheStatus.DISBURSED,
+                    'disbursement_date': date.today() - timedelta(days=45),
+                    'input_order_reference': 'DFAC-INP-0012'
+                }
+            )
+            LoanTranche.objects.get_or_create(
+                loan=loan1,
+                tranche_number=2,
+                defaults={
+                    'amount_naira': Decimal('80000.00'),
+                    'tranche_type': TrancheType.CASH_WORKING_CAPITAL,
+                    'milestone_conditions': 'Month 2 biometric water sampling & growth sampling confirmed',
+                    'status': TrancheStatus.READY_FOR_RELEASE
+                }
+            )
+
+            # Evaluate expected value & risk
+            risk_eval = calculate_loan_expected_value_and_risk(loan1)
+            self.stdout.write(
+                f"Loan {loan1.reference_code}: Principal ₦{loan1.principal_amount_naira:,.2f} vs "
+                f"Harvest ₦{risk_eval['expected_harvest_value']:,.2f} (Coverage: {risk_eval['coverage_ratio']}x)"
+            )
+
+        # 4. Buyer Commercial Purchase Demand (5 Tonnes Catfish by Month Y)
+        demand_warri, _ = BuyerDemand.objects.get_or_create(
+            buyer=buyer_profile,
+            enterprise_type=catfish,
+            target_volume_kg=Decimal('5000.00'),
+            defaults={
+                'offered_price_per_kg_naira': Decimal('2600.00'),
+                'minimum_grade': ProduceQualityGrade.GRADE_A,
+                'target_delivery_window_start': date.today() + timedelta(days=5),
+                'target_delivery_window_end': date.today() + timedelta(days=25),
+                'delivery_state': "Delta",
+                'delivery_lga': "Warri South",
+                'delivery_address': "Plot 14 NPA Expressway, Industrial Layout, Warri",
+                'delivery_latitude': Decimal('5.524000'),
+                'delivery_longitude': Decimal('5.748000'),
+                'max_delivery_radius_km': 65,
+                'status': DemandStatus.OPEN,
+                'special_requirements': "Minimum table size 800g-1.2kg live catfish, live transport tanks provided."
+            }
+        )
+
+        # 5. Algorithmic Match Allocation (RULE-04)
+        matches = propose_buyer_matches_for_demand(demand_warri)
+        if matches:
+            self.stdout.write(f"Matched {len(matches)} producer batch(es) to {buyer_profile.company_name} ({demand_warri.fulfilled_volume_kg:,.0f}kg allocated)")
+            # Confirm first match to demonstrate Contracted Off-take and Waybill
+            offtake = confirm_produce_match(matches[0], confirmed_by=admin)
+            self.stdout.write(f"Confirmed Off-take Contract: Waybill #{offtake.waybill_number} for {offtake.actual_delivered_volume_kg:,.0f}kg (₦{offtake.total_amount_naira:,.2f})")
 
         self.stdout.write(self.style.SUCCESS("Demo Nigerian seed data successfully created!"))

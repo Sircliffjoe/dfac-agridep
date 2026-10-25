@@ -98,6 +98,21 @@ Exercises:
 5. Public and partner credential verification (`/verify-certificate/<token>/`).
 6. DFAC Management Operational Cockpit (`/cockpit/`) and PostGIS regional farm map.
 
+### Milestone M3 Demo (Agricultural Credit Risk, Staged Tranches & Market Off-take)
+```bash
+python docs/demo/m3_demo.py
+```
+Exercises:
+1. Institutional Lender authentication (NDACB).
+2. Transparent harvest biomass coverage model (₦200,000 credit against ₦850,000+ harvest).
+3. RULE-05 credit scoring bonus (+15 pts for accredited DFAC certificates).
+4. RULE-08 staged input delivery gate (Tranche 2 disbursement blocked until Tranche 1 inputs verified).
+5. Strict RBAC isolation (Commercial Buyers blocked from accessing loan books or debt records).
+6. Commercial Off-taker Purchase Demand & spot pricing (5 tonnes catfish).
+7. RULE-04 spatial produce matching algorithm & volume aggregation.
+8. NDPA 2023 producer identity masking prior to contract confirmation.
+9. Off-take contract confirmation and automated delivery waybill generation (`DFAC-WB-2026-XXXX`).
+
 ---
 
 ## 5. Deploying to a VPS via Dokku

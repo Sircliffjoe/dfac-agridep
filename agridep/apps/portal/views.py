@@ -21,6 +21,29 @@ from agridep.apps.training.services import (
     verify_certificate_credential,
     import_bulk_attendance,
 )
+from agridep.apps.finance.models import (
+    Lender,
+    LoanRecord,
+    LoanStatus,
+    LoanTranche,
+    Repayment,
+    RiskFlag,
+)
+from agridep.apps.finance.services import (
+    calculate_loan_expected_value_and_risk,
+    disburse_loan_facility,
+)
+from agridep.apps.market.models import (
+    BuyerDemand,
+    ProduceMatch,
+    OfftakeTransaction,
+    CommodityPrice,
+    MatchStatus,
+)
+from agridep.apps.market.services import (
+    propose_buyer_matches_for_demand,
+    confirm_produce_match,
+)
 from agridep.apps.audit.services import log_audit_event
 
 
@@ -298,3 +321,137 @@ def verify_certificate_view(request, code=None):
         'query_code': query_code,
         'result': result,
     })
+
+
+def lender_portal_view(request):
+    """
+    Role-Scoped Lender Credit Portfolio Portal:
+    Provides agricultural credit monitors with loan book performance metrics,
+    harvest biomass coverage ratios, and early-warning delinquency alerts.
+    """
+    user = request.user
+    role = getattr(user, 'role', '')
+    
+    # Scoping
+    loans_qs = LoanRecord.objects.all().select_related('farmer', 'lender', 'farm', 'production_cycle')
+    if role == 'LENDER':
+        loans_qs = loans_qs.filter(lender__user=user)
+
+    total_loans = loans_qs.count()
+    principal_sum = loans_qs.aggregate(total=Sum('principal_amount_naira'))['total'] or Decimal('0.00')
+    repaid_sum = loans_qs.aggregate(total=Sum('total_repaid_naira'))['total'] or Decimal('0.00')
+    outstanding_sum = sum((l.outstanding_balance_naira for l in loans_qs), Decimal('0.00'))
+
+    performing_count = loans_qs.filter(status=LoanStatus.PERFORMING).count()
+    delinquent_count = loans_qs.filter(status=LoanStatus.DELINQUENT).count()
+    watchlist_count = loans_qs.filter(status=LoanStatus.WATCHLIST).count()
+
+    active_risk_flags = RiskFlag.objects.filter(
+        loan__in=loans_qs,
+        is_resolved=False
+    ).select_related('loan', 'farmer')
+
+    # Build loan analysis summary cards
+    loan_items = []
+    for loan in loans_qs[:15]:
+        analysis = calculate_loan_expected_value_and_risk(loan)
+        loan_items.append({
+            'loan': loan,
+            'expected_harvest': analysis['expected_harvest_value'],
+            'coverage_ratio': analysis['coverage_ratio'],
+            'risk_level': analysis['risk_level'],
+        })
+
+    return render(request, 'portal/lender_portal.html', {
+        'page_title': 'Lender Credit Portfolio - DFAC AgriDEP',
+        'metrics': {
+            'total_loans': total_loans,
+            'principal_sum': principal_sum,
+            'repaid_sum': repaid_sum,
+            'outstanding_sum': outstanding_sum,
+            'performing_count': performing_count,
+            'delinquent_count': delinquent_count,
+            'watchlist_count': watchlist_count,
+            'active_risks_count': active_risk_flags.count(),
+        },
+        'loan_items': loan_items,
+        'active_risk_flags': active_risk_flags,
+    })
+
+
+def buyer_portal_view(request):
+    """
+    Role-Scoped Commercial Buyer & Off-taker Portal:
+    Enables processors and aggregators to post purchase demands,
+    view anonymized smallholder supply pools, and confirm forward contracts.
+    """
+    user = request.user
+    role = getattr(user, 'role', '')
+
+    demands_qs = BuyerDemand.objects.all().select_related('buyer', 'enterprise_type')
+    matches_qs = ProduceMatch.objects.all().select_related('buyer_demand', 'produce_batch', 'produce_batch__farm__farmer', 'buyer_demand__buyer')
+    offtakes_qs = OfftakeTransaction.objects.all().select_related('match', 'match__buyer_demand__buyer', 'match__produce_batch__farm__farmer')
+
+    if role == 'BUYER':
+        demands_qs = demands_qs.filter(buyer__user=user)
+        matches_qs = matches_qs.filter(buyer_demand__buyer__user=user)
+        offtakes_qs = offtakes_qs.filter(match__buyer_demand__buyer__user=user)
+
+    total_demands = demands_qs.count()
+    total_requested_kg = demands_qs.aggregate(total=Sum('target_volume_kg'))['total'] or Decimal('0.00')
+    total_fulfilled_kg = demands_qs.aggregate(total=Sum('fulfilled_volume_kg'))['total'] or Decimal('0.00')
+    active_matches_count = matches_qs.count()
+    confirmed_offtakes_count = offtakes_qs.count()
+
+    # Masked vs unmasked matches
+    is_admin = user.is_authenticated and (user.is_superuser or role == 'DFAC_ADMIN')
+    matches_list = []
+    for m in matches_qs.order_by('-created_at')[:15]:
+        farmer = m.produce_batch.farm.farmer
+        is_unmasked = is_admin or (m.status in [MatchStatus.CONTRACTED, MatchStatus.FULFILLED])
+        matches_list.append({
+            'match': m,
+            'producer_display': farmer.full_name if is_unmasked else f"Smallholder Producer #{farmer.reference_code or farmer.id}",
+            'producer_phone': farmer.phone_normalized if is_unmasked else "[Masked until Contract Confirmed]",
+            'location': f"{farmer.lga}, {farmer.state}" if is_unmasked else f"Verified Hub ({farmer.lga})",
+            'is_unmasked': is_unmasked
+        })
+
+    enterprises = EnterpriseType.objects.filter(is_active=True)
+
+    return render(request, 'portal/buyer_portal.html', {
+        'page_title': 'Commercial Buyer Off-take Portal - DFAC AgriDEP',
+        'metrics': {
+            'total_demands': total_demands,
+            'total_requested_tonnes': round(float(total_requested_kg) / 1000.0, 1),
+            'total_fulfilled_tonnes': round(float(total_fulfilled_kg) / 1000.0, 1),
+            'active_matches_count': active_matches_count,
+            'confirmed_offtakes_count': confirmed_offtakes_count,
+        },
+        'demands': demands_qs[:10],
+        'matches_list': matches_list,
+        'offtakes': offtakes_qs[:10],
+        'enterprises': enterprises,
+    })
+
+
+@require_POST
+def confirm_produce_match_portal(request, match_id):
+    """Confirms a proposed produce match into a binding contract and generates waybill."""
+    match = get_object_or_404(ProduceMatch, id=match_id)
+    offtake = confirm_produce_match(match, confirmed_by=request.user if request.user.is_authenticated else None)
+    messages.success(request, f"Contract confirmed for {match.allocated_volume_kg:,.0f}kg with {match.buyer_demand.buyer.company_name}! Waybill #{offtake.waybill_number} generated.")
+    return redirect('buyer-portal')
+
+
+@require_POST
+def trigger_auto_match_portal(request, demand_id):
+    """Triggers RULE-04 spatial auto-matching algorithm for a buyer demand."""
+    demand = get_object_or_404(BuyerDemand, id=demand_id)
+    matches = propose_buyer_matches_for_demand(demand)
+    if matches:
+        messages.success(request, f"Successfully matched {len(matches)} producer batches ({demand.fulfilled_volume_kg:,.0f}kg allocated).")
+    else:
+        messages.warning(request, "No eligible producer batches found matching the delivery window and radius criteria.")
+    return redirect('buyer-portal')
+

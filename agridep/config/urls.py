@@ -38,6 +38,8 @@ urlpatterns = [
     path('api/v1/registry/', include('agridep.apps.registry.urls')),
     path('api/v1/production/', include('agridep.apps.production.urls')),
     path('api/v1/training/', include('agridep.apps.training.urls')),
+    path('api/v1/finance/', include('agridep.apps.finance.urls')),
+    path('api/v1/market/', include('agridep.apps.market.urls')),
     path('api/v1/sync/', include('agridep.apps.sync.urls')),
 ]
 

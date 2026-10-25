@@ -12,6 +12,10 @@ from .views import (
     resolve_duplicate_view,
     cockpit_upload_attendance_view,
     verify_certificate_view,
+    lender_portal_view,
+    buyer_portal_view,
+    confirm_produce_match_portal,
+    trigger_auto_match_portal,
 )
 
 urlpatterns = [
@@ -32,4 +36,10 @@ urlpatterns = [
     # Milestone M2: Verifiable Credential Portal
     path('verify-certificate/', verify_certificate_view, name='verify-certificate'),
     path('verify-certificate/<str:code>/', verify_certificate_view, name='verify-certificate-detail'),
+
+    # Milestone M3: Role-Scoped Portals (Lender & Buyer)
+    path('portal/lender/', lender_portal_view, name='lender-portal'),
+    path('portal/buyer/', buyer_portal_view, name='buyer-portal'),
+    path('portal/buyer/confirm-match/<uuid:match_id>/', confirm_produce_match_portal, name='confirm-produce-match'),
+    path('portal/buyer/auto-match/<uuid:demand_id>/', trigger_auto_match_portal, name='trigger-auto-match'),
 ]

@@ -3,7 +3,7 @@
 
 **Version:** 1.0  
 **Date:** October 2026  
-**Status:** Approved for Implementation (Milestone M0 & M1 Initiation)  
+**Status:** Approved for Implementation (Milestones M0, M1, M2, M3 Complete)  
 **Target Environment:** Doctor Fish Agricultural Consult (DFAC), Rural Niger Delta, Nigeria  
 
 ---
@@ -437,14 +437,15 @@ gantt
   - Public credential verification portal (`/verify-certificate/`).
   - Automated test suite in `tests/test_training_and_cockpit.py` and demo runner `docs/demo/m2_demo.py`.
 
-#### Milestone M3: Finance & Market Linkage Modules (Phase 2 Core)
+#### Milestone M3: Finance & Market Linkage Modules (Phase 2 Core) - COMPLETED
 - **Deliverables:**
   - `LoanRecord`, `LoanTranche`, `RepaymentSchedule`, `Repayment`, `RiskFlag`.
   - Expected-value and risk calculation service (₦200,000 loan vs ₦850,000 harvest model).
   - `BuyerDemand`, `ProduceBatch`, `ProduceMatch`, `OfftakeTransaction`.
-  - PostGIS spatial matching engine (`ST_DWithin` radius + harvest window ranking).
+  - PostGIS spatial matching engine (`ST_DWithin` radius + harvest window ranking) with Haversine fallback.
   - Role-scoped web portals for Lenders (loan book, production tracking, risk flags) and Buyers (anonymized produce supply, demand registration, match confirmations).
   - Hardened permissions matrix and field-masking serializers.
+  - Test suite in `tests/test_finance_and_market.py` and demo script `docs/demo/m3_demo.py`.
 
 #### Milestone M4: Field Operations & Inspection Management (Phase 2)
 - **Deliverables:**
