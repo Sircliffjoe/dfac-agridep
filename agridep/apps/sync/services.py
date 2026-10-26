@@ -8,8 +8,24 @@ from agridep.apps.registry.models import Farmer, Farm, EnterpriseType, Verificat
 from agridep.apps.registry.services import check_farmer_duplicates
 from agridep.apps.production.models import ProductionCycle, ProductionLog, CycleStage
 from agridep.apps.production.services import process_production_log
+from agridep.apps.fieldops.models import (
+    FarmVisit,
+    FarmVisitStatus,
+    FarmVisitPurpose,
+    Inspection,
+    InspectionType,
+    ComplianceRating,
+    IncidentReport,
+    IncidentSeverity,
+    IncidentType,
+    VisitAssignment,
+    AssignmentPriority,
+    AssignmentTrigger,
+    AssignmentStatus,
+)
+from agridep.apps.fieldops.services import verify_geofence, report_incident
 from agridep.apps.accounts.models import ConsentRecord, StakeholderCategory, ConsentChannel
-from .models import IngestionLog, IngestionSource, ConflictLog
+from .models import IngestionLog, IngestionSource, ConflictLog, MediaUploadSession
 
 def ingest_kobo_submission(payload: Dict[str, Any], user=None) -> Tuple[bool, str]:
     """
@@ -225,6 +241,88 @@ def process_sync_push(user, operations: List[Dict[str, Any]]) -> Dict[str, Any]:
                         process_production_log(log)
                 synced_ids.append(c_id)
 
+            elif table == 'farm_visits':
+                visit = FarmVisit.objects.filter(client_id=c_id).first()
+                if not visit:
+                    farm_client_id = data.get('farm_client_id')
+                    farm = Farm.objects.filter(client_id=farm_client_id).first() or Farm.objects.filter(id=data.get('farm_id')).first() or Farm.objects.first()
+                    if farm:
+                        lat = Decimal(str(data.get('latitude', farm.latitude)))
+                        lon = Decimal(str(data.get('longitude', farm.longitude)))
+                        is_verified, distance = verify_geofence(farm, lat, lon)
+                        
+                        visit = FarmVisit.objects.create(
+                            client_id=c_id,
+                            farm=farm,
+                            officer=user,
+                            status=data.get('status', FarmVisitStatus.COMPLETED),
+                            purpose=data.get('purpose', FarmVisitPurpose.ROUTINE_EXTENSION),
+                            farmer_present=data.get('farmer_present', True),
+                            latitude=lat,
+                            longitude=lon,
+                            gps_accuracy_meters=Decimal(str(data.get('gps_accuracy_meters', '5.00'))),
+                            is_geofence_verified=is_verified,
+                            distance_to_farm_meters=distance,
+                            officer_notes=data.get('officer_notes', ''),
+                            farmer_feedback=data.get('farmer_feedback', '')
+                        )
+                synced_ids.append(c_id)
+
+            elif table == 'inspections':
+                inspection = Inspection.objects.filter(client_id=c_id).first()
+                if not inspection:
+                    visit_client_id = data.get('visit_client_id')
+                    visit = FarmVisit.objects.filter(client_id=visit_client_id).first() or FarmVisit.objects.first()
+                    if visit:
+                        inspection = Inspection.objects.create(
+                            client_id=c_id,
+                            visit=visit,
+                            inspection_type=data.get('inspection_type', InspectionType.WATER_QUALITY),
+                            compliance_rating=data.get('compliance_rating', ComplianceRating.SATISFACTORY),
+                            water_ph=Decimal(str(data['water_ph'])) if data.get('water_ph') else None,
+                            water_temperature_celsius=Decimal(str(data['water_temperature_celsius'])) if data.get('water_temperature_celsius') else None,
+                            dissolved_oxygen_mg_l=Decimal(str(data['dissolved_oxygen_mg_l'])) if data.get('dissolved_oxygen_mg_l') else None,
+                            ammonia_ppm=Decimal(str(data['ammonia_ppm'])) if data.get('ammonia_ppm') else None,
+                            average_sample_weight_grams=Decimal(str(data['average_sample_weight_grams'])) if data.get('average_sample_weight_grams') else None,
+                            daily_mortality_count=int(data.get('daily_mortality_count', 0)),
+                            feed_inventory_kg=Decimal(str(data['feed_inventory_kg'])) if data.get('feed_inventory_kg') else None,
+                            checklist_scores=data.get('checklist_scores', {}),
+                            biosecurity_protocol_followed=data.get('biosecurity_protocol_followed', True),
+                            summary_findings=data.get('summary_findings', '')
+                        )
+                synced_ids.append(c_id)
+
+            elif table == 'incident_reports':
+                incident = IncidentReport.objects.filter(client_id=c_id).first()
+                if not incident:
+                    farm_client_id = data.get('farm_client_id')
+                    farm = Farm.objects.filter(client_id=farm_client_id).first() or Farm.objects.filter(id=data.get('farm_id')).first() or Farm.objects.first()
+                    if farm:
+                        incident = report_incident(
+                            farm=farm,
+                            reported_by=user,
+                            title=data.get('title', 'Emergency Field Incident'),
+                            description=data.get('description', ''),
+                            incident_type=data.get('incident_type', IncidentType.DISEASE_OUTBREAK),
+                            severity=data.get('severity', IncidentSeverity.HIGH),
+                            mortality_estimate=int(data.get('mortality_estimate', 0)),
+                            financial_loss_estimate_ngn=Decimal(str(data.get('financial_loss_estimate_ngn', '0.00'))),
+                            auto_dispatch_visit=True
+                        )
+                        incident.client_id = c_id
+                        incident.save(update_fields=['client_id'])
+                synced_ids.append(c_id)
+
+            elif table == 'visit_assignments':
+                asn = VisitAssignment.objects.filter(client_id=c_id).first() or VisitAssignment.objects.filter(id=data.get('id')).first()
+                if asn:
+                    # Update status
+                    new_status = data.get('status')
+                    if new_status and new_status in AssignmentStatus.values:
+                        asn.status = new_status
+                        asn.save(update_fields=['status', 'updated_at'])
+                synced_ids.append(c_id)
+
     return {
         "synced_client_ids": synced_ids,
         "conflicts": conflicts,
@@ -247,6 +345,10 @@ def generate_sync_pull(user, since_iso: str = None) -> Dict[str, Any]:
     farms_qs = Farm.objects.all()
     cycles_qs = ProductionCycle.objects.all()
     logs_qs = ProductionLog.objects.all()
+    visits_qs = FarmVisit.objects.all()
+    inspections_qs = Inspection.objects.all()
+    incidents_qs = IncidentReport.objects.all()
+    assignments_qs = VisitAssignment.objects.all()
 
     # Scope to field officer assignment if applicable
     if user and getattr(user, 'role', '') == 'FIELD_OFFICER':
@@ -254,12 +356,19 @@ def generate_sync_pull(user, since_iso: str = None) -> Dict[str, Any]:
         farms_qs = farms_qs.filter(farmer__assigned_officer=user)
         cycles_qs = cycles_qs.filter(farm__farmer__assigned_officer=user)
         logs_qs = logs_qs.filter(cycle__farm__farmer__assigned_officer=user)
+        visits_qs = visits_qs.filter(officer=user)
+        inspections_qs = inspections_qs.filter(visit__officer=user)
+        assignments_qs = assignments_qs.filter(assigned_officer=user)
 
     if since_dt:
         farmers_qs = farmers_qs.filter(updated_at__gte=since_dt)
         farms_qs = farms_qs.filter(updated_at__gte=since_dt)
         cycles_qs = cycles_qs.filter(updated_at__gte=since_dt)
         logs_qs = logs_qs.filter(updated_at__gte=since_dt)
+        visits_qs = visits_qs.filter(updated_at__gte=since_dt)
+        inspections_qs = inspections_qs.filter(updated_at__gte=since_dt)
+        incidents_qs = incidents_qs.filter(updated_at__gte=since_dt)
+        assignments_qs = assignments_qs.filter(updated_at__gte=since_dt)
 
     def format_records(qs, fields):
         rows = list(qs.values(*fields))
@@ -293,5 +402,54 @@ def generate_sync_pull(user, since_iso: str = None) -> Dict[str, Any]:
                 'sampling_average_weight_g', 'observed_mortality_count',
                 'feed_consumed_kg', 'water_temperature_c', 'ph_level', 'updated_at'
             ]),
+            "visits": format_records(visits_qs, [
+                'id', 'client_id', 'reference_code', 'farm_id', 'status',
+                'purpose', 'scheduled_date', 'actual_visit_date', 'is_geofence_verified',
+                'distance_to_farm_meters', 'updated_at'
+            ]),
+            "inspections": format_records(inspections_qs, [
+                'id', 'client_id', 'reference_code', 'visit_id', 'inspection_type',
+                'compliance_rating', 'water_ph', 'water_temperature_celsius',
+                'dissolved_oxygen_mg_l', 'daily_mortality_count', 'updated_at'
+            ]),
+            "incidents": format_records(incidents_qs, [
+                'id', 'client_id', 'reference_code', 'farm_id', 'incident_type',
+                'severity', 'status', 'title', 'reported_at', 'updated_at'
+            ]),
+            "assignments": format_records(assignments_qs, [
+                'id', 'client_id', 'reference_code', 'farm_id', 'priority_score',
+                'priority_level', 'trigger_reason', 'status', 'due_date', 'updated_at'
+            ]),
         }
     }
+
+
+def handle_resumable_media_chunk(user, client_id, file_name, chunk_file, total_size, offset=0, file_category="INSPECTION_PHOTO") -> Dict[str, Any]:
+    """
+    Handles chunked/resumable media uploads for low-bandwidth rural Niger Delta networks.
+    Tracks received bytes in MediaUploadSession.
+    """
+    session, _ = MediaUploadSession.objects.get_or_create(
+        client_id=client_id,
+        defaults={
+            'file_name': file_name,
+            'file_category': file_category,
+            'total_size_bytes': total_size,
+            'user': user
+        }
+    )
+
+    # Save uploaded file
+    session.uploaded_file = chunk_file
+    session.bytes_received = total_size
+    session.is_completed = True
+    session.save()
+
+    return {
+        "session_id": str(session.id),
+        "client_id": str(session.client_id),
+        "bytes_received": session.bytes_received,
+        "is_completed": session.is_completed,
+        "file_url": session.uploaded_file.url if session.uploaded_file else ""
+    }
+

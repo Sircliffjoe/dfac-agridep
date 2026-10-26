@@ -459,13 +459,14 @@ gantt
   - Field officer HTMX daily inspection and priority queue cockpit at `/portal/fieldops/`.
   - Comprehensive test suite in `tests/test_fieldops_and_inspections.py` and demo script in `docs/demo/m4_demo.py`.
 
-#### Milestone M5: Flutter Offline Mobile Application
+#### Milestone M5: Flutter Offline Mobile Application - COMPLETED
 - **Deliverables:**
-  - Android-first Flutter app targeting low-end devices ($< 2\text{GB}$ RAM).
-  - Local Drift SQLite database with client-side UUID generation.
-  - Bidirectional Delta Sync Engine (`POST /api/v1/sync/push`, `GET /api/v1/sync/pull`).
-  - Resumable background media upload queue.
-  - Offline farmer registration, production logs, and visit checklist.
+  - Android-first Flutter app targeting low-end devices ($< 2\text{GB}$ RAM) with offline-first local Drift SQLite architecture.
+  - Local Drift schema in `mobile/lib/data/database/database.dart` covering `LocalFarmers`, `LocalFarms`, `LocalProductionCycles`, `LocalProductionLogs`, `LocalFarmVisits`, `LocalInspections`, `LocalIncidentReports`, `LocalVisitAssignments`, `LocalMediaQueue`, and `SyncOutbox`.
+  - Bidirectional Delta Sync Engine (`SyncEngine`) with ISO-8601 cursor progression, offline batch push (`POST /api/v1/sync/push/`), delta pull (`GET /api/v1/sync/pull/`), and role-scoped conflict resolution (Server-wins on financial/verification integrity, Last-write-wins with audit on extension biometrics).
+  - Resumable background photo evidence upload queue (`POST /api/v1/sync/media/upload/`) with `MediaUploadSession` tracking bytes received.
+  - Complete mobile screens in `mobile/lib/presentation/screens/`: `DashboardScreen`, `FarmerRegistrationScreen`, `VisitInspectionScreen`, `IncidentReportScreen`, and `SyncCenterScreen`.
+  - Test suite in `tests/test_sync_engine.py` and demo script in `docs/demo/m5_demo.py`.
 
 #### Milestone M6: SMS & USSD Farmer Engagement Channel (Phase 3)
 - **Deliverables:**

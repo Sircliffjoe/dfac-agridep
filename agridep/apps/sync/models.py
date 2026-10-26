@@ -35,3 +35,23 @@ class ConflictLog(models.Model):
     resolution_strategy = models.CharField(max_length=32, default="LAST_WRITE_WINS")
     resolved_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class MediaUploadSession(models.Model):
+    """Tracks resumable background chunked/multipart photo evidence uploads from mobile."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    client_id = models.UUIDField(db_index=True, help_text="Client-side UUID of the media record")
+    file_name = models.CharField(max_length=255)
+    file_category = models.CharField(max_length=64, default="INSPECTION_PHOTO")
+    total_size_bytes = models.BigIntegerField()
+    bytes_received = models.BigIntegerField(default=0)
+    file_hash_sha256 = models.CharField(max_length=64, blank=True, default='')
+    is_completed = models.BooleanField(default=False)
+    uploaded_file = models.FileField(upload_to='sync/media/%Y/%m/', null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.file_name} ({self.bytes_received}/{self.total_size_bytes} bytes) - {'DONE' if self.is_completed else 'IN_PROGRESS'}"
+
