@@ -571,3 +571,16 @@ def fieldops_auto_dispatch_portal(request):
     return redirect('fieldops-portal')
 
 
+def ussd_simulator_view(request):
+    """
+    Milestone M6: Interactive 2G Feature Phone USSD & SMS Gateway Simulator.
+    """
+    from agridep.apps.alerts.models import AlertNotification
+    recent = AlertNotification.objects.order_by('-created_at')[:10]
+    return render(request, 'portal/ussd_simulator.html', {
+        'page_title': 'Rural USSD & SMS Simulator - DFAC AgriDEP',
+        'recent_notifications': recent,
+    })
+
+
+

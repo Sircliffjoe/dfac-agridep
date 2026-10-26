@@ -41,6 +41,7 @@ urlpatterns = [
     path('api/v1/finance/', include('agridep.apps.finance.urls')),
     path('api/v1/market/', include('agridep.apps.market.urls')),
     path('api/v1/fieldops/', include('agridep.apps.fieldops.api.urls')),
+    path('api/v1/alerts/', include('agridep.apps.alerts.api.urls')),
     path('api/v1/sync/', include('agridep.apps.sync.urls')),
 ]
 

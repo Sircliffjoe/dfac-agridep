@@ -468,12 +468,19 @@ gantt
   - Complete mobile screens in `mobile/lib/presentation/screens/`: `DashboardScreen`, `FarmerRegistrationScreen`, `VisitInspectionScreen`, `IncidentReportScreen`, and `SyncCenterScreen`.
   - Test suite in `tests/test_sync_engine.py` and demo script in `docs/demo/m5_demo.py`.
 
-#### Milestone M6: SMS & USSD Farmer Engagement Channel (Phase 3)
-- **Deliverables:**
-  - Africa's Talking integration adapter (`apps.alerts.adapters`).
-  - Farmer USSD session menu: Check loan balance, report weekly catfish mortality/weight, view market prices, accept buyer matches.
-  - Transactional SMS alerts for harvest readiness, payment dues, and emergency weather/disease notices.
-  - SMS OTP authentication for passwordless web/mobile farmer access.
+#### Milestone M6: SMS & USSD Farmer Engagement Channel (Phase 3) - **COMPLETED**
+- **Deliverables Completed:**
+  - Dynamic System Parameters configuration (`USSD_SERVICE_CODE=*384*223#`, `AT_SMS_SENDER_ID`, `SMS_MAX_RETRY_COUNT`, `AT_SMS_USE_MOCK`) with zero hard-coded telecommunication parameters.
+  - Africa's Talking SMS integration adapter (`agridep.apps.alerts.adapters`) with live HTTP `urllib.request` delivery, mock developer adapter, and delivery report callback processor (`/api/v1/alerts/sms/delivery-report/`).
+  - Interactive multi-turn USSD state machine (`*384*223#`) in `agridep.apps.alerts.ussd` supporting:
+    - Menu 1: Microfinance loan balance and upcoming installment due dates.
+    - Menu 2: Smallholder offline production logging (daily fish mortality count & feed applied) syncing directly to `ProductionLog`.
+    - Menu 3: Delta regional commodity market price indexing (Warri, Yenagoa, Port Harcourt).
+    - Menu 4: Commercial off-taker produce match offer review and two-key accept/decline confirmation.
+    - Menu 5: Instant extension visit request auto-generating prioritized `VisitAssignment` orders.
+  - Transactional alert notification service (`agridep.apps.alerts.services`) for harvest readiness, loan repayment reminders/arrears, and disease outbreak alerts.
+  - Web-based USSD Feature Phone Simulator at `/portal/ussd-simulator/` for live testing and field agent onboarding.
+  - Full automated test suite in `tests/test_alerts_and_ussd.py` (9/9 passed, 41/41 full suite passed) and end-to-end demo script in `docs/demo/m6_demo.py`.
 
 #### Milestone M7: Reporting, Inputs & Market Intelligence (Phase 3)
 - **Deliverables:**

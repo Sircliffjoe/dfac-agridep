@@ -64,6 +64,9 @@ from agridep.apps.fieldops.services import (
     report_incident,
     auto_generate_visit_assignments,
 )
+from agridep.apps.alerts.models import AlertRule, AlertNotification, AlertChannel, AlertPriority, AlertStatus
+from agridep.apps.alerts.services import send_transactional_sms, notify_harvest_readiness
+from agridep.apps.market.models import CommodityPrice
 from agridep.apps.common.parameters import seed_system_parameters
 
 User = get_user_model()
@@ -741,5 +744,75 @@ class Command(BaseCommand):
         # Run automated decision engine priority queue auto-dispatch
         dispatched = auto_generate_visit_assignments(officer=officer)
         self.stdout.write(f"Decision Engine generated {len(dispatched)} prioritized field visit assignments.")
+
+        # -------------------------------------------------------------
+        # 7. Milestone M6: SMS & USSD Telecom Engagement Channel
+        # -------------------------------------------------------------
+        self.stdout.write("Seeding Milestone M6 SMS, USSD & Alert Notification Rules...")
+
+        # Commodity Price Indices for USSD Price Menu
+        catfish_type = EnterpriseType.objects.filter(code='CATFISH').first() or EnterpriseType.objects.first()
+        if catfish_type:
+            CommodityPrice.objects.get_or_create(
+                enterprise_type=catfish_type,
+                market_hub="Effurun Main Market, Warri",
+                defaults={
+                    'state': "Delta",
+                    'price_per_kg_naira': Decimal('2600.00'),
+                    'effective_date': date.today()
+                }
+            )
+            CommodityPrice.objects.get_or_create(
+                enterprise_type=catfish_type,
+                market_hub="Swali International Market, Yenagoa",
+                defaults={
+                    'state': "Bayelsa",
+                    'price_per_kg_naira': Decimal('2550.00'),
+                    'effective_date': date.today()
+                }
+            )
+            CommodityPrice.objects.get_or_create(
+                enterprise_type=catfish_type,
+                market_hub="Oil Mill Market, Port Harcourt",
+                defaults={
+                    'state': "Rivers",
+                    'price_per_kg_naira': Decimal('2700.00'),
+                    'effective_date': date.today()
+                }
+            )
+
+        # Core Alert Rules
+        rule_harvest, _ = AlertRule.objects.get_or_create(
+            rule_code="RULE_01_HARVEST",
+            defaults={
+                'name': "Pre-Harvest Readiness Alert",
+                'description': "Sent when produce batch reaches 14-day pre-harvest window",
+                'channel': AlertChannel.SMS,
+                'priority': AlertPriority.HIGH,
+                'message_template': "Hello {farmer_name}, your catfish batch on {farm_name} is projected harvest-ready in {days} days. Dial *384*223# to review buyer off-take offers."
+            }
+        )
+
+        rule_repay, _ = AlertRule.objects.get_or_create(
+            rule_code="RULE_02_ARREARS",
+            defaults={
+                'name': "Loan Repayment Arrears Warning",
+                'description': "Dispatched when loan repayment is 7 days past due",
+                'channel': AlertChannel.SMS,
+                'priority': AlertPriority.HIGH,
+                'message_template': "DFAC Notice: Loan {loan_ref} has an overdue balance of NGN {balance}. Dial *384*223# for repayment options."
+            }
+        )
+
+        # Dispatch sample transactional SMS to Tari Agidee & Pere Alagoa
+        farmer_tari = Farmer.objects.filter(last_name='Agidee').first()
+        if farmer_tari and farmer_tari.phone_normalized:
+            send_transactional_sms(
+                phone_number=farmer_tari.phone_normalized,
+                message=f"DFAC AgriDEP: Welcome {farmer_tari.first_name}! Dial *384*223# on any phone to check loans, report mortality, or accept buyer offers.",
+                priority=AlertPriority.NORMAL,
+                user=farmer_tari.user
+            )
+            self.stdout.write(f"Dispatched welcome SMS to {farmer_tari.phone_normalized}")
 
         self.stdout.write(self.style.SUCCESS("Demo Nigerian seed data successfully created!"))

@@ -20,6 +20,7 @@ from .views import (
     fieldops_log_visit_portal,
     fieldops_report_incident_portal,
     fieldops_auto_dispatch_portal,
+    ussd_simulator_view,
 )
 
 urlpatterns = [
@@ -52,4 +53,7 @@ urlpatterns = [
     path('portal/fieldops/log-visit/', fieldops_log_visit_portal, name='fieldops-log-visit-portal'),
     path('portal/fieldops/report-incident/', fieldops_report_incident_portal, name='fieldops-report-incident-portal'),
     path('portal/fieldops/auto-dispatch/', fieldops_auto_dispatch_portal, name='fieldops-auto-dispatch-portal'),
+
+    # Milestone M6: USSD & SMS Simulator
+    path('portal/ussd-simulator/', ussd_simulator_view, name='ussd-simulator'),
 ]
