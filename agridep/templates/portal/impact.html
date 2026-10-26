@@ -45,8 +45,10 @@
         <!-- NDPA 2023 Compliance Spotlight -->
         <div style="background: linear-gradient(135deg, #f0fdf4 0%, #e7f7ed 100%); border: 1.5px solid #86efac; border-radius: var(--radius-xl); padding: 44px; margin-bottom: 64px; box-shadow: var(--shadow-md);">
             <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
-                <div style="width: 64px; height: 64px; border-radius: var(--radius-md); background: #15803d; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; box-shadow: 0 4px 14px rgba(21, 128, 61, 0.3);">
-                    🛡️
+                <div style="width: 64px; height: 64px; border-radius: var(--radius-md); background: #15803d; color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 14px rgba(21, 128, 61, 0.3);">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>
+                    </svg>
                 </div>
                 <div style="flex: 1; min-width: 280px;">
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
@@ -88,7 +90,7 @@
             </p>
             <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
                 <a href="{% url 'reporting-portal' %}" class="btn btn-primary btn-lg">
-                    <span>📊 Access Donor M&amp;E Hub</span>
+                    <span>Access Donor M&amp;E Hub</span>
                 </a>
                 <a href="{% url 'contact' %}" class="btn btn-secondary btn-lg">
                     <span>Request Partnership Brief</span>

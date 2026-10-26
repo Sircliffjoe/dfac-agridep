@@ -251,6 +251,17 @@ a:hover {
   color: var(--color-primary-dark);
   letter-spacing: -0.03em;
   line-height: 1.1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.brand-name sup {
+  font-size: 0.52em;
+  font-weight: 800;
+  vertical-align: super;
+  margin-left: 2px;
+  color: var(--color-primary);
+  letter-spacing: normal;
 }
 
 .brand-sub {
@@ -362,9 +373,15 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
   flex-shrink: 0;
+  color: var(--color-primary-dark);
   transition: all 0.2s ease;
+}
+
+.dropdown-icon-box svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
 }
 
 .dropdown-item:hover .dropdown-icon-box {

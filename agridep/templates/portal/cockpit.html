@@ -211,10 +211,10 @@
 
         <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
             <button onclick="document.getElementById('import-modal').scrollIntoView({behavior: 'smooth'})" class="btn btn-secondary">
-                📤 Import Attendance
+                Import Attendance
             </button>
             <a href="/admin/" class="btn btn-primary">
-                ⚙️ Admin Console
+                Admin Console
             </a>
         </div>
     </div>
@@ -233,7 +233,7 @@
             <div class="kpi-title">Active Production Units</div>
             <div class="kpi-value">{{ metrics.total_farms }} Farms</div>
             <div class="kpi-sub">
-                <span>🐟 {{ metrics.total_ponds }} Ponds & Vats</span> across 3 States
+                <span>{{ metrics.total_ponds }} Ponds &amp; Vats</span> across 3 States
             </div>
         </div>
 
@@ -268,7 +268,7 @@
         <div class="dashboard-panel">
             <div class="panel-header">
                 <div class="panel-title">
-                    <span>🗺️</span> Regional Farm Distribution & Status (Niger Delta)
+                    Regional Farm Distribution &amp; Status (Niger Delta)
                 </div>
                 <div style="font-size: 0.8rem; color: #6b7280;">
                     PostGIS Spatial Coordinates
@@ -301,7 +301,7 @@
         <div class="dashboard-panel">
             <div class="panel-header">
                 <div class="panel-title">
-                    <span>⚡</span> RULE-01 Harvest Pipeline
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> RULE-01 Harvest Pipeline
                 </div>
                 <span class="badge-status badge-success">{{ harvest_ready_batches|length }} Batches</span>
             </div>
@@ -350,7 +350,7 @@
         <div class="dashboard-panel">
             <div class="panel-header">
                 <div class="panel-title">
-                    <span>🛡️</span> NDPA Duplicate Farmer Verification Queue
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> NDPA Duplicate Farmer Verification Queue
                 </div>
                 <span class="badge-status {% if duplicate_queue %}badge-danger{% else %}badge-success{% endif %}">
                     {{ duplicate_queue|length }} Pending Review
@@ -405,7 +405,7 @@
         <div class="dashboard-panel" id="import-modal">
             <div class="panel-header">
                 <div class="panel-title">
-                    <span>📋</span> Bulk Attendance Importer (CSV / XLSX)
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Bulk Attendance Importer (CSV / XLSX)
                 </div>
             </div>
             <div class="panel-body">
@@ -446,7 +446,7 @@
     <div class="dashboard-panel" style="margin-bottom: 40px;">
         <div class="panel-header">
             <div class="panel-title">
-                <span>🎓</span> Recently Issued Capacity Building Certificates
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> Recently Issued Capacity Building Certificates
             </div>
             <a href="{% url 'verify-certificate' %}" class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;">
                 Verify Any Credential
@@ -488,11 +488,11 @@
                             <div style="display: flex; gap: 8px; align-items: center;">
                                 {% if cert.pdf_file %}
                                 <a href="{{ cert.pdf_file.url }}" target="_blank" class="action-btn-sm btn-verify">
-                                    📄 PDF
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:2px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> PDF
                                 </a>
                                 {% endif %}
                                 <a href="{% url 'verify-certificate-detail' cert.verification_code %}" class="action-btn-sm" style="background: #e0f2fe; color: #0369a1;">
-                                    🔍 Verify
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:2px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Verify
                                 </a>
                             </div>
                         </td>

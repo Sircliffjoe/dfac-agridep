@@ -267,7 +267,9 @@
                             <div>Overdue: <strong>{{ item.scoring_breakdown.overdue_score }}</strong> pts</div>
                             <div>Risks: <strong>{{ item.scoring_breakdown.risk_flags_score }}</strong> pts</div>
                             {% if item.scoring_breakdown.harvest_imminent %}
-                            <div class="text-amber-700 font-semibold">⚡ Pre-Harvest Imminent</div>
+                            <div class="text-amber-700 font-semibold" style="display:inline-flex; align-items:center; gap:3px;">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Pre-Harvest Imminent
+                            </div>
                             {% endif %}
                         </td>
                         <td>
@@ -364,7 +366,9 @@
                                 {% if visit.is_geofence_verified %}
                                 <span class="badge badge-verified">✓ On-Site ({{ visit.distance_to_farm_meters|floatformat:1 }}m)</span>
                                 {% elif visit.latitude %}
-                                <span class="badge badge-drift">⚠ Drift ({{ visit.distance_to_farm_meters|floatformat:1 }}m)</span>
+                                <span class="badge badge-drift">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Drift ({{ visit.distance_to_farm_meters|floatformat:1 }}m)
+                                </span>
                                 {% else %}
                                 <span class="text-xs text-slate-400">No GPS</span>
                                 {% endif %}

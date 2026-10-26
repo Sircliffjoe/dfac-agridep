@@ -18,15 +18,21 @@
         <div class="container top-bar-container">
             <ul class="top-bar-contact">
                 <li class="top-bar-item">
-                    <span>📍</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+                    </svg>
                     <span>14 Deco Road, Warri, Delta State</span>
                 </li>
                 <li class="top-bar-item">
-                    <span>📞</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
                     <a href="tel:+2348035551122">+234 (0) 803 555 1122</a>
                 </li>
                 <li class="top-bar-item">
-                    <span>🌍</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
+                    </svg>
                     <span>Hubs: Delta &bull; Bayelsa &bull; Rivers</span>
                 </li>
             </ul>
@@ -37,7 +43,9 @@
                     <span>USSD: *384*40#</span>
                 </span>
                 <span class="top-bar-badge" style="background: rgba(245, 158, 11, 0.15); color: #fde68a; border-color: rgba(245, 158, 11, 0.3);">
-                    <span>🛡️</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px;">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
                     <span>NDPA 2023 Compliant</span>
                 </span>
             </div>
@@ -47,12 +55,18 @@
     <!-- Main Site Header -->
     <header class="site-header">
         <div class="container nav-container">
-            <!-- Brand Logo -->
+            <!-- Brand Logo (With TM supertext, no subtitle) -->
             <a href="{% url 'home' %}" class="brand-logo">
-                <div class="brand-icon">🐟</div>
+                <div class="brand-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6Z"/>
+                        <circle cx="17.5" cy="10" r="1" fill="#ffffff"/>
+                        <path d="M2 12h4.5"/>
+                        <path d="M2 9.5l3 2.5-3 2.5"/>
+                    </svg>
+                </div>
                 <div class="brand-text-wrap">
-                    <span class="brand-name">DFAC AgriDEP</span>
-                    <span class="brand-sub">Doctor Fish Agricultural Consult</span>
+                    <span class="brand-name">DFAC AgriDEP<sup>TM</sup></span>
                 </div>
             </a>
 
@@ -75,7 +89,11 @@
                         <ul class="dropdown-menu dropdown-menu-wide">
                             <li>
                                 <a href="{% url 'cockpit' %}" class="dropdown-item">
-                                    <div class="dropdown-icon-box" style="color: #10b981;">⚡</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Executive Cockpit</span>
                                         <span class="dropdown-item-desc">GIS map, outgrower clusters, pond telemetry &amp; duplicates</span>
@@ -84,7 +102,11 @@
                             </li>
                             <li>
                                 <a href="{% url 'fieldops-portal' %}" class="dropdown-item">
-                                    <div class="dropdown-icon-box" style="color: #f59e0b;">🚜</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Field Operations Hub</span>
                                         <span class="dropdown-item-desc">Agent inspection queue, geofenced GPS visits &amp; incidents</span>
@@ -93,7 +115,11 @@
                             </li>
                             <li>
                                 <a href="{% url 'lender-portal' %}" class="dropdown-item">
-                                    <div class="dropdown-icon-box" style="color: #3b82f6;">🏦</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="m2 7 10-5 10 5v2H2z"/><path d="M4 11v7"/><path d="M8 11v7"/><path d="M12 11v7"/><path d="M16 11v7"/><path d="M20 11v7"/><path d="M2 20h20v2H2z"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Lender Portfolio Hub</span>
                                         <span class="dropdown-item-desc">Underwriting, Rule-08 tranche gates &amp; live credit scores</span>
@@ -102,7 +128,11 @@
                             </li>
                             <li>
                                 <a href="{% url 'buyer-portal' %}" class="dropdown-item">
-                                    <div class="dropdown-icon-box" style="color: #8b5cf6;">🤝</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="m11 17 2 2a1 1 0 0 0 1.42 0l6.58-6.59a1 1 0 0 0 0-1.41l-2-2a1 1 0 0 0-1.41 0L13 11.59"/><path d="m16 8-2-2a1 1 0 0 0-1.41 0L6 12.59a1 1 0 0 0 0 1.41l2 2a1 1 0 0 0 1.42 0L12 13.41"/><path d="M2 12h3"/><path d="M19 12h3"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Buyer &amp; Off-taker Hub</span>
                                         <span class="dropdown-item-desc">Commercial pre-contracts, demand matching &amp; harvest batches</span>
@@ -111,7 +141,11 @@
                             </li>
                             <li>
                                 <a href="{% url 'inputs-portal' %}" class="dropdown-item">
-                                    <div class="dropdown-icon-box" style="color: #ec4899;">📦</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Input Supply &amp; Catalogs</span>
                                         <span class="dropdown-item-desc">Fingerlings, high-protein feed, agrochemicals &amp; delivery gates</span>
@@ -120,7 +154,11 @@
                             </li>
                             <li>
                                 <a href="{% url 'ussd-simulator' %}" class="dropdown-item">
-                                    <div class="dropdown-icon-box" style="color: #06b6d4;">📲</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">USSD &amp; SMS Simulator</span>
                                         <span class="dropdown-item-desc">Interactive feature-phone test bench for offline outgrowers</span>
@@ -139,7 +177,11 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="{% url 'value-chains' %}#catfish" class="dropdown-item">
-                                    <div class="dropdown-icon-box">🐟</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6Z"/><path d="M2 12h4.5"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">African Catfish (Clarias)</span>
                                         <span class="dropdown-item-desc">Fingerlings, earthen/tarpaulin grow-out &amp; table sizing</span>
@@ -148,7 +190,11 @@
                             </li>
                             <li>
                                 <a href="{% url 'value-chains' %}#cassava" class="dropdown-item">
-                                    <div class="dropdown-icon-box">🌿</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4-.1 5.5.8z"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Cassava Outgrowers</span>
                                         <span class="dropdown-item-desc">High-yield TME 419 stems, starch mills &amp; garri off-take</span>
@@ -157,7 +203,11 @@
                             </li>
                             <li>
                                 <a href="{% url 'value-chains' %}#poultry" class="dropdown-item">
-                                    <div class="dropdown-icon-box">🍗</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Poultry &amp; Broilers</span>
                                         <span class="dropdown-item-desc">6-week broiler batches, bio-security &amp; cold-chain distribution</span>
@@ -166,7 +216,11 @@
                             </li>
                             <li>
                                 <a href="{% url 'value-chains' %}#prices" class="dropdown-item">
-                                    <div class="dropdown-icon-box">📈</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Regional Price Index</span>
                                         <span class="dropdown-item-desc">Warri, Yenagoa &amp; Port Harcourt commodity benchmarks</span>
@@ -185,7 +239,11 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="{% url 'reporting-portal' %}" class="dropdown-item">
-                                    <div class="dropdown-icon-box" style="color: #10b981;">📊</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Donor M&amp;E Hub</span>
                                         <span class="dropdown-item-desc">PIND Foundation &amp; GIZ indicator exports (Excel &amp; PDF)</span>
@@ -194,7 +252,11 @@
                             </li>
                             <li>
                                 <a href="{% url 'verify-certificate' %}" class="dropdown-item">
-                                    <div class="dropdown-icon-box" style="color: #0284c7;">🛡️</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Verify Credential</span>
                                         <span class="dropdown-item-desc">Cryptographic validation of farmer certificates &amp; badges</span>
@@ -203,7 +265,11 @@
                             </li>
                             <li>
                                 <a href="{% url 'impact' %}" class="dropdown-item">
-                                    <div class="dropdown-icon-box" style="color: #f59e0b;">🌍</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Socio-Economic Impact</span>
                                         <span class="dropdown-item-desc">Farmer income uplift, female participation &amp; youth jobs</span>
@@ -213,7 +279,7 @@
                         </ul>
                     </li>
 
-                    <!-- 5. Company & Solutions ▾ -->
+                    <!-- 5. Company ▾ -->
                     <li class="nav-item has-dropdown">
                         <button class="nav-link {% if request.resolver_match.url_name in 'about,solutions,contact' %}active{% endif %}" aria-haspopup="true">
                             <span>Company</span>
@@ -222,7 +288,11 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="{% url 'about' %}" class="dropdown-item">
-                                    <div class="dropdown-icon-box">🏢</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">About DFAC</span>
                                         <span class="dropdown-item-desc">Our mission, leadership &amp; agronomic history since 2018</span>
@@ -231,7 +301,11 @@
                             </li>
                             <li>
                                 <a href="{% url 'solutions' %}" class="dropdown-item">
-                                    <div class="dropdown-icon-box">💡</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Ecosystem Solutions</span>
                                         <span class="dropdown-item-desc">Smallholder, Off-taker, Lender &amp; Extension pillars</span>
@@ -240,7 +314,11 @@
                             </li>
                             <li>
                                 <a href="{% url 'contact' %}" class="dropdown-item">
-                                    <div class="dropdown-icon-box">📞</div>
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                                        </svg>
+                                    </div>
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Field Contact &amp; Desks</span>
                                         <span class="dropdown-item-desc">Warri HQ, Yenagoa desk, Port Harcourt agronomy office</span>
@@ -255,32 +333,33 @@
             <!-- Header Action CTAs -->
             <div class="nav-actions">
                 <a href="{% url 'verify-certificate' %}" class="btn btn-secondary" style="font-size: 0.85rem; padding: 8px 16px;">
-                    <span>🛡️</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>
+                    </svg>
                     <span>Verify Credential</span>
                 </a>
 
                 {% if user.is_authenticated %}
                     {% if user.is_staff or user.role == 'DFAC_ADMIN' %}
                         <a href="/admin/" class="btn btn-primary" style="font-size: 0.85rem; padding: 8px 18px;">
-                            <span>⚙️</span>
-                            <span>Console</span>
+                            <span>Operations Console</span>
                         </a>
                     {% else %}
                         <a href="{% url 'portal-login' %}" class="btn btn-primary" style="font-size: 0.85rem; padding: 8px 18px;">
-                            <span>👤</span>
                             <span>My Account</span>
                         </a>
                     {% endif %}
                 {% else %}
                     <a href="{% url 'portal-login' %}" class="btn btn-primary" style="font-size: 0.85rem; padding: 8px 18px;">
-                        <span>🔐</span>
                         <span>Sign In</span>
                     </a>
                 {% endif %}
 
                 <!-- Mobile Menu Hamburger Button -->
                 <button class="nav-mobile-toggle" id="navMobileToggle" aria-label="Toggle Navigation">
-                    <span>☰</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
+                    </svg>
                 </button>
             </div>
         </div>
@@ -293,29 +372,29 @@
             <div style="border-top: 1px solid var(--color-border); padding-top: 10px;">
                 <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--color-primary);">Portals &amp; Operations</span>
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-left: 10px;">
-                    <a href="{% url 'cockpit' %}">⚡ Executive Cockpit</a>
-                    <a href="{% url 'fieldops-portal' %}">🚜 Field Operations Hub</a>
-                    <a href="{% url 'lender-portal' %}">🏦 Lender Portfolio Hub</a>
-                    <a href="{% url 'buyer-portal' %}">🤝 Buyer &amp; Off-taker Hub</a>
-                    <a href="{% url 'inputs-portal' %}">📦 Input Supply &amp; Catalogs</a>
-                    <a href="{% url 'ussd-simulator' %}">📲 USSD &amp; SMS Simulator</a>
+                    <a href="{% url 'cockpit' %}">Executive Cockpit</a>
+                    <a href="{% url 'fieldops-portal' %}">Field Operations Hub</a>
+                    <a href="{% url 'lender-portal' %}">Lender Portfolio Hub</a>
+                    <a href="{% url 'buyer-portal' %}">Buyer &amp; Off-taker Hub</a>
+                    <a href="{% url 'inputs-portal' %}">Input Supply &amp; Catalogs</a>
+                    <a href="{% url 'ussd-simulator' %}">USSD &amp; SMS Simulator</a>
                 </div>
             </div>
             <div style="border-top: 1px solid var(--color-border); padding-top: 10px;">
                 <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--color-primary);">Value Chains &amp; Impact</span>
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-left: 10px;">
-                    <a href="{% url 'value-chains' %}">🐟 Aquaculture, Cassava &amp; Poultry</a>
-                    <a href="{% url 'reporting-portal' %}">📊 Donor M&amp;E Hub (PIND &amp; GIZ)</a>
-                    <a href="{% url 'verify-certificate' %}">🛡️ Verify Credential</a>
-                    <a href="{% url 'impact' %}">🌍 Socio-Economic Impact</a>
+                    <a href="{% url 'value-chains' %}">Aquaculture, Cassava &amp; Poultry</a>
+                    <a href="{% url 'reporting-portal' %}">Donor M&amp;E Hub (PIND &amp; GIZ)</a>
+                    <a href="{% url 'verify-certificate' %}">Verify Credential</a>
+                    <a href="{% url 'impact' %}">Socio-Economic Impact</a>
                 </div>
             </div>
             <div style="border-top: 1px solid var(--color-border); padding-top: 10px;">
                 <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--color-primary);">DFAC Agribusiness</span>
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-left: 10px;">
-                    <a href="{% url 'about' %}">🏢 About DFAC</a>
-                    <a href="{% url 'solutions' %}">💡 Ecosystem Solutions</a>
-                    <a href="{% url 'contact' %}">📞 Field Coordination Desks</a>
+                    <a href="{% url 'about' %}">About DFAC</a>
+                    <a href="{% url 'solutions' %}">Ecosystem Solutions</a>
+                    <a href="{% url 'contact' %}">Field Coordination Desks</a>
                 </div>
             </div>
         </div>
@@ -327,7 +406,15 @@
             <div class="container" style="margin-top: 24px;">
                 {% for message in messages %}
                     <div class="alert alert-{% if message.tags == 'error' %}error{% else %}success{% endif %}">
-                        <span>{% if message.tags == 'error' %}⚠️{% else %}✅{% endif %}</span>
+                        {% if message.tags == 'error' %}
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                        {% else %}
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        {% endif %}
                         <span>{{ message }}</span>
                     </div>
                 {% endfor %}
@@ -340,15 +427,15 @@
     <!-- Rich Corporate Footer (Greenola / Loraic Style) -->
     <footer class="site-footer">
         <div class="container">
-            <!-- Partner Endorsement Strip -->
+            <!-- Partner Endorsement Strip (Clean typography badges, no emojis) -->
             <div class="footer-partner-strip">
                 <span class="partner-label">Ecosystem Partners &amp; Regulatory Alignment:</span>
                 <div class="partner-tags">
-                    <span class="partner-tag">🌾 PIND Foundation</span>
-                    <span class="partner-tag">🏦 Bank of Agriculture (BOA)</span>
-                    <span class="partner-tag">🌱 GIZ Agribusiness Advisory</span>
-                    <span class="partner-tag">🛡️ NDPA 2023 Verified</span>
-                    <span class="partner-tag">🇳🇬 Federal Ministry of Agriculture</span>
+                    <span class="partner-tag">PIND Foundation</span>
+                    <span class="partner-tag">Bank of Agriculture (BOA)</span>
+                    <span class="partner-tag">GIZ Agribusiness Advisory</span>
+                    <span class="partner-tag">NDPA 2023 Compliant</span>
+                    <span class="partner-tag">Federal Ministry of Agriculture</span>
                 </div>
             </div>
 
@@ -356,14 +443,17 @@
                 <!-- Brand Info -->
                 <div class="footer-brand">
                     <div style="display: flex; align-items: center; gap: 12px;">
-                        <span style="font-size: 28px;">🐟</span>
-                        <h4 style="color: #ffffff; font-size: 1.35rem; font-family: var(--font-heading);">DFAC AgriDEP</h4>
+                        <div class="brand-icon" style="width: 40px; height: 40px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6Z"/>
+                                <circle cx="17.5" cy="10" r="1" fill="#ffffff"/>
+                                <path d="M2 12h4.5"/>
+                                <path d="M2 9.5l3 2.5-3 2.5"/>
+                            </svg>
+                        </div>
+                        <h4 style="color: #ffffff; font-size: 1.35rem; font-family: var(--font-heading); margin: 0;">DFAC AgriDEP<sup>TM</sup></h4>
                     </div>
-                    <p>Doctor Fish Agricultural Consult (DFAC) connects farmers, field data, commercial off-takers, and financial institutions across the Niger Delta agricultural corridor.</p>
-                    <div style="margin-top: 18px; display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.12); padding: 6px 14px; border-radius: var(--radius-full); border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.825rem; color: #6ee7b7;">
-                        <span class="pulse-dot"></span>
-                        <span>All Systems Operational &bull; 99.98% Uptime</span>
-                    </div>
+                    <p>Connecting farmers, field data, commercial off-takers, and financial institutions across the Niger Delta agricultural corridor.</p>
                 </div>
 
                 <!-- Column 1: Core Portals -->

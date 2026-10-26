@@ -20,7 +20,11 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px;">
             <!-- Pillar 1: Smallholders -->
             <div class="feature-card" style="padding: 40px 32px;">
-                <div class="feature-icon-wrapper" style="background: #e7f7ed; color: #15803d;">👨‍🌾</div>
+                <div class="feature-icon-wrapper">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
                 <h3 style="margin-bottom: 16px; font-size: 1.35rem;">Producers &amp; Outgrowers</h3>
                 <ul style="color: var(--color-text-muted); list-style: none; line-height: 1.8; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px;">
                     <li style="display: flex; gap: 8px;">
@@ -48,84 +52,96 @@
 
             <!-- Pillar 2: Off-takers -->
             <div class="feature-card" style="padding: 40px 32px;">
-                <div class="feature-icon-wrapper" style="background: #ede9fe; color: #7c3aed;">🏭</div>
+                <div class="feature-icon-wrapper">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                    </svg>
+                </div>
                 <h3 style="margin-bottom: 16px; font-size: 1.35rem;">Buyers &amp; Processors</h3>
                 <ul style="color: var(--color-text-muted); list-style: none; line-height: 1.8; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px;">
                     <li style="display: flex; gap: 8px;">
-                        <span style="color: #7c3aed; font-weight: 700;">✓</span>
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
                         <span><strong>Forward Volume Planning:</strong> Secure reliable tonnage schedules with automated cluster aggregation.</span>
                     </li>
                     <li style="display: flex; gap: 8px;">
-                        <span style="color: #7c3aed; font-weight: 700;">✓</span>
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
                         <span><strong>Grade &amp; Sizing Specs:</strong> Pre-contract specific sizes (e.g., 1.2kg catfish or 25% starch cassava).</span>
                     </li>
                     <li style="display: flex; gap: 8px;">
-                        <span style="color: #7c3aed; font-weight: 700;">✓</span>
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
                         <span><strong>Quality Certification:</strong> Batches are inspected on-site by accredited DFAC extension officers.</span>
                     </li>
                     <li style="display: flex; gap: 8px;">
-                        <span style="color: #7c3aed; font-weight: 700;">✓</span>
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
                         <span><strong>Farm-to-Fork Traceability:</strong> Verify pond GPS coordinates and harvest verification certificates.</span>
                     </li>
                 </ul>
                 <div style="margin-top: auto; display: flex; gap: 12px; flex-wrap: wrap;">
-                    <a href="{% url 'buyer-portal' %}" class="btn btn-primary btn-sm" style="background: #7c3aed; border-color: #6d28d9;">Open Buyer Hub</a>
+                    <a href="{% url 'buyer-portal' %}" class="btn btn-primary btn-sm">Open Buyer Hub</a>
                     <a href="{% url 'contact' %}" class="btn btn-secondary btn-sm">Commercial Contract</a>
                 </div>
             </div>
 
             <!-- Pillar 3: Lenders -->
             <div class="feature-card" style="padding: 40px 32px;">
-                <div class="feature-icon-wrapper" style="background: #dbeafe; color: #1d4ed8;">🏦</div>
+                <div class="feature-icon-wrapper">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m2 7 10-5 10 5v2H2z"/><path d="M4 11v7"/><path d="M8 11v7"/><path d="M12 11v7"/><path d="M16 11v7"/><path d="M20 11v7"/><path d="M2 20h20v2H2z"/>
+                    </svg>
+                </div>
                 <h3 style="margin-bottom: 16px; font-size: 1.35rem;">Agricultural Lenders</h3>
                 <ul style="color: var(--color-text-muted); list-style: none; line-height: 1.8; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px;">
                     <li style="display: flex; gap: 8px;">
-                        <span style="color: #1d4ed8; font-weight: 700;">✓</span>
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
                         <span><strong>Biometric Farm Verification:</strong> Confirm real fish stock, pond volume, and NIN identity before loan approval.</span>
                     </li>
                     <li style="display: flex; gap: 8px;">
-                        <span style="color: #1d4ed8; font-weight: 700;">✓</span>
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
                         <span><strong>Rule-08 Tranche Gates:</strong> Loan tranches disburse only upon confirmed delivery of feed/fingerlings.</span>
                     </li>
                     <li style="display: flex; gap: 8px;">
-                        <span style="color: #1d4ed8; font-weight: 700;">✓</span>
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
                         <span><strong>Early Warning Arrears:</strong> Automated biological mortality and growth deficit flags mitigate NPL risk.</span>
                     </li>
                     <li style="display: flex; gap: 8px;">
-                        <span style="color: #1d4ed8; font-weight: 700;">✓</span>
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
                         <span><strong>Multi-Tenant Isolation:</strong> Strict bank portfolio privacy conforming to NDPA 2023 regulations.</span>
                     </li>
                 </ul>
                 <div style="margin-top: auto; display: flex; gap: 12px; flex-wrap: wrap;">
-                    <a href="{% url 'lender-portal' %}" class="btn btn-primary btn-sm" style="background: #1d4ed8; border-color: #1e40af;">Lender Hub</a>
+                    <a href="{% url 'lender-portal' %}" class="btn btn-primary btn-sm">Lender Hub</a>
                     <a href="{% url 'contact' %}" class="btn btn-secondary btn-sm">Credit Integration</a>
                 </div>
             </div>
 
             <!-- Pillar 4: Extension & Field Ops -->
             <div class="feature-card" style="padding: 40px 32px;">
-                <div class="feature-icon-wrapper" style="background: #fef3c7; color: #b45309;">🚜</div>
+                <div class="feature-icon-wrapper">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+                    </svg>
+                </div>
                 <h3 style="margin-bottom: 16px; font-size: 1.35rem;">Extension Teams &amp; M&amp;E</h3>
                 <ul style="color: var(--color-text-muted); list-style: none; line-height: 1.8; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px;">
                     <li style="display: flex; gap: 8px;">
-                        <span style="color: #b45309; font-weight: 700;">✓</span>
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
                         <span><strong>Geofenced Visit Logs:</strong> Ensure field agents are physically inside the farm perimeter (&lt; 200m).</span>
                     </li>
                     <li style="display: flex; gap: 8px;">
-                        <span style="color: #b45309; font-weight: 700;">✓</span>
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
                         <span><strong>Prioritized Dispatch Queue:</strong> Intelligent scoring routes agents to high-risk ponds first.</span>
                     </li>
                     <li style="display: flex; gap: 8px;">
-                        <span style="color: #b45309; font-weight: 700;">✓</span>
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
                         <span><strong>Digital Attendance &amp; Badges:</strong> Issue cryptographically verifiable training certificates with QR codes.</span>
                     </li>
                     <li style="display: flex; gap: 8px;">
-                        <span style="color: #b45309; font-weight: 700;">✓</span>
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
                         <span><strong>Donor Indicator Reporting:</strong> Automated GIZ and PIND Foundation quarterly Excel &amp; PDF exports.</span>
                     </li>
                 </ul>
                 <div style="margin-top: auto; display: flex; gap: 12px; flex-wrap: wrap;">
-                    <a href="{% url 'fieldops-portal' %}" class="btn btn-primary btn-sm" style="background: #b45309; border-color: #92400e;">Field Ops</a>
+                    <a href="{% url 'fieldops-portal' %}" class="btn btn-primary btn-sm">Field Ops</a>
                     <a href="{% url 'reporting-portal' %}" class="btn btn-secondary btn-sm">Donor Reporting</a>
                 </div>
             </div>

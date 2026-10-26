@@ -161,10 +161,10 @@
 
         <div style="display: flex; gap: 12px; align-items: center;">
             <a href="/admin/market/buyerdemand/" class="btn btn-secondary">
-                ⚙️ Admin Demands
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Admin Demands
             </a>
             <a href="/cockpit/" class="btn btn-primary">
-                ⚡ Regional Cockpit
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Regional Cockpit
             </a>
         </div>
     </div>
@@ -208,7 +208,7 @@
     <div class="dashboard-panel">
         <div class="panel-header">
             <div class="panel-title">
-                <span>📦</span> Active Buyer Purchase Demands & Auto-Match Engine (RULE-04)
+                Active Buyer Purchase Demands &amp; Auto-Match Engine (RULE-04)
             </div>
             <span style="font-size: 0.8rem; color: #64748b;">PostGIS Distance Buffer & Window Ranking</span>
         </div>
@@ -261,7 +261,7 @@
                             <form method="POST" action="{% url 'trigger-auto-match' demand.id %}" style="display: inline;">
                                 {% csrf_token %}
                                 <button type="submit" class="action-btn-sm btn-match" title="Run spatial matching algorithm to aggregate candidate batches">
-                                    ⚡ Match Batches
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Match Batches
                                 </button>
                             </form>
                         </td>
@@ -282,10 +282,10 @@
     <div class="dashboard-panel">
         <div class="panel-header">
             <div class="panel-title">
-                <span>🎯</span> Algorithmic Matches & NDPA Protected Producer Identities
+                Algorithmic Matches &amp; NDPA Protected Producer Identities
             </div>
             <div style="font-size: 0.82rem; color: #475569;">
-                🛡️ Smallholder PII masked until contract confirmed (NDPA 2023)
+                Smallholder PII masked until contract confirmed (NDPA 2023)
             </div>
         </div>
         <div class="panel-body" style="padding: 0;">
@@ -346,7 +346,7 @@
                             <form method="POST" action="{% url 'confirm-produce-match' item.match.id %}">
                                 {% csrf_token %}
                                 <button type="submit" class="action-btn-sm btn-confirm">
-                                    🤝 Confirm Contract
+                                    Confirm Contract
                                 </button>
                             </form>
                             {% else %}
@@ -370,7 +370,7 @@
     <div class="dashboard-panel">
         <div class="panel-header">
             <div class="panel-title">
-                <span>🚚</span> Confirmed Off-take Transactions & Delivery Waybills
+                Confirmed Off-take Transactions &amp; Delivery Waybills
             </div>
             <span class="badge-status badge-success">{{ offtakes|length }} Executed Waybills</span>
         </div>

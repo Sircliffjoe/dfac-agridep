@@ -18,8 +18,10 @@
     <div class="container" style="max-width: 500px;">
         <div class="form-card" style="box-shadow: var(--shadow-xl); border-radius: var(--radius-xl);">
             <div style="text-align: center; margin-bottom: 28px;">
-                <div style="width: 58px; height: 58px; background: var(--color-primary-light); color: var(--color-primary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 16px; border: 1.5px solid var(--color-primary-border);">
-                    🔐
+                <div style="width: 58px; height: 58px; background: var(--color-primary-light); color: var(--color-primary-dark); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; border: 1.5px solid var(--color-primary-border);">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
                 </div>
                 <h3 style="font-size: 1.45rem;">Authorized Sign In</h3>
                 <p style="font-size: 0.9rem; color: var(--color-text-muted); margin-top: 4px;">Enter your assigned operational credentials</p>
@@ -43,7 +45,7 @@
             </form>
 
             <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--color-border-subtle); text-align: center; font-size: 0.85rem; color: var(--color-text-light);">
-                <p>🛡️ Protected under the <strong>Nigeria Data Protection Act (NDPA 2023)</strong>. All login attempts, IP signatures, and queries are permanently audited.</p>
+                <p>Protected under the <strong>Nigeria Data Protection Act (NDPA 2023)</strong>. All login attempts, IP signatures, and queries are permanently audited.</p>
                 <div style="margin-top: 16px;">
                     <a href="{% url 'contact' %}" style="color: var(--color-primary); font-weight: 700;">Need field credentials? Request Agronomy Desk Access</a>
                 </div>
