@@ -455,3 +455,119 @@ def trigger_auto_match_portal(request, demand_id):
         messages.warning(request, "No eligible producer batches found matching the delivery window and radius criteria.")
     return redirect('buyer-portal')
 
+
+def field_officer_portal_view(request):
+    """
+    Milestone M4: Field Extension Officer daily inspection and priority queue cockpit.
+    """
+    from agridep.apps.fieldops.models import FarmVisit, IncidentReport, VisitAssignment
+    from agridep.apps.fieldops.services import build_visit_priority_queue
+
+    officer = request.user if request.user.is_authenticated and request.user.role == UserRole.FIELD_OFFICER else None
+    priority_queue = build_visit_priority_queue(officer=officer, limit=20)
+    assignments = VisitAssignment.objects.select_related('farm', 'farm__farmer', 'assigned_officer').order_by('-priority_score', 'due_date')[:15]
+    recent_visits = FarmVisit.objects.select_related('farm', 'farm__farmer', 'officer').order_by('-actual_visit_date', '-created_at')[:15]
+    open_incidents_count = IncidentReport.objects.filter(status__in=['REPORTED', 'INVESTIGATING']).count()
+
+    total_visits = FarmVisit.objects.count()
+    verified_visits = FarmVisit.objects.filter(is_geofence_verified=True).count()
+    geofence_verified_pct = round((verified_visits / total_visits * 100), 1) if total_visits > 0 else 100.0
+
+    return render(request, 'portal/fieldops_portal.html', {
+        'page_title': 'Field Operations & Inspection Cockpit - DFAC AgriDEP',
+        'priority_queue': priority_queue,
+        'assignments': assignments,
+        'recent_visits': recent_visits,
+        'active_assignments_count': VisitAssignment.objects.filter(status__in=['PENDING', 'ACCEPTED', 'IN_PROGRESS']).count(),
+        'open_incidents_count': open_incidents_count,
+        'geofence_verified_pct': geofence_verified_pct,
+    })
+
+
+@require_POST
+def fieldops_log_visit_portal(request):
+    """Logs a completed field visit with GPS coordinates and inspection biometrics."""
+    from agridep.apps.registry.models import Farm
+    from agridep.apps.fieldops.models import Inspection, ComplianceRating
+    from agridep.apps.fieldops.services import log_farm_visit
+
+    farm_id = request.POST.get('farm_id')
+    farm = get_object_or_404(Farm, id=farm_id)
+    lat = Decimal(request.POST.get('latitude', '0'))
+    lon = Decimal(request.POST.get('longitude', '0'))
+    purpose = request.POST.get('purpose', 'ROUTINE_EXTENSION')
+    officer_notes = request.POST.get('officer_notes', '')
+
+    visit = log_farm_visit(
+        farm=farm,
+        officer=request.user if request.user.is_authenticated else farm.farmer.assigned_officer,
+        purpose=purpose,
+        latitude=lat,
+        longitude=lon,
+        officer_notes=officer_notes
+    )
+
+    # Also log inspection if biometrics provided
+    water_ph = request.POST.get('water_ph')
+    water_temp = request.POST.get('water_temp')
+    do_val = request.POST.get('dissolved_oxygen')
+    avg_weight = request.POST.get('avg_weight_g')
+    mortality = request.POST.get('mortality_count', '0')
+
+    Inspection.objects.create(
+        visit=visit,
+        water_ph=Decimal(water_ph) if water_ph else None,
+        water_temperature_celsius=Decimal(water_temp) if water_temp else None,
+        dissolved_oxygen_mg_l=Decimal(do_val) if do_val else None,
+        average_sample_weight_grams=Decimal(avg_weight) if avg_weight else None,
+        daily_mortality_count=int(mortality) if mortality else 0,
+        compliance_rating=ComplianceRating.SATISFACTORY if (water_ph and 6.5 <= float(water_ph) <= 8.5) else ComplianceRating.NEEDS_IMPROVEMENT
+    )
+
+    if visit.is_geofence_verified:
+        messages.success(request, f"Visit #{visit.reference_code} logged! ✓ On-site GPS verified ({visit.distance_to_farm_meters:.1f}m from farm coordinates).")
+    else:
+        messages.warning(request, f"Visit #{visit.reference_code} logged! ⚠ GPS Geofence drift warning ({visit.distance_to_farm_meters:.1f}m from farm coordinates).")
+
+    return redirect('fieldops-portal')
+
+
+@require_POST
+def fieldops_report_incident_portal(request):
+    """Submits an emergency incident and auto-dispatches high priority visits."""
+    from agridep.apps.registry.models import Farm
+    from agridep.apps.fieldops.services import report_incident
+
+    farm_id = request.POST.get('farm_id')
+    farm = get_object_or_404(Farm, id=farm_id)
+    title = request.POST.get('title')
+    description = request.POST.get('description')
+    incident_type = request.POST.get('incident_type', 'DISEASE_OUTBREAK')
+    severity = request.POST.get('severity', 'HIGH')
+
+    incident = report_incident(
+        farm=farm,
+        reported_by=request.user if request.user.is_authenticated else farm.farmer.assigned_officer,
+        title=title,
+        description=description,
+        incident_type=incident_type,
+        severity=severity
+    )
+
+    messages.success(request, f"Incident #{incident.reference_code} recorded! Urgent field inspection dispatched to assigned extension officer.")
+    return redirect('fieldops-portal')
+
+
+@require_POST
+def fieldops_auto_dispatch_portal(request):
+    """Runs priority scanner and automatically creates VisitAssignments."""
+    from agridep.apps.fieldops.services import auto_generate_visit_assignments
+
+    created = auto_generate_visit_assignments()
+    if created:
+        messages.success(request, f"Decision Engine dispatched {len(created)} urgent visit assignments based on current risk and overdue scores.")
+    else:
+        messages.info(request, "Priority scanner completed. No new visits meet the urgent dispatch threshold at this time.")
+    return redirect('fieldops-portal')
+
+

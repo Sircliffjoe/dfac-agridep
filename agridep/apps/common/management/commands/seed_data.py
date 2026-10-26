@@ -47,6 +47,23 @@ from agridep.apps.market.services import (
     propose_buyer_matches_for_demand,
     confirm_produce_match,
 )
+from agridep.apps.fieldops.models import (
+    FarmVisit,
+    FarmVisitStatus,
+    FarmVisitPurpose,
+    Inspection,
+    InspectionType,
+    ComplianceRating,
+    IncidentReport,
+    IncidentSeverity,
+    IncidentType,
+    VisitAssignment,
+)
+from agridep.apps.fieldops.services import (
+    log_farm_visit,
+    report_incident,
+    auto_generate_visit_assignments,
+)
 from agridep.apps.common.parameters import seed_system_parameters
 
 User = get_user_model()
@@ -654,5 +671,75 @@ class Command(BaseCommand):
             # Confirm first match to demonstrate Contracted Off-take and Waybill
             offtake = confirm_produce_match(matches[0], confirmed_by=admin)
             self.stdout.write(f"Confirmed Off-take Contract: Waybill #{offtake.waybill_number} for {offtake.actual_delivered_volume_kg:,.0f}kg (₦{offtake.total_amount_naira:,.2f})")
+
+        # -------------------------------------------------------------
+        # 6. Milestone M4: Field Operations, Inspections & Geofencing
+        # -------------------------------------------------------------
+        self.stdout.write("Seeding Milestone M4 Field Operations, Inspections & Priority Queues...")
+
+        farm_alagoa = Farm.objects.filter(farmer__last_name='Alagoa').first()
+        farm_agidee = Farm.objects.filter(farmer__last_name='Agidee').first()
+
+        if farm_alagoa:
+            # Completed visit with verified geofence (on-site GPS)
+            visit1, created = FarmVisit.objects.get_or_create(
+                farm=farm_alagoa,
+                status=FarmVisitStatus.COMPLETED,
+                defaults={
+                    'officer': officer,
+                    'scheduled_date': date.today() - timedelta(days=12),
+                    'actual_visit_date': timezone.now() - timedelta(days=12),
+                    'purpose': FarmVisitPurpose.BIOSECURITY_INSPECTION,
+                    'farmer_present': True,
+                    'latitude': farm_alagoa.latitude,
+                    'longitude': farm_alagoa.longitude,
+                    'gps_accuracy_meters': Decimal('4.20'),
+                    'is_geofence_verified': True,
+                    'distance_to_farm_meters': Decimal('8.50'),
+                    'officer_notes': "Water chemistry optimal. Netting intact across all 4 operational earthen ponds.",
+                    'farmer_feedback': "Requested advisory on fingerling grading technique for next cycle."
+                }
+            )
+            if created:
+                Inspection.objects.get_or_create(
+                    visit=visit1,
+                    defaults={
+                        'inspection_type': InspectionType.WATER_QUALITY,
+                        'compliance_rating': ComplianceRating.EXCELLENT,
+                        'water_ph': Decimal('7.40'),
+                        'water_temperature_celsius': Decimal('28.5'),
+                        'dissolved_oxygen_mg_l': Decimal('6.20'),
+                        'ammonia_ppm': Decimal('0.02'),
+                        'average_sample_weight_grams': Decimal('850.00'),
+                        'daily_mortality_count': 1,
+                        'feed_inventory_kg': Decimal('450.00'),
+                        'biosecurity_protocol_followed': True,
+                        'summary_findings': "Pond dissolved oxygen levels excellent. Recommended continued twice-daily aeration."
+                    }
+                )
+                self.stdout.write(f"Logged verified visit {visit1.reference_code} for {farm_alagoa.name}")
+
+        if farm_agidee:
+            # Active emergency incident report triggering urgent priority
+            incident1, created = IncidentReport.objects.get_or_create(
+                farm=farm_agidee,
+                title="Pond 2 Inflow Turbidity & Low Dissolved Oxygen Warning",
+                defaults={
+                    'reported_by': officer,
+                    'incident_type': IncidentType.WATER_CONTAMINATION,
+                    'severity': IncidentSeverity.HIGH,
+                    'status': 'REPORTED',
+                    'description': "Heavy rainfall runoff caused mud siltation in inlet canal. Morning DO measured 2.8 mg/L with surface piping.",
+                    'immediate_actions_taken': "Activated backup gasoline aerator pump and suspended evening feeding.",
+                    'mortality_estimate': 15,
+                    'financial_loss_estimate_ngn': Decimal('35000.00')
+                }
+            )
+            if created:
+                self.stdout.write(f"Logged emergency incident {incident1.reference_code} for {farm_agidee.name}")
+
+        # Run automated decision engine priority queue auto-dispatch
+        dispatched = auto_generate_visit_assignments(officer=officer)
+        self.stdout.write(f"Decision Engine generated {len(dispatched)} prioritized field visit assignments.")
 
         self.stdout.write(self.style.SUCCESS("Demo Nigerian seed data successfully created!"))

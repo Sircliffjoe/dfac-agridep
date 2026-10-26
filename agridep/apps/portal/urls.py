@@ -16,6 +16,10 @@ from .views import (
     buyer_portal_view,
     confirm_produce_match_portal,
     trigger_auto_match_portal,
+    field_officer_portal_view,
+    fieldops_log_visit_portal,
+    fieldops_report_incident_portal,
+    fieldops_auto_dispatch_portal,
 )
 
 urlpatterns = [
@@ -42,4 +46,10 @@ urlpatterns = [
     path('portal/buyer/', buyer_portal_view, name='buyer-portal'),
     path('portal/buyer/confirm-match/<uuid:match_id>/', confirm_produce_match_portal, name='confirm-produce-match'),
     path('portal/buyer/auto-match/<uuid:demand_id>/', trigger_auto_match_portal, name='trigger-auto-match'),
+
+    # Milestone M4: Field Operations & Inspection Cockpit
+    path('portal/fieldops/', field_officer_portal_view, name='fieldops-portal'),
+    path('portal/fieldops/log-visit/', fieldops_log_visit_portal, name='fieldops-log-visit-portal'),
+    path('portal/fieldops/report-incident/', fieldops_report_incident_portal, name='fieldops-report-incident-portal'),
+    path('portal/fieldops/auto-dispatch/', fieldops_auto_dispatch_portal, name='fieldops-auto-dispatch-portal'),
 ]

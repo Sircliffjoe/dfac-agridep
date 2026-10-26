@@ -26,6 +26,7 @@
                     <li><a href="{% url 'cockpit' %}" class="nav-link {% if request.resolver_match.url_name == 'cockpit' %}active{% endif %}" style="font-weight: 700; color: #10b981;">⚡ Cockpit</a></li>
                     <li><a href="{% url 'lender-portal' %}" class="nav-link {% if 'lender' in request.resolver_match.url_name %}active{% endif %}">🏦 Lender Hub</a></li>
                     <li><a href="{% url 'buyer-portal' %}" class="nav-link {% if 'buyer' in request.resolver_match.url_name %}active{% endif %}">🤝 Buyer Hub</a></li>
+                    <li><a href="{% url 'fieldops-portal' %}" class="nav-link {% if 'fieldops' in request.resolver_match.url_name %}active{% endif %}">🚜 Field Ops</a></li>
                     <li><a href="{% url 'verify-certificate' %}" class="nav-link {% if 'verify' in request.resolver_match.url_name %}active{% endif %}">Verify Credential</a></li>
                     <li><a href="{% url 'value-chains' %}" class="nav-link {% if request.resolver_match.url_name == 'value-chains' %}active{% endif %}">Value Chains</a></li>
                     <li><a href="{% url 'contact' %}" class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a></li>

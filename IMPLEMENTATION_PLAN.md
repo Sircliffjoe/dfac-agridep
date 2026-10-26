@@ -447,12 +447,17 @@ gantt
   - Hardened permissions matrix and field-masking serializers.
   - Test suite in `tests/test_finance_and_market.py` and demo script `docs/demo/m3_demo.py`.
 
-#### Milestone M4: Field Operations & Inspection Management (Phase 2)
+#### Milestone M4: Field Operations & Inspection Management (Phase 2) - COMPLETED
 - **Deliverables:**
-  - `FarmVisit`, `Inspection`, `IncidentReport`, `VisitAssignment`.
-  - Geotagged inspection photo upload pipeline linked to S3/MinIO.
-  - Dynamic `VisitPriorityQueue` ranking algorithm (scoring overdue visits, active disease flags, and financial delinquency).
-  - Field officer HTMX daily inspection interface.
+  - `FarmVisit`, `Inspection`, `InspectionPhoto`, `IncidentReport`, `VisitAssignment` domain models with full audit logging and soft-delete support.
+  - Dynamic `SystemParameter` configuration engine eliminating hardcoded thresholds across priority scoring, overdue days, and geofence drift.
+  - Multi-factor `VisitPriorityQueue` dynamic ranking algorithm (scoring overdue days, financial risk flags, pre-harvest window, and disease incidents).
+  - Automated Decision Engine auto-dispatch scanner for urgent `VisitAssignment` orders.
+  - On-site GPS check-in geofence verification pipeline with Haversine distance drift detection.
+  - Quantitative aquaculture water chemistry audit checklists (pH, DO, temperature, mortality, biosecurity compliance).
+  - Emergency incident reporting with auto-escalation to urgent dispatch.
+  - Field officer HTMX daily inspection and priority queue cockpit at `/portal/fieldops/`.
+  - Comprehensive test suite in `tests/test_fieldops_and_inspections.py` and demo script in `docs/demo/m4_demo.py`.
 
 #### Milestone M5: Flutter Offline Mobile Application
 - **Deliverables:**
