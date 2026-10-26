@@ -5,6 +5,7 @@ from agridep.apps.market.views import (
     BuyerDemandViewSet,
     ProduceMatchViewSet,
     OfftakeTransactionViewSet,
+    MarketIntelligenceAPIView,
 )
 
 router = DefaultRouter()
@@ -14,5 +15,6 @@ router.register(r'matches', ProduceMatchViewSet, basename='produce-match')
 router.register(r'offtake', OfftakeTransactionViewSet, basename='offtake-transaction')
 
 urlpatterns = [
+    path('intelligence/', MarketIntelligenceAPIView.as_view(), name='market-intelligence'),
     path('', include(router.urls)),
 ]

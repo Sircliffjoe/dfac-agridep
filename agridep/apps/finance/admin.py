@@ -7,6 +7,7 @@ from agridep.apps.finance.models import (
     RepaymentSchedule,
     Repayment,
     RiskFlag,
+    CreditScoreSnapshot,
 )
 
 
@@ -112,3 +113,16 @@ class RiskFlagAdmin(admin.ModelAdmin):
             obj.get_severity_display()
         )
     severity_badge.short_description = "Severity"
+
+
+@admin.register(CreditScoreSnapshot)
+class CreditScoreSnapshotAdmin(admin.ModelAdmin):
+    list_display = (
+        'farmer', 'score', 'rating_tier', 'recommended_credit_limit_naira',
+        'repayment_score', 'biometric_score', 'certification_score', 'inspection_score',
+        'assessed_date'
+    )
+    list_filter = ('rating_tier', 'assessed_date')
+    search_fields = ('farmer__first_name', 'farmer__last_name', 'farmer__reference_code')
+    readonly_fields = ('assessed_date', 'created_at', 'updated_at')
+

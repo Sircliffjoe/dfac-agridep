@@ -21,6 +21,9 @@ from .views import (
     fieldops_report_incident_portal,
     fieldops_auto_dispatch_portal,
     ussd_simulator_view,
+    donor_reporting_portal_view,
+    inputs_portal_view,
+    confirm_input_delivery_portal,
 )
 
 urlpatterns = [
@@ -56,4 +59,9 @@ urlpatterns = [
 
     # Milestone M6: USSD & SMS Simulator
     path('portal/ussd-simulator/', ussd_simulator_view, name='ussd-simulator'),
+
+    # Milestone M7: Donor Reporting & Inputs Management
+    path('portal/reporting/', donor_reporting_portal_view, name='reporting-portal'),
+    path('portal/inputs/', inputs_portal_view, name='inputs-portal'),
+    path('portal/inputs/confirm-delivery/<uuid:order_id>/', confirm_input_delivery_portal, name='portal-confirm-input-delivery'),
 ]

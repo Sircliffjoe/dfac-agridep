@@ -1,9 +1,11 @@
 from rest_framework import viewsets, status
+from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from agridep.apps.common.permissions import ScopedQuerySetMixin
+from agridep.apps.registry.models import EnterpriseType
 from agridep.apps.market.models import (
     BuyerDemand,
     ProduceMatch,
@@ -20,6 +22,8 @@ from agridep.apps.market.services import (
     find_matching_produce_for_demand,
     propose_buyer_matches_for_demand,
     confirm_produce_match,
+    calculate_regional_price_index,
+    analyze_supply_demand_gap,
 )
 
 
@@ -132,3 +136,30 @@ class OfftakeTransactionViewSet(ScopedQuerySetMixin, viewsets.ModelViewSet):
         elif role == 'FARMER':
             return qs.filter(match__produce_batch__farm__farmer__user=user)
         return qs
+
+
+class MarketIntelligenceAPIView(APIView):
+    """
+    Exposes regional commodity price index and supply-demand gap intelligence.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        enterprise_id = request.query_params.get('enterprise_id')
+        state = request.query_params.get('state', 'Delta')
+        days = int(request.query_params.get('days', 30))
+        window_days = int(request.query_params.get('window_days', 60))
+
+        enterprise = None
+        if enterprise_id:
+            enterprise = EnterpriseType.objects.filter(pk=enterprise_id).first()
+
+        price_index = calculate_regional_price_index(enterprise_type=enterprise, state=state, days=days)
+        gap_analysis = analyze_supply_demand_gap(enterprise_type=enterprise, state=state, window_days=window_days)
+
+        return Response({
+            'state': state,
+            'price_index': price_index,
+            'supply_demand_gap': gap_analysis
+        }, status=status.HTTP_200_OK)
+

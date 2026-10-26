@@ -583,4 +583,52 @@ def ussd_simulator_view(request):
     })
 
 
+def donor_reporting_portal_view(request):
+    """
+    Milestone M7: Automated Donor Reporting Portal (PIND & GIZ M&E Indicators).
+    """
+    from agridep.apps.reporting.services import compute_donor_me_indicators
+    donor = request.GET.get('donor', 'PIND')
+    indicators = compute_donor_me_indicators(donor=donor)
+    return render(request, 'portal/reporting_portal.html', {
+        'page_title': f'{donor.upper()} M&E Donor Reporting - DFAC AgriDEP',
+        'donor': donor.upper(),
+        'indicators': indicators,
+    })
+
+
+def inputs_portal_view(request):
+    """
+    Milestone M7: Input Supplier Directory & In-Kind Order Fulfillment Portal.
+    """
+    from agridep.apps.inputs.models import InputSupplier, InputOrder, InputCatalogItem
+    from agridep.apps.finance.models import LoanTranche
+    suppliers = InputSupplier.objects.all().prefetch_related('catalog_items')
+    orders = InputOrder.objects.all().select_related('farmer', 'supplier', 'tranche').order_by('-created_at')[:25]
+    tranches = LoanTranche.objects.all().select_related('loan', 'loan__farmer').order_by('-created_at')[:20]
+
+    return render(request, 'portal/inputs_portal.html', {
+        'page_title': 'Agro-Inputs & Tranche Delivery Management - DFAC AgriDEP',
+        'suppliers': suppliers,
+        'orders': orders,
+        'tranches': tranches,
+    })
+
+
+def confirm_input_delivery_portal(request, order_id):
+    """Confirm receipt of agricultural inputs on-farm."""
+    from agridep.apps.inputs.models import InputOrder, DeliveryConfirmationChannel
+    from agridep.apps.inputs.services import confirm_input_delivery
+    order = get_object_or_404(InputOrder, pk=order_id)
+    confirm_input_delivery(
+        order=order,
+        confirmation_channel=DeliveryConfirmationChannel.PORTAL_MANUAL,
+        confirmed_by=request.user if request.user.is_authenticated else None,
+        notes="Verified delivery via DFAC Inputs Portal."
+    )
+    messages.success(request, f"Order {order.order_code} delivery confirmed! Linked loan tranche unblocked.")
+    return redirect('inputs-portal')
+
+
+
 

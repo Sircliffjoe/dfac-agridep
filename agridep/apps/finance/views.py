@@ -1,11 +1,13 @@
 from decimal import Decimal
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
+from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from agridep.apps.common.permissions import ScopedQuerySetMixin, IsDFACAdmin, IsLender
+from agridep.apps.registry.models import Farmer
 from agridep.apps.finance.models import (
     Lender,
     LoanRecord,
@@ -13,6 +15,7 @@ from agridep.apps.finance.models import (
     RepaymentSchedule,
     Repayment,
     RiskFlag,
+    CreditScoreSnapshot,
 )
 from agridep.apps.finance.serializers import (
     LenderSerializer,
@@ -25,6 +28,7 @@ from agridep.apps.finance.serializers import (
 from agridep.apps.finance.services import (
     calculate_loan_expected_value_and_risk,
     evaluate_loan_credit_score,
+    calculate_multi_season_credit_score,
     disburse_loan_facility,
     release_tranche_gate,
     record_repayment_transaction,
@@ -160,3 +164,33 @@ class RiskFlagViewSet(ScopedQuerySetMixin, viewsets.ModelViewSet):
         flag.resolved_by = request.user
         flag.save()
         return Response({'status': 'Risk flag resolved successfully.'}, status=status.HTTP_200_OK)
+
+
+class CreditScoreAPIView(APIView):
+    """Calculates or retrieves the latest multi-season credit score snapshot for a smallholder."""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, farmer_id):
+        farmer = get_object_or_404(Farmer, pk=farmer_id)
+        latest = CreditScoreSnapshot.objects.filter(farmer=farmer).first()
+        if not latest or request.query_params.get('recalculate') == 'true':
+            latest = calculate_multi_season_credit_score(farmer)
+        
+        return Response({
+            'farmer_id': str(farmer.id),
+            'farmer_name': f"{farmer.first_name} {farmer.last_name}",
+            'score': latest.score,
+            'rating_tier': latest.rating_tier,
+            'rating_tier_display': latest.get_rating_tier_display(),
+            'recommended_credit_limit_naira': float(latest.recommended_credit_limit_naira),
+            'pillars': {
+                'repayment': float(latest.repayment_score),
+                'biometrics': float(latest.biometric_score),
+                'certification': float(latest.certification_score),
+                'inspection': float(latest.inspection_score),
+                'stability': float(latest.stability_score),
+            },
+            'breakdown': latest.explanation_breakdown,
+            'assessed_date': str(latest.assessed_date)
+        }, status=status.HTTP_200_OK)
+

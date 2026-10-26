@@ -1,0 +1,185 @@
+{% extends "portal/base.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="portal-container" style="max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem;">
+    <!-- Header Banner -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 1.5rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                <span style="background: #0284c7; color: white; padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
+                    Agro-Inputs & Tranche Gating
+                </span>
+                <span style="color: #64748b; font-size: 0.875rem;">
+                    RULE-08 Enforcement Engine
+                </span>
+            </div>
+            <h1 style="font-size: 2rem; font-weight: 800; color: #0f172a; margin: 0;">
+                📦 In-Kind Input Suppliers & Delivery Gates
+            </h1>
+            <p style="color: #475569; margin-top: 0.25rem; font-size: 1rem;">
+                Manage approved input agro-dealers, track staged deliveries, and unblock loan tranches upon physical verification.
+            </p>
+        </div>
+    </div>
+
+    <!-- Layout: Two main sections (Orders & Tranche Gates on top, Suppliers below) -->
+    <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 1.5rem; margin-bottom: 2.5rem;">
+        <!-- Left: Input Orders & Delivery Confirmation -->
+        <div style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="padding: 1rem 1.5rem; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 1.1rem; color: #0f172a; font-weight: 700;">
+                    📋 Requisition Orders & Delivery Verification
+                </h3>
+                <span style="font-size: 0.8rem; background: #e2e8f0; color: #334155; padding: 2px 8px; border-radius: 9999px; font-weight: 600;">
+                    {{ orders|length }} Orders
+                </span>
+            </div>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem;">
+                    <thead>
+                        <tr style="background: #f1f5f9; text-align: left; color: #475569; font-size: 0.75rem; text-transform: uppercase;">
+                            <th style="padding: 0.75rem 1rem;">Order Code</th>
+                            <th style="padding: 0.75rem 1rem;">Farmer / Farm</th>
+                            <th style="padding: 0.75rem 1rem;">Supplier</th>
+                            <th style="padding: 0.75rem 1rem;">Amount</th>
+                            <th style="padding: 0.75rem 1rem;">Status</th>
+                            <th style="padding: 0.75rem 1rem; text-align: center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 0.75rem 1rem; font-family: monospace; font-weight: 600;">
+                                {{ order.order_code }}
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                <strong>{{ order.farmer.first_name }} {{ order.farmer.last_name }}</strong><br/>
+                                <span style="color: #64748b; font-size: 0.75rem;">{{ order.farm.name }}</span>
+                            </td>
+                            <td style="padding: 0.75rem 1rem; color: #334155;">
+                                {{ order.supplier.supplier_name }}
+                            </td>
+                            <td style="padding: 0.75rem 1rem; font-weight: 700; color: #0f172a;">
+                                ₦{{ order.total_amount_naira|floatformat:2 }}
+                            </td>
+                            <td style="padding: 0.75rem 1rem;">
+                                {% if order.status == 'DELIVERED_CONFIRMED' %}
+                                    <span style="background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 9999px; font-weight: 700; font-size: 0.75rem;">DELIVERED</span>
+                                {% elif order.status == 'DISPATCHED' %}
+                                    <span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 9999px; font-weight: 700; font-size: 0.75rem;">DISPATCHED</span>
+                                {% else %}
+                                    <span style="background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 9999px; font-weight: 700; font-size: 0.75rem;">{{ order.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 0.75rem 1rem; text-align: center;">
+                                {% if order.status != 'DELIVERED_CONFIRMED' %}
+                                <form method="post" action="{% url 'portal-confirm-input-delivery' order.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn" style="background: #10b981; color: white; border: none; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">
+                                        ✓ Confirm
+                                    </button>
+                                </form>
+                                {% else %}
+                                <span style="color: #10b981; font-size: 0.75rem; font-weight: 600;">✓ Verified</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="padding: 1.5rem; text-align: center; color: #64748b;">
+                                No active input orders recorded yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Right: Tranche Release Gates (RULE-08) -->
+        <div style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="padding: 1rem 1.5rem; background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                <h3 style="margin: 0; font-size: 1.1rem; color: #0f172a; font-weight: 700;">
+                    🛡️ RULE-08 Tranche Gates Status
+                </h3>
+            </div>
+            <div style="padding: 1rem 1.5rem; display: flex; flex-direction: column; gap: 0.85rem;">
+                {% for tranche in tranches %}
+                <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.85rem; background: #fafafa;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <span style="font-family: monospace; font-weight: 700; color: #1e293b; font-size: 0.85rem;">
+                                {{ tranche.loan.reference_code }} Tranche #{{ tranche.tranche_number }}
+                            </span><br/>
+                            <span style="font-size: 0.8rem; color: #475569;">
+                                {{ tranche.loan.farmer.first_name }} {{ tranche.loan.farmer.last_name }}
+                            </span>
+                        </div>
+                        <span style="font-weight: 700; color: #0f172a; font-size: 0.9rem;">
+                            ₦{{ tranche.amount_naira|floatformat:0 }}
+                        </span>
+                    </div>
+
+                    <div style="margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
+                        <span style="color: #64748b;">
+                            Type: <strong>{{ tranche.get_tranche_type_display }}</strong>
+                        </span>
+                        {% if tranche.status == 'DISBURSED' %}
+                            <span style="color: #166534; font-weight: 700;">DISBURSED</span>
+                        {% elif tranche.status == 'BLOCKED' %}
+                            <span style="color: #dc2626; font-weight: 700;">BLOCKED (Awaiting Input)</span>
+                        {% else %}
+                            <span style="color: #d97706; font-weight: 700;">{{ tranche.get_status_display }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <p style="color: #64748b; font-size: 0.85rem; text-align: center; margin: 1rem 0;">No tranches in system.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom: Input Suppliers Directory -->
+    <div style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <div style="padding: 1rem 1.5rem; background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+            <h3 style="margin: 0; font-size: 1.1rem; color: #0f172a; font-weight: 700;">
+                🏢 Verified Agro-Dealer & Input Supplier Directory
+            </h3>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; padding: 1.5rem;">
+            {% for s in suppliers %}
+            <div style="border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.25rem; background: #ffffff; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                        <h4 style="margin: 0; font-size: 1.05rem; color: #0f172a; font-weight: 700;">
+                            {{ s.supplier_name }}
+                        </h4>
+                        {% if s.is_verified %}
+                            <span style="background: #dcfce7; color: #166534; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">VERIFIED</span>
+                        {% endif %}
+                    </div>
+                    <div style="font-size: 0.8rem; color: #0284c7; font-weight: 600; margin-bottom: 0.5rem;">
+                        {{ s.get_category_display }}
+                    </div>
+                    <div style="font-size: 0.8rem; color: #475569; margin-bottom: 0.25rem;">
+                        👤 Contact: {{ s.contact_name }} ({{ s.phone }})
+                    </div>
+                    <div style="font-size: 0.8rem; color: #475569;">
+                        📍 Location: {{ s.lga }}, {{ s.state }}
+                    </div>
+                </div>
+
+                <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;">
+                    <span style="color: #64748b;">Rating: <strong>★ {{ s.rating }}</strong></span>
+                    <span style="color: #64748b;">{{ s.catalog_items.count }} items in stock</span>
+                </div>
+            </div>
+            {% empty %}
+            <p style="color: #64748b; font-size: 0.9rem; grid-column: 1 / -1; text-align: center;">No registered suppliers found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

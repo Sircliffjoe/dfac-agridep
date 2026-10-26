@@ -482,12 +482,17 @@ gantt
   - Web-based USSD Feature Phone Simulator at `/portal/ussd-simulator/` for live testing and field agent onboarding.
   - Full automated test suite in `tests/test_alerts_and_ussd.py` (9/9 passed, 41/41 full suite passed) and end-to-end demo script in `docs/demo/m6_demo.py`.
 
-#### Milestone M7: Reporting, Inputs & Market Intelligence (Phase 3)
-- **Deliverables:**
-  - Automated donor report generation (PIND/GIZ M&E indicators) in PDF and Excel.
-  - `InputSupplier` directory, `InputOrder` workflows, and delivery confirmation tranche gates.
-  - Commodity market price index tracking regional pricing trends across Niger Delta hubs.
-  - Multi-season credit score calculation engine.
+#### Milestone M7: Reporting, Inputs & Market Intelligence (Phase 3) - **COMPLETED**
+- **Deliverables Completed:**
+  - Automated donor report generation engine (`agridep.apps.reporting.services`) computing full PIND Foundation & GIZ standard M&E indicators (outreach disaggregated by gender & youth <= 35, GAP certification pass rates, institutional credit mobilized, in-kind input credit, loan repayment rates, commercial off-take tonnage, and gross farmer revenue).
+  - Multi-sheet Excel workbook generator (`generate_donor_excel_report`) using `openpyxl` with KPI summaries, progress tracking against donor targets, and demographic/geographic breakdowns.
+  - Publication-grade PDF report generator (`generate_donor_pdf_report`) using `reportlab` with executive KPI scorecards, alternating row indicator tables, and verification sign-offs.
+  - Complete `inputs` application (`agridep.apps.inputs`) with `InputSupplier`, `InputCatalogItem`, `InputOrder`, and `InputOrderItem` models, DRF API views, and Django admin.
+  - Rule-08 Staged Input Delivery Gate enforcement: `verify_tranche_input_delivery_gate` blocking release of subsequent loan tranches until on-farm delivery is verified via field officer inspection or confirmation channel.
+  - Regional Commodity Market Price Index & Supply-Demand Intelligence in `agridep.apps.market`: multi-hub moving average tracking, supply-demand deficit/surplus analysis, and recommended farmgate pricing.
+  - Multi-season transparent credit scoring engine (`calculate_multi_season_credit_score`) scoring smallholders across 5 weighted pillars (repayment, biometrics, GAP certification, inspection compliance, farm stability) with `CreditScoreSnapshot` audit models.
+  - Web portals for Donor Reporting (`/portal/reporting/`) and Input Requisition Management (`/portal/inputs/`).
+  - Full automated test suite in `tests/test_reporting_inputs_and_intelligence.py` (9/9 passed, 50/50 full regression passed) and end-to-end demo script in `docs/demo/m7_demo.py`.
 
 #### Milestone M8: Advanced Intelligence Extension Architecture (Phase 4 - Design Only)
 - **Deliverables:**

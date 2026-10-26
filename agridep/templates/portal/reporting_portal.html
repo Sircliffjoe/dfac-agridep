@@ -1,0 +1,227 @@
+{% extends "portal/base.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="portal-container" style="max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem;">
+    <!-- Header Banner -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 1.5rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                <span style="background: #1B4D3E; color: white; padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+                    M&E Indicator Suite
+                </span>
+                <span style="color: #64748b; font-size: 0.875rem;">
+                    Updated: {{ indicators.reporting_period.generated_at }}
+                </span>
+            </div>
+            <h1 style="font-size: 2rem; font-weight: 800; color: #0f172a; margin: 0;">
+                📊 Donor Performance & M&E Reporting
+            </h1>
+            <p style="color: #475569; margin-top: 0.25rem; font-size: 1rem;">
+                Automated monitoring metrics for <strong>{{ indicators.donor_full_name }}</strong> ({{ indicators.donor }})
+            </p>
+        </div>
+
+        <!-- Donor Selector & Export Action Bar -->
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+            <div style="background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.25rem; display: flex; gap: 0.25rem;">
+                <a href="?donor=PIND" style="padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.875rem; font-weight: 600; text-decoration: none; {% if donor == 'PIND' %}background: #1B4D3E; color: white;{% else %}color: #475569;{% endif %}">
+                    PIND Foundation
+                </a>
+                <a href="?donor=GIZ" style="padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.875rem; font-weight: 600; text-decoration: none; {% if donor == 'GIZ' %}background: #1B4D3E; color: white;{% else %}color: #475569;{% endif %}">
+                    GIZ Germany
+                </a>
+            </div>
+
+            <a href="/api/v1/reporting/export/excel/?donor={{ donor }}" class="btn" style="background: #10b981; color: white; padding: 0.6rem 1.1rem; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);">
+                📥 Download Excel (.xlsx)
+            </a>
+            <a href="/api/v1/reporting/export/pdf/?donor={{ donor }}" class="btn" style="background: #dc2626; color: white; padding: 0.6rem 1.1rem; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);">
+                📄 Download PDF (.pdf)
+            </a>
+        </div>
+    </div>
+
+    <!-- Executive KPI Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+        <div style="background: white; border-radius: 12px; padding: 1.25rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="color: #64748b; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Total Profiled</div>
+            <div style="font-size: 2rem; font-weight: 800; color: #1B4D3E; margin: 0.35rem 0;">
+                {{ indicators.demographics.total_farmers|default:"0" }}
+            </div>
+            <div style="font-size: 0.85rem; color: #10b981; font-weight: 600;">
+                Target: {{ indicators.benchmarks.target_farmers|default:"5,000" }}
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 12px; padding: 1.25rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="color: #64748b; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Women Inclusion</div>
+            <div style="font-size: 2rem; font-weight: 800; color: #0284c7; margin: 0.35rem 0;">
+                {{ indicators.demographics.female_percentage }}%
+            </div>
+            <div style="font-size: 0.85rem; color: #64748b;">
+                {{ indicators.demographics.female_farmers }} female smallholders
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 12px; padding: 1.25rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="color: #64748b; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Youth Participation</div>
+            <div style="font-size: 2rem; font-weight: 800; color: #d97706; margin: 0.35rem 0;">
+                {{ indicators.demographics.youth_percentage }}%
+            </div>
+            <div style="font-size: 0.85rem; color: #64748b;">
+                Under 35 years of age
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 12px; padding: 1.25rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="color: #64748b; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Credit Mobilized</div>
+            <div style="font-size: 1.75rem; font-weight: 800; color: #16a34a; margin: 0.35rem 0;">
+                ₦{{ indicators.financial_inclusion.total_principal_mobilized_naira|floatformat:0 }}
+            </div>
+            <div style="font-size: 0.85rem; color: #64748b;">
+                {{ indicators.financial_inclusion.total_credit_facilities }} loan facilities
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 12px; padding: 1.25rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="color: #64748b; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Repayment Rate</div>
+            <div style="font-size: 2rem; font-weight: 800; color: #1B4D3E; margin: 0.35rem 0;">
+                {{ indicators.financial_inclusion.repayment_rate_pct }}%
+            </div>
+            <div style="font-size: 0.85rem; color: #10b981; font-weight: 600;">
+                Target: {{ indicators.benchmarks.target_repayment_pct }}%
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 12px; padding: 1.25rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="color: #64748b; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">Off-take Revenue</div>
+            <div style="font-size: 1.75rem; font-weight: 800; color: #7c3aed; margin: 0.35rem 0;">
+                ₦{{ indicators.production_and_market_linkage.gross_farmer_revenue_naira|floatformat:0 }}
+            </div>
+            <div style="font-size: 0.85rem; color: #64748b;">
+                {{ indicators.production_and_market_linkage.offtake_volume_delivered_tonnes|floatformat:1 }} Tonnes delivered
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+        <!-- Left Column: Primary Indicators Table -->
+        <div style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="padding: 1rem 1.5rem; background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                <h3 style="margin: 0; font-size: 1.1rem; color: #0f172a; font-weight: 700;">
+                    Detailed M&E Indicator Scorecard
+                </h3>
+            </div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                <thead>
+                    <tr style="background: #f1f5f9; text-align: left; color: #475569; font-size: 0.8rem; text-transform: uppercase;">
+                        <th style="padding: 0.75rem 1.25rem;">Indicator Definition</th>
+                        <th style="padding: 0.75rem 1rem; text-align: right;">Target</th>
+                        <th style="padding: 0.75rem 1rem; text-align: right;">Actual</th>
+                        <th style="padding: 0.75rem 1.25rem; text-align: center;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 0.85rem 1.25rem;">
+                            <strong>Smallholders Profiled & Mapped</strong><br/>
+                            <span style="color: #64748b; font-size: 0.8rem;">Digital farm profile with GPS coordinates</span>
+                        </td>
+                        <td style="padding: 0.85rem 1rem; text-align: right; color: #64748b;">{{ indicators.benchmarks.target_farmers }}</td>
+                        <td style="padding: 0.85rem 1rem; text-align: right; font-weight: 700;">{{ indicators.demographics.total_farmers }}</td>
+                        <td style="padding: 0.85rem 1.25rem; text-align: center;">
+                            <span style="background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 9999px; font-weight: 700; font-size: 0.75rem;">ON TRACK</span>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 0.85rem 1.25rem;">
+                            <strong>Smallholders Trained in GAP & Biosecurity</strong><br/>
+                            <span style="color: #64748b; font-size: 0.8rem;">Completed 80%+ training session attendance</span>
+                        </td>
+                        <td style="padding: 0.85rem 1rem; text-align: right; color: #64748b;">1,500</td>
+                        <td style="padding: 0.85rem 1rem; text-align: right; font-weight: 700;">{{ indicators.capacity_building.total_farmers_trained }}</td>
+                        <td style="padding: 0.85rem 1.25rem; text-align: center;">
+                            <span style="background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 9999px; font-weight: 700; font-size: 0.75rem;">ACTIVE</span>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 0.85rem 1.25rem;">
+                            <strong>Accredited DFAC Certificates Issued</strong><br/>
+                            <span style="color: #64748b; font-size: 0.8rem;">Cryptographically verifiable QR credentials</span>
+                        </td>
+                        <td style="padding: 0.85rem 1rem; text-align: right; color: #64748b;">1,000</td>
+                        <td style="padding: 0.85rem 1rem; text-align: right; font-weight: 700;">{{ indicators.capacity_building.total_farmers_certified }}</td>
+                        <td style="padding: 0.85rem 1.25rem; text-align: center;">
+                            <span style="background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 9999px; font-weight: 700; font-size: 0.75rem;">{{ indicators.capacity_building.certification_pass_rate_pct }}% PASS</span>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 0.85rem 1.25rem;">
+                            <strong>In-Kind Input Credit Mobilized</strong><br/>
+                            <span style="color: #64748b; font-size: 0.8rem;">Certified feed and seed via verified agro-dealers</span>
+                        </td>
+                        <td style="padding: 0.85rem 1rem; text-align: right; color: #64748b;">₦25,000,000</td>
+                        <td style="padding: 0.85rem 1rem; text-align: right; font-weight: 700;">₦{{ indicators.financial_inclusion.total_in_kind_input_credit_naira|floatformat:0 }}</td>
+                        <td style="padding: 0.85rem 1.25rem; text-align: center;">
+                            <span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 9999px; font-weight: 700; font-size: 0.75rem;">DELIVERED</span>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 0.85rem 1.25rem;">
+                            <strong>Commercial Off-take Contracts</strong><br/>
+                            <span style="color: #64748b; font-size: 0.8rem;">Direct buyer matching without predatory middlemen</span>
+                        </td>
+                        <td style="padding: 0.85rem 1rem; text-align: right; color: #64748b;">50 Tonnes</td>
+                        <td style="padding: 0.85rem 1rem; text-align: right; font-weight: 700;">{{ indicators.production_and_market_linkage.offtake_volume_delivered_tonnes|floatformat:1 }} Tonnes</td>
+                        <td style="padding: 0.85rem 1.25rem; text-align: center;">
+                            <span style="background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 9999px; font-weight: 700; font-size: 0.75rem;">FULFILLED</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Right Column: Regional Hub Breakdown -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <h4 style="margin: 0 0 1rem 0; font-size: 1rem; color: #0f172a; font-weight: 700;">
+                    📍 Geographic Concentration
+                </h4>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    {% for state_name, count in indicators.demographics.state_breakdown.items %}
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                            <span style="font-weight: 600; color: #334155;">{{ state_name }} State</span>
+                            <span style="color: #64748b;">{{ count }} smallholders</span>
+                        </div>
+                        <div style="height: 6px; background: #f1f5f9; border-radius: 3px; overflow: hidden;">
+                            <div style="height: 100%; background: #1B4D3E; width: 85%;"></div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p style="color: #64748b; font-size: 0.85rem; margin: 0;">No state records available.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <h4 style="margin: 0 0 1rem 0; font-size: 1rem; color: #0f172a; font-weight: 700;">
+                    🌱 Enterprise Coverage
+                </h4>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    {% for ent_name, count in indicators.demographics.enterprise_breakdown.items %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9;">
+                        <span style="font-size: 0.875rem; font-weight: 600; color: #1e293b;">{{ ent_name }}</span>
+                        <span style="background: #e2e8f0; color: #334155; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">{{ count }} farms</span>
+                    </div>
+                    {% empty %}
+                    <p style="color: #64748b; font-size: 0.85rem; margin: 0;">African Catfish (Clarias) Dominant</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

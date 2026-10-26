@@ -2,6 +2,7 @@ from datetime import date, timedelta
 from decimal import Decimal
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from agridep.apps.common.models import SystemParameter
 from agridep.apps.accounts.models import UserRole, ConsentRecord, StakeholderCategory, ConsentChannel
 from agridep.apps.registry.models import EnterpriseType, EnterpriseCategory, Cohort, Farmer, Farm, Buyer, VerificationStatus
 from agridep.apps.production.models import ProductionCycle, ProductionLog, ProduceBatch, ProduceQualityGrade, CycleStage, ProduceBatchStatus
@@ -43,6 +44,14 @@ from agridep.apps.market.models import (
     OfftakePaymentStatus,
     CommodityPrice,
 )
+from agridep.apps.inputs.models import (
+    InputSupplier,
+    SupplierCategory,
+    InputCatalogItem,
+    InputOrder,
+    OrderStatus,
+)
+from agridep.apps.inputs.services import create_input_order, confirm_input_delivery
 from agridep.apps.market.services import (
     propose_buyer_matches_for_demand,
     confirm_produce_match,
@@ -814,5 +823,111 @@ class Command(BaseCommand):
                 user=farmer_tari.user
             )
             self.stdout.write(f"Dispatched welcome SMS to {farmer_tari.phone_normalized}")
+
+        # -------------------------------------------------------------
+        # 8. Milestone M7: Reporting, Inputs & Market Intelligence
+        # -------------------------------------------------------------
+        self.stdout.write("Seeding Milestone M7 Input Suppliers & Catalogs...")
+
+        # Verified Input Agro-Dealers
+        supplier_feed, _ = InputSupplier.objects.get_or_create(
+            supplier_name="Delta AquaFeeds & Hatcheries Ltd",
+            defaults={
+                'category': SupplierCategory.AQUACULTURE_FEED,
+                'contact_name': "Engr. Kenneth Clark",
+                'phone': "+2348035551122",
+                'email': "supplies@deltaaquafeeds.ng",
+                'state': "Delta",
+                'lga': "Warri South",
+                'warehouse_address': "Plot 14 Deco Road, Warri Industrial Zone",
+                'rc_number': "RC-884920",
+                'bank_name': "Zenith Bank",
+                'bank_account_number': "1012345678",
+                'is_verified': True,
+                'rating': Decimal('4.80')
+            }
+        )
+
+        supplier_agro, _ = InputSupplier.objects.get_or_create(
+            supplier_name="Niger Delta Integrated Agro-Hub",
+            defaults={
+                'category': SupplierCategory.GENERAL_AGRODEALER,
+                'contact_name': "Mrs. Blessing Okoro",
+                'phone': "+2348024449988",
+                'email': "info@nd-agrohub.ng",
+                'state': "Delta",
+                'lga': "Ughelli North",
+                'warehouse_address': "12 Market Road, Ughelli",
+                'rc_number': "RC-992144",
+                'bank_name': "Access Bank",
+                'bank_account_number': "0098765432",
+                'is_verified': True,
+                'rating': Decimal('4.60')
+            }
+        )
+
+        # Catalog Items
+        item_feed_2mm, _ = InputCatalogItem.objects.get_or_create(
+            supplier=supplier_feed,
+            item_code="AF-ALLER-2MM",
+            defaults={
+                'item_name': "Aller Aqua 2mm Starter Pellets (25kg)",
+                'enterprise_type': catfish_type,
+                'unit_of_measure': "25kg Bag",
+                'unit_price_naira': Decimal('38500.00'),
+                'in_stock': True,
+                'specifications': "45% Crude Protein extruded sinking feed for juvenile catfish."
+            }
+        )
+
+        item_feed_4mm, _ = InputCatalogItem.objects.get_or_create(
+            supplier=supplier_feed,
+            item_code="AF-SKRET-4MM",
+            defaults={
+                'item_name': "Skretting 4mm Premium Grower Feed (25kg)",
+                'enterprise_type': catfish_type,
+                'unit_of_measure': "25kg Bag",
+                'unit_price_naira': Decimal('36000.00'),
+                'in_stock': True,
+                'specifications': "42% Crude Protein extruded floating feed for table-size catfish."
+            }
+        )
+
+        item_fingerlings, _ = InputCatalogItem.objects.get_or_create(
+            supplier=supplier_agro,
+            item_code="CL-FING-1000",
+            defaults={
+                'item_name': "High-Vigor Clarias Fingerlings (1,000 pcs)",
+                'enterprise_type': catfish_type,
+                'unit_of_measure': "1,000 Fingerlings",
+                'unit_price_naira': Decimal('45000.00'),
+                'in_stock': True,
+                'specifications': "7-10cm graded healthy Clarias Gariepinus fingerlings, disease-free."
+            }
+        )
+
+        # Seed sample in-kind input order linked to Tari Agidee's loan
+        loan_tari = LoanRecord.objects.filter(farmer__last_name='Agidee').first()
+        farm_tari = Farm.objects.filter(farmer__last_name='Agidee').first()
+        if loan_tari and farm_tari and loan_tari.tranches.exists():
+            tranche_1 = loan_tari.tranches.filter(tranche_number=1).first()
+            if tranche_1 and not InputOrder.objects.filter(tranche=tranche_1).exists():
+                order = create_input_order(
+                    farmer=loan_tari.farmer,
+                    farm=farm_tari,
+                    supplier=supplier_feed,
+                    items=[
+                        {'catalog_item': item_feed_2mm, 'quantity': Decimal('4')},
+                        {'catalog_item': item_feed_4mm, 'quantity': Decimal('6')}
+                    ],
+                    loan=loan_tari,
+                    tranche=tranche_1
+                )
+                confirm_input_delivery(
+                    order=order,
+                    confirmation_channel="FIELD_OFFICER_INSPECTION",
+                    notes="Physical pond-side inspection verified 10 bags delivered."
+                )
+                self.stdout.write(f"Created & confirmed sample InputOrder {order.order_code} (₦{order.total_amount_naira:,.2f})")
 
         self.stdout.write(self.style.SUCCESS("Demo Nigerian seed data successfully created!"))

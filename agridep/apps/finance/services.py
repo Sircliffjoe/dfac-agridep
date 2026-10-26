@@ -17,10 +17,14 @@ from agridep.apps.finance.models import (
     PaymentMethod,
     RiskFlag,
     RiskSeverity,
+    CreditScoreSnapshot,
+    CreditRatingTier,
 )
-from agridep.apps.registry.models import Farmer, EnterpriseType
-from agridep.apps.production.models import ProductionCycle, ProduceBatch
+from agridep.apps.registry.models import Farmer, EnterpriseType, Farm
+from agridep.apps.production.models import ProductionCycle, ProduceBatch, ProductionLog
 from agridep.apps.training.models import Certificate
+from agridep.apps.fieldops.models import Inspection, ComplianceRating
+from agridep.apps.common.models import SystemParameter
 from agridep.apps.audit.services import log_audit_event
 
 
@@ -194,6 +198,148 @@ def evaluate_loan_credit_score(farmer: Farmer, enterprise_type: Optional[Enterpr
         'is_recommended': is_recommended,
         'factors': factors
     }
+
+
+def calculate_multi_season_credit_score(farmer: Farmer) -> CreditScoreSnapshot:
+    """
+    Computes a multi-season credit score (0-100) using dynamic weights from SystemParameter:
+    - Repayment Track Record (default 35%)
+    - Production & Biometric Discipline (default 25%)
+    - DFAC Training & Certification (default 15%)
+    - Field Inspection & Biosecurity Compliance (default 15%)
+    - Farm Identity & Geospatial Stability (default 10%)
+    """
+    # 0. Load dynamic weights from SystemParameter
+    w_repay = Decimal(str(SystemParameter.get('CREDIT_WEIGHT_REPAYMENT', default=0.35)))
+    w_bio = Decimal(str(SystemParameter.get('CREDIT_WEIGHT_BIOMETRICS', default=0.25)))
+    w_cert = Decimal(str(SystemParameter.get('CREDIT_WEIGHT_CERTIFICATION', default=0.15)))
+    w_insp = Decimal(str(SystemParameter.get('CREDIT_WEIGHT_INSPECTION', default=0.15)))
+    w_stab = Decimal(str(SystemParameter.get('CREDIT_WEIGHT_STABILITY', default=0.10)))
+    max_facility = Decimal(str(SystemParameter.get('CREDIT_MAX_FACILITY_LIMIT', default=1500000.00)))
+
+    breakdown = {}
+
+    # Pillar 1: Repayment Performance (0-100)
+    past_loans = LoanRecord.objects.filter(farmer=farmer).exclude(status=LoanStatus.APPLIED)
+    if past_loans.exists():
+        total_principal = sum(l.principal_amount_naira for l in past_loans)
+        total_repaid = sum(l.total_repaid_naira for l in past_loans)
+        active_arrears = past_loans.filter(status=LoanStatus.DELINQUENT).exists()
+        repay_ratio = (total_repaid / total_principal) if total_principal > 0 else Decimal('1.00')
+        repay_score = min(Decimal('100.00'), repay_ratio * Decimal('100.00'))
+        if active_arrears:
+            repay_score = max(Decimal('20.00'), repay_score - Decimal('30.00'))
+        breakdown['repayment'] = f"{past_loans.count()} facility/facilities, Repayment ratio: {float(repay_ratio):.1%}"
+    else:
+        # First-time borrower benchmark
+        repay_score = Decimal('70.00')
+        breakdown['repayment'] = "First-time borrower baseline (no past default history)"
+
+    # Pillar 2: Biometric & Production Discipline (0-100)
+    cycles = ProductionCycle.objects.filter(farm__farmer=farmer)
+    logs_count = ProductionLog.objects.filter(cycle__in=cycles).count()
+    if logs_count >= 10:
+        bio_score = Decimal('95.00')
+        breakdown['biometrics'] = f"Exemplary logging discipline ({logs_count} entries recorded)"
+    elif logs_count >= 3:
+        bio_score = Decimal('75.00')
+        breakdown['biometrics'] = f"Satisfactory logging discipline ({logs_count} entries recorded)"
+    elif cycles.exists():
+        bio_score = Decimal('55.00')
+        breakdown['biometrics'] = f"Minimal biometric logging ({logs_count} entries recorded)"
+    else:
+        bio_score = Decimal('50.00')
+        breakdown['biometrics'] = "No historical production cycles logged"
+
+    # Pillar 3: DFAC Training & Certification (0-100)
+    valid_certs = Certificate.objects.filter(farmer=farmer, is_valid=True)
+    if valid_certs.exists():
+        cert_score = Decimal('100.00')
+        cert_names = list(valid_certs.values_list('programme__title', flat=True))
+        breakdown['certification'] = f"Accredited DFAC certificate held: {', '.join(cert_names)}"
+    else:
+        cert_score = Decimal('40.00')
+        breakdown['certification'] = "No valid DFAC GAP certificate on file"
+
+    # Pillar 4: Field Inspection Compliance (0-100)
+    inspections = Inspection.objects.filter(visit__farm__farmer=farmer)
+    if inspections.exists():
+        compliant_count = inspections.filter(compliance_rating=ComplianceRating.COMPLIANT).count()
+        ratio = Decimal(compliant_count) / Decimal(inspections.count())
+        insp_score = Decimal('50.00') + (ratio * Decimal('50.00'))
+        breakdown['inspection'] = f"{inspections.count()} inspections, {compliant_count} fully compliant"
+    else:
+        insp_score = Decimal('65.00')
+        breakdown['inspection'] = "Baseline uninspected rating"
+
+    # Pillar 5: Farm Stability & Identity (0-100)
+    farms = Farm.objects.filter(farmer=farmer)
+    if farms.exists():
+        has_coords = farms.filter(latitude__isnull=False, longitude__isnull=False).exists()
+        stab_score = Decimal('90.00') if has_coords else Decimal('70.00')
+        breakdown['stability'] = f"{farms.count()} registered farm location(s) with georeferenced coordinates"
+    else:
+        stab_score = Decimal('50.00')
+        breakdown['stability'] = "No farm facility linked"
+
+    # Risk Flags penalty
+    active_risks = RiskFlag.objects.filter(farmer=farmer, is_resolved=False).count()
+    risk_deduction = Decimal(min(active_risks * 10, 25))
+    if active_risks > 0:
+        breakdown['risk_flags'] = f"-{risk_deduction} penalty for {active_risks} unresolved risk flags"
+
+    weighted_score = (
+        (repay_score * w_repay) +
+        (bio_score * w_bio) +
+        (cert_score * w_cert) +
+        (insp_score * w_insp) +
+        (stab_score * w_stab)
+    ) - risk_deduction
+
+    final_score = int(max(Decimal('10.00'), min(weighted_score, Decimal('100.00'))))
+
+    # Determine Rating Tier & Recommended Credit Limit
+    if final_score >= 80:
+        tier = CreditRatingTier.EXCELLENT
+        limit = max_facility
+    elif final_score >= 65:
+        tier = CreditRatingTier.GOOD
+        limit = max_facility * Decimal('0.75')
+    elif final_score >= 50:
+        tier = CreditRatingTier.MODERATE
+        limit = max_facility * Decimal('0.40')
+    else:
+        tier = CreditRatingTier.HIGH_RISK
+        limit = Decimal('0.00')
+
+    snapshot = CreditScoreSnapshot.objects.create(
+        farmer=farmer,
+        score=final_score,
+        rating_tier=tier,
+        repayment_score=repay_score,
+        biometric_score=bio_score,
+        certification_score=cert_score,
+        inspection_score=insp_score,
+        stability_score=stab_score,
+        recommended_credit_limit_naira=limit,
+        explanation_breakdown=breakdown,
+        assessed_date=timezone.localdate()
+    )
+
+    log_audit_event(
+        action='CALCULATE_CREDIT_SCORE',
+        resource_type='CreditScoreSnapshot',
+        resource_id=str(snapshot.id),
+        details={
+            'farmer_id': str(farmer.id),
+            'score': final_score,
+            'tier': tier,
+            'limit': float(limit)
+        }
+    )
+
+    return snapshot
+
 
 
 @transaction.atomic

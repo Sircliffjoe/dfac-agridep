@@ -281,3 +281,39 @@ class RiskFlag(TimeStampedUUIDModel):
 
     def __str__(self):
         return f"[{self.severity}] {self.rule_triggered} - {self.title} ({self.farmer.full_name})"
+
+
+class CreditRatingTier(models.TextChoices):
+    EXCELLENT = 'EXCELLENT', 'Tier 1 - Excellent (Prime Concessionary)'
+    GOOD = 'GOOD', 'Tier 2 - Good (Standard Concessionary)'
+    MODERATE = 'MODERATE', 'Tier 3 - Moderate (Guaranteed / Co-sign)'
+    HIGH_RISK = 'HIGH_RISK', 'Tier 4 - High Risk (Ineligible for Unsecured Facilities)'
+
+
+class CreditScoreSnapshot(TimeStampedUUIDModel):
+    """Historical and current multi-season transparent credit score assessment."""
+    farmer = models.ForeignKey(
+        Farmer,
+        on_delete=models.CASCADE,
+        related_name='credit_snapshots'
+    )
+    score = models.PositiveSmallIntegerField(help_text="Calculated credit score on 0-100 scale")
+    rating_tier = models.CharField(max_length=32, choices=CreditRatingTier.choices, default=CreditRatingTier.MODERATE)
+    
+    # Pillar breakdowns (0-100 weighted contribution)
+    repayment_score = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'))
+    biometric_score = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'))
+    certification_score = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'))
+    inspection_score = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'))
+    stability_score = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'))
+    
+    recommended_credit_limit_naira = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    explanation_breakdown = models.JSONField(default=dict, blank=True)
+    assessed_date = models.DateField(default=timezone.now)
+
+    class Meta:
+        ordering = ['-assessed_date', '-created_at']
+
+    def __str__(self):
+        return f"{self.farmer.first_name} {self.farmer.last_name}: {self.score}/100 [{self.get_rating_tier_display()}]"
+
