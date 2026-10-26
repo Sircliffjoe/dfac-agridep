@@ -1,67 +1,99 @@
 {% extends 'portal/base.html' %}
 
 {% block content %}
-<section style="padding-block: 64px; background: #ffffff; border-bottom: 1px solid var(--color-border);">
-    <div class="container" style="max-width: 840px; text-align: center;">
-        <div class="section-tag">Impact & Governance</div>
-        <h1 style="margin-bottom: 20px;">Measurable Economic Growth & Data Governance</h1>
-        <p style="font-size: 1.2rem; color: var(--color-text-muted);">
-            Transforming rural Niger Delta livelihoods with verified agricultural outcomes and stringent data protection.
+<!-- Page Header (Greenola / Loraic Style) -->
+<section style="padding-block: 72px 56px; background: linear-gradient(135deg, #071f14 0%, #0b291b 100%); color: #ffffff;">
+    <div class="container" style="max-width: 920px; text-align: center;">
+        <span class="portal-badge portal-badge-green" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.4); margin-bottom: 16px;">
+            Impact &amp; Governance
+        </span>
+        <h1 style="color: #ffffff; margin-bottom: 20px;">Measurable Economic Outcomes &amp; Data Sovereignty</h1>
+        <p style="font-size: 1.15rem; color: #a7f3d0; line-height: 1.7;">
+            Transforming rural livelihoods across Delta, Bayelsa, and Rivers State through verified agronomic metrics, female and youth inclusion, and strict Nigeria Data Protection Act (NDPA 2023) governance.
         </p>
     </div>
 </section>
 
-<section style="padding-block: 64px;">
-    <div class="container" style="max-width: 960px;">
-        <!-- Metrics Counter -->
-        <div style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 40px; box-shadow: var(--shadow-sm); margin-bottom: 56px;">
-            <h3 style="margin-bottom: 24px; text-align: center;">Ecosystem Footprint & Key Indicators</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; text-align: center;">
-                <div>
-                    <div style="font-size: 2.5rem; font-weight: 800; color: #007a33;">{{ stats.farmers_count }}+</div>
-                    <div style="font-size: 0.95rem; font-weight: 600; color: #475569; margin-top: 4px;">Smallholders Onboarded</div>
+<section style="padding-block: 72px; background: var(--color-bg-page);">
+    <div class="container" style="max-width: 1040px;">
+        <!-- Metrics Counter Card -->
+        <div style="background: #ffffff; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: 48px; box-shadow: var(--shadow-lg); margin-bottom: 64px;">
+            <div style="text-align: center; margin-bottom: 36px;">
+                <span class="section-tag">Key Ecosystem Indicators</span>
+                <h3 style="font-size: 1.75rem;">Verified Regional Aggregates</h3>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px; text-align: center;">
+                <div class="stat-box">
+                    <div class="stat-number">{{ stats.farmers_count }}+</div>
+                    <div class="stat-label">Verified Smallholders</div>
                 </div>
-                <div>
-                    <div style="font-size: 2.5rem; font-weight: 800; color: #007a33;">{{ stats.ponds_count }}+</div>
-                    <div style="font-size: 0.95rem; font-weight: 600; color: #475569; margin-top: 4px;">Production Facilities</div>
+                <div class="stat-box">
+                    <div class="stat-number">{{ stats.ponds_count }}+</div>
+                    <div class="stat-label">Ponds &amp; Arable Plots</div>
                 </div>
-                <div>
-                    <div style="font-size: 2.5rem; font-weight: 800; color: #007a33;">94%</div>
-                    <div style="font-size: 0.95rem; font-weight: 600; color: #475569; margin-top: 4px;">Pond Biometric Tracked</div>
+                <div class="stat-box">
+                    <div class="stat-number" style="color: var(--color-emerald);">94.8%</div>
+                    <div class="stat-label">Pond Biometric Tracking Rate</div>
                 </div>
-                <div>
-                    <div style="font-size: 2.5rem; font-weight: 800; color: #007a33;">{{ stats.harvest_tonnes }} t</div>
-                    <div style="font-size: 0.95rem; font-weight: 600; color: #475569; margin-top: 4px;">Off-take Forecast Volume</div>
+                <div class="stat-box">
+                    <div class="stat-number" style="color: var(--color-gold-hover);">{{ stats.harvest_tonnes }} t</div>
+                    <div class="stat-label">Projected Harvest Off-take</div>
                 </div>
             </div>
         </div>
 
         <!-- NDPA 2023 Compliance Spotlight -->
-        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-lg); padding: 40px; margin-bottom: 56px;">
-            <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
-                <div style="font-size: 40px;">🛡️</div>
+        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #e7f7ed 100%); border: 1.5px solid #86efac; border-radius: var(--radius-xl); padding: 44px; margin-bottom: 64px; box-shadow: var(--shadow-md);">
+            <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
+                <div style="width: 64px; height: 64px; border-radius: var(--radius-md); background: #15803d; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; box-shadow: 0 4px 14px rgba(21, 128, 61, 0.3);">
+                    🛡️
+                </div>
                 <div style="flex: 1; min-width: 280px;">
-                    <h3 style="color: #065f46; margin-bottom: 12px;">Nigeria Data Protection Act (NDPA 2023) Alignment</h3>
-                    <p style="color: #047857; margin-bottom: 16px;">
-                        Smallholder data is personal and sensitive. DFAC AgriDEP is engineered around privacy-by-design principles:
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <span class="portal-badge portal-badge-green">Statutory Data Compliance</span>
+                        <span style="font-size: 0.85rem; font-weight: 700; color: #047857;">Federal Republic of Nigeria</span>
+                    </div>
+                    <h3 style="color: #065f46; margin-bottom: 14px; font-size: 1.5rem;">Nigeria Data Protection Act (NDPA 2023) Alignment</h3>
+                    <p style="color: #047857; margin-bottom: 20px; font-size: 1.025rem; line-height: 1.7;">
+                        Smallholder farmers in the Niger Delta deserve the exact same institutional privacy standards as corporate enterprises. DFAC AgriDEP incorporates privacy-by-design at every architecture layer:
                     </p>
-                    <ul style="color: #065f46; list-style-position: inside; line-height: 1.8; font-size: 0.95rem;">
-                        <li><strong>Explicit Consent Capture:</strong> Every registered producer signs verifiable consent defining exactly which external parties (lenders, buyers) may view their information.</li>
-                        <li><strong>Field-Level Encryption:</strong> National Identification Numbers (NIN) and telephone numbers are encrypted at rest using industry-standard symmetric cryptography.</li>
-                        <li><strong>Immutable Audit Logging:</strong> Every query or access to financial ledgers or personal smallholder data is permanently recorded in our system audit trail.</li>
-                        <li><strong>Buyer Privacy Shield:</strong> Commercial off-takers see aggregated regional volumes; farmer identities remain anonymized until bilateral supply contracts are confirmed.</li>
-                    </ul>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px;">
+                        <div style="background: #ffffff; padding: 20px; border-radius: var(--radius-md); border: 1px solid #bbf7d0;">
+                            <strong style="color: #065f46; display: block; margin-bottom: 6px;">1. Explicit Consent Signatures</strong>
+                            <p style="font-size: 0.875rem; color: #475569; margin: 0;">Producers sign granular consent specifying which lenders or off-takers may access their yield profiles.</p>
+                        </div>
+                        <div style="background: #ffffff; padding: 20px; border-radius: var(--radius-md); border: 1px solid #bbf7d0;">
+                            <strong style="color: #065f46; display: block; margin-bottom: 6px;">2. Field-Level Encryption</strong>
+                            <p style="font-size: 0.875rem; color: #475569; margin: 0;">NIN national identity numbers, BVNs, and telephone contacts are AES-256 encrypted at rest.</p>
+                        </div>
+                        <div style="background: #ffffff; padding: 20px; border-radius: var(--radius-md); border: 1px solid #bbf7d0;">
+                            <strong style="color: #065f46; display: block; margin-bottom: 6px;">3. Cryptographic Audit Trails</strong>
+                            <p style="font-size: 0.875rem; color: #475569; margin: 0;">Every query into smallholder financial ledgers is permanently recorded with user identity, timestamp, and IP.</p>
+                        </div>
+                        <div style="background: #ffffff; padding: 20px; border-radius: var(--radius-md); border: 1px solid #bbf7d0;">
+                            <strong style="color: #065f46; display: block; margin-bottom: 6px;">4. Buyer Privacy Shield</strong>
+                            <p style="font-size: 0.875rem; color: #475569; margin: 0;">Commercial buyers view aggregated cluster volumes; individual farmer identities are masked until contracts confirm.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Development Partnerships -->
-        <div style="text-align: center;">
-            <h3 style="margin-bottom: 16px;">Aligned with International Development Frameworks</h3>
-            <p style="color: var(--color-text-muted); max-width: 680px; margin-inline: auto; margin-bottom: 32px;">
-                Designed to satisfy rigorous Monitoring & Evaluation (M&E) reporting obligations for agricultural donor agencies, including the Foundation for Partnership Initiatives in the Niger Delta (PIND) and GIZ.
+        <!-- Development Partnerships & M&E -->
+        <div style="text-align: center; background: #ffffff; padding: 48px; border-radius: var(--radius-xl); border: 1px solid var(--color-border); box-shadow: var(--shadow-sm);">
+            <div class="section-tag">Institutional Reporting</div>
+            <h3 style="margin-bottom: 16px; font-size: 1.75rem;">Aligned with International Development Frameworks</h3>
+            <p style="color: var(--color-text-muted); max-width: 720px; margin-inline: auto; margin-bottom: 32px; font-size: 1.05rem;">
+                Built to satisfy rigorous Monitoring &amp; Evaluation (M&amp;E) reporting obligations for agricultural donor agencies, including the Foundation for Partnership Initiatives in the Niger Delta (PIND) and GIZ Agribusiness Advisory.
             </p>
-            <a href="{% url 'contact' %}" class="btn btn-primary btn-lg">Request Partnership Dossier</a>
+            <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+                <a href="{% url 'reporting-portal' %}" class="btn btn-primary btn-lg">
+                    <span>📊 Access Donor M&amp;E Hub</span>
+                </a>
+                <a href="{% url 'contact' %}" class="btn btn-secondary btn-lg">
+                    <span>Request Partnership Brief</span>
+                </a>
+            </div>
         </div>
     </div>
 </section>

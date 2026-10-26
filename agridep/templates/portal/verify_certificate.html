@@ -4,34 +4,34 @@
 {% block extra_head %}
 <style>
     .verify-page-wrap {
-        padding: 50px 0 90px;
-        background: #f8fafc;
+        padding: 56px 0 90px;
+        background: var(--color-bg-page);
         min-height: 80vh;
     }
     .verify-box {
-        max-width: 680px;
+        max-width: 720px;
         margin: 0 auto;
         background: #ffffff;
-        border-radius: 14px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-        border: 1px solid #e2e8f0;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-xl);
+        border: 1px solid var(--color-border);
         overflow: hidden;
     }
     .verify-header {
-        background: linear-gradient(135deg, #0b3d2e 0%, #15803d 100%);
+        background: linear-gradient(135deg, #071f14 0%, #0b291b 100%);
         color: white;
-        padding: 30px;
+        padding: 36px 30px;
         text-align: center;
     }
     .verify-body {
-        padding: 35px 30px;
+        padding: 40px 36px;
     }
     .credential-card {
-        margin-top: 30px;
+        margin-top: 32px;
         border: 2px solid #22c55e;
         background: #f0fdf4;
-        border-radius: 12px;
-        padding: 24px;
+        border-radius: var(--radius-lg);
+        padding: 28px;
         position: relative;
     }
     .credential-card.invalid {
@@ -41,16 +41,16 @@
     .meta-row {
         display: flex;
         justify-content: space-between;
-        padding: 8px 0;
+        padding: 10px 0;
         border-bottom: 1px dashed #cbd5e1;
-        font-size: 0.92rem;
+        font-size: 0.925rem;
     }
     .meta-row:last-child {
         border-bottom: none;
     }
     .meta-label {
         color: #64748b;
-        font-weight: 500;
+        font-weight: 600;
     }
     .meta-val {
         color: #0f172a;
@@ -65,32 +65,35 @@
     <div class="container">
         <div class="verify-box">
             <div class="verify-header">
-                <div style="font-size: 32px; margin-bottom: 8px;">🛡️</div>
-                <h1 style="font-size: 1.6rem; font-weight: 800; margin: 0 0 6px;">
+                <span class="portal-badge portal-badge-green" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.4); margin-bottom: 14px;">
+                    Public Credential Registry
+                </span>
+                <div style="font-size: 36px; margin: 8px 0 12px;">🛡️</div>
+                <h1 style="font-size: 1.85rem; font-weight: 800; margin: 0 0 8px; color: #ffffff;">
                     DFAC Credential Verification
                 </h1>
-                <p style="font-size: 0.88rem; opacity: 0.9; margin: 0;">
-                    Instant blockchain-style verification of accredited smallholder training certificates.
+                <p style="font-size: 0.95rem; opacity: 0.9; margin: 0; color: #a7f3d0;">
+                    Instant cryptographic verification of accredited smallholder certificates &amp; training records.
                 </p>
             </div>
 
             <div class="verify-body">
                 <form method="GET" action="{% url 'verify-certificate' %}">
-                    <label style="display: block; font-size: 0.88rem; font-weight: 600; color: #334155; margin-bottom: 8px;">
+                    <label style="display: block; font-size: 0.9rem; font-weight: 700; color: var(--color-text-main); margin-bottom: 8px;">
                         Enter Certificate Number or Verification Token:
                     </label>
-                    <div style="display: flex; gap: 10px;">
+                    <div style="display: flex; gap: 12px;">
                         <input 
                             type="text" 
                             name="code" 
                             value="{{ query_code|default:'' }}" 
-                            placeholder="e.g. DFAC-CERT-2026-XXXXXXXX or Token" 
+                            placeholder="e.g. DFAC-CERT-2026-XXXXXXXX or verification token" 
                             required
                             class="form-input"
-                            style="flex: 1; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem;"
+                            style="flex: 1;"
                         >
-                        <button type="submit" class="btn btn-primary" style="padding: 12px 20px;">
-                            Verify Now
+                        <button type="submit" class="btn btn-primary" style="padding-inline: 26px;">
+                            Verify ID
                         </button>
                     </div>
                 </form>
@@ -98,20 +101,20 @@
                 {% if result %}
                     {% if result.is_valid %}
                         <div class="credential-card">
-                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                                <span style="font-size: 26px;">✅</span>
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+                                <span style="font-size: 28px;">✅</span>
                                 <div>
-                                    <h3 style="color: #15803d; font-size: 1.15rem; font-weight: 800; margin: 0;">
+                                    <h3 style="color: #15803d; font-size: 1.25rem; font-weight: 800; margin: 0;">
                                         AUTHENTIC ACCREDITATION CONFIRMED
                                     </h3>
-                                    <span style="font-size: 0.8rem; color: #166534;">Verified in DFAC AgriDEP Central Register</span>
+                                    <span style="font-size: 0.825rem; color: #166534; font-weight: 600;">Verified in DFAC AgriDEP Central Trust Registry</span>
                                 </div>
                             </div>
 
-                            <div style="margin-top: 14px;">
+                            <div style="margin-top: 16px;">
                                 <div class="meta-row">
                                     <span class="meta-label">Certificate Number</span>
-                                    <span class="meta-val" style="color: #0b3d2e;">{{ result.details.certificate_number }}</span>
+                                    <span class="meta-val" style="color: #0b291b;">{{ result.details.certificate_number }}</span>
                                 </div>
                                 <div class="meta-row">
                                     <span class="meta-label">Certified Smallholder</span>
@@ -148,35 +151,36 @@
                             </div>
 
                             {% if result.certificate and result.certificate.pdf_file %}
-                            <div style="margin-top: 20px; text-align: center;">
+                            <div style="margin-top: 24px; text-align: center;">
                                 <a href="{{ result.certificate.pdf_file.url }}" target="_blank" class="btn btn-primary" style="display: inline-flex;">
-                                    📄 Download Certified PDF Credential
+                                    <span>📄</span>
+                                    <span>Download Certified PDF Credential</span>
                                 </a>
                             </div>
                             {% endif %}
                         </div>
                     {% else %}
                         <div class="credential-card invalid">
-                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                                <span style="font-size: 26px;">⚠️</span>
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+                                <span style="font-size: 28px;">⚠️</span>
                                 <div>
-                                    <h3 style="color: #b91c1c; font-size: 1.15rem; font-weight: 800; margin: 0;">
+                                    <h3 style="color: #b91c1c; font-size: 1.2rem; font-weight: 800; margin: 0;">
                                         CREDENTIAL NOT VERIFIED
                                     </h3>
-                                    <span style="font-size: 0.8rem; color: #991b1b;">{{ result.message }}</span>
+                                    <span style="font-size: 0.85rem; color: #991b1b; font-weight: 600;">{{ result.message }}</span>
                                 </div>
                             </div>
-                            <p style="font-size: 0.85rem; color: #7f1d1d; margin: 0;">
+                            <p style="font-size: 0.9rem; color: #7f1d1d; margin: 0; line-height: 1.6;">
                                 Please check that the certificate number or verification token was entered accurately. If you believe this is an error, please contact Doctor Fish Agricultural Consult (DFAC) support.
                             </p>
                         </div>
                     {% endif %}
                 {% endif %}
 
-                <div style="margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #64748b;">
+                <div style="margin-top: 36px; border-top: 1px solid var(--color-border); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; color: var(--color-text-light);">
                     <span>Doctor Fish Agricultural Consult (DFAC)</span>
-                    <a href="{% url 'cockpit' %}" style="color: #0b3d2e; font-weight: 600; text-decoration: none;">
-                        ← Return to Cockpit
+                    <a href="{% url 'cockpit' %}" style="color: var(--color-primary); font-weight: 700; text-decoration: none;">
+                        &larr; Return to Cockpit
                     </a>
                 </div>
             </div>

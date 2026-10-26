@@ -1,69 +1,133 @@
 {% extends 'portal/base.html' %}
 
 {% block content %}
-<section style="padding-block: 64px; background: #ffffff; border-bottom: 1px solid var(--color-border);">
-    <div class="container" style="max-width: 840px; text-align: center;">
-        <div class="section-tag">Value Proposition</div>
-        <h1 style="margin-bottom: 20px;">Solutions Tailored for the Agricultural Ecosystem</h1>
-        <p style="font-size: 1.2rem; color: var(--color-text-muted);">
-            How Doctor Fish Agricultural Consult bridges the operational divides between farmers, buyers, lenders, and extension personnel.
+<!-- Page Header (Greenola / Loraic Style) -->
+<section style="padding-block: 72px 56px; background: linear-gradient(135deg, #071f14 0%, #0b291b 100%); color: #ffffff;">
+    <div class="container" style="max-width: 920px; text-align: center;">
+        <span class="portal-badge portal-badge-green" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.4); margin-bottom: 16px;">
+            Ecosystem Solutions
+        </span>
+        <h1 style="color: #ffffff; margin-bottom: 20px;">Four-Pillar Architecture for the Niger Delta</h1>
+        <p style="font-size: 1.15rem; color: #a7f3d0; line-height: 1.7;">
+            How Doctor Fish Agricultural Consult (DFAC) connects farmers, commercial off-takers, financial institutions, and extension agronomists on a shared digital backbone.
         </p>
     </div>
 </section>
 
-<section style="padding-block: 64px;">
+<!-- Solutions Grid -->
+<section style="padding-block: 72px; background: var(--color-bg-page);">
     <div class="container">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px;">
-            <!-- Farmers -->
-            <div class="feature-card" style="padding: 36px;">
-                <div class="feature-icon-wrapper">👨‍🌾</div>
-                <h3 style="margin-bottom: 14px;">For Producers & Cooperatives</h3>
-                <ul style="color: var(--color-text-muted); list-style-position: inside; line-height: 1.8; margin-bottom: 24px;">
-                    <li><strong>Offline Capture:</strong> Record pond and crop logs in remote riverine areas without cell reception.</li>
-                    <li><strong>Guaranteed Buyers:</strong> Get connected to commercial off-takers weeks before harvest.</li>
-                    <li><strong>Extension Advisory:</strong> Receive actionable insights from DFAC agronomists directly via SMS or field visits.</li>
-                    <li><strong>Financing Eligibility:</strong> Build an immutable biometric production track record that unlocks credit.</li>
+            <!-- Pillar 1: Smallholders -->
+            <div class="feature-card" style="padding: 40px 32px;">
+                <div class="feature-icon-wrapper" style="background: #e7f7ed; color: #15803d;">👨‍🌾</div>
+                <h3 style="margin-bottom: 16px; font-size: 1.35rem;">Producers &amp; Outgrowers</h3>
+                <ul style="color: var(--color-text-muted); list-style: none; line-height: 1.8; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px;">
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
+                        <span><strong>Zero-Data Capture:</strong> Record pond sampling and feed logs offline; sync via USSD (*384*40#).</span>
+                    </li>
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
+                        <span><strong>Guaranteed Off-take:</strong> Secure forward contracts with corporate buyers weeks before harvest.</span>
+                    </li>
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
+                        <span><strong>Direct Agronomy Advisory:</strong> Receive instant SMS alerts for water pH, feeding rates &amp; disease prevention.</span>
+                    </li>
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: var(--color-primary); font-weight: 700;">✓</span>
+                        <span><strong>Transparent Credit Scoring:</strong> Unlock seasonal input financing based on biological track record.</span>
+                    </li>
                 </ul>
-                <a href="{% url 'contact' %}" class="btn btn-secondary" style="margin-top: auto;">Join as a Producer</a>
+                <div style="margin-top: auto; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <a href="{% url 'ussd-simulator' %}" class="btn btn-primary btn-sm">Try USSD Simulator</a>
+                    <a href="{% url 'contact' %}" class="btn btn-secondary btn-sm">Register Farm</a>
+                </div>
             </div>
 
-            <!-- Buyers -->
-            <div class="feature-card" style="padding: 36px;">
-                <div class="feature-icon-wrapper">🏭</div>
-                <h3 style="margin-bottom: 14px;">For Off-takers & Processors</h3>
-                <ul style="color: var(--color-text-muted); list-style-position: inside; line-height: 1.8; margin-bottom: 24px;">
-                    <li><strong>Forward Supply Planning:</strong> Secure reliable tonnage forecasts weeks in advance of harvest.</li>
-                    <li><strong>Aggregated Volumes:</strong> Group smallholder clusters to fulfill large-scale purchase orders.</li>
-                    <li><strong>Quality Standardization:</strong> Sourced produce is verified by trained DFAC extension agents.</li>
-                    <li><strong>Transparent Origin:</strong> Geo-verified traceability across Delta, Bayelsa, and Rivers farms.</li>
+            <!-- Pillar 2: Off-takers -->
+            <div class="feature-card" style="padding: 40px 32px;">
+                <div class="feature-icon-wrapper" style="background: #ede9fe; color: #7c3aed;">🏭</div>
+                <h3 style="margin-bottom: 16px; font-size: 1.35rem;">Buyers &amp; Processors</h3>
+                <ul style="color: var(--color-text-muted); list-style: none; line-height: 1.8; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px;">
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: #7c3aed; font-weight: 700;">✓</span>
+                        <span><strong>Forward Volume Planning:</strong> Secure reliable tonnage schedules with automated cluster aggregation.</span>
+                    </li>
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: #7c3aed; font-weight: 700;">✓</span>
+                        <span><strong>Grade &amp; Sizing Specs:</strong> Pre-contract specific sizes (e.g., 1.2kg catfish or 25% starch cassava).</span>
+                    </li>
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: #7c3aed; font-weight: 700;">✓</span>
+                        <span><strong>Quality Certification:</strong> Batches are inspected on-site by accredited DFAC extension officers.</span>
+                    </li>
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: #7c3aed; font-weight: 700;">✓</span>
+                        <span><strong>Farm-to-Fork Traceability:</strong> Verify pond GPS coordinates and harvest verification certificates.</span>
+                    </li>
                 </ul>
-                <a href="{% url 'contact' %}" class="btn btn-primary" style="margin-top: auto;">Register Buyer Demand</a>
+                <div style="margin-top: auto; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <a href="{% url 'buyer-portal' %}" class="btn btn-primary btn-sm" style="background: #7c3aed; border-color: #6d28d9;">Open Buyer Hub</a>
+                    <a href="{% url 'contact' %}" class="btn btn-secondary btn-sm">Commercial Contract</a>
+                </div>
             </div>
 
-            <!-- Lenders -->
-            <div class="feature-card" style="padding: 36px;">
-                <div class="feature-icon-wrapper">🏦</div>
-                <h3 style="margin-bottom: 14px;">For Agricultural Lenders</h3>
-                <ul style="color: var(--color-text-muted); list-style-position: inside; line-height: 1.8; margin-bottom: 24px;">
-                    <li><strong>Biometric Monitoring:</strong> Verify actual live fish inventory and growth against financial models.</li>
-                    <li><strong>Stage-Gated Tranches:</strong> Release loan disbursements only upon verified supplier input delivery.</li>
-                    <li><strong>Early Warning Alerts:</strong> Get notified if mortality or growth lag puts debt service at risk.</li>
-                    <li><strong>Portfolio Protection:</strong> Full tenant isolation ensures private, secure access to your portfolio.</li>
+            <!-- Pillar 3: Lenders -->
+            <div class="feature-card" style="padding: 40px 32px;">
+                <div class="feature-icon-wrapper" style="background: #dbeafe; color: #1d4ed8;">🏦</div>
+                <h3 style="margin-bottom: 16px; font-size: 1.35rem;">Agricultural Lenders</h3>
+                <ul style="color: var(--color-text-muted); list-style: none; line-height: 1.8; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px;">
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: #1d4ed8; font-weight: 700;">✓</span>
+                        <span><strong>Biometric Farm Verification:</strong> Confirm real fish stock, pond volume, and NIN identity before loan approval.</span>
+                    </li>
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: #1d4ed8; font-weight: 700;">✓</span>
+                        <span><strong>Rule-08 Tranche Gates:</strong> Loan tranches disburse only upon confirmed delivery of feed/fingerlings.</span>
+                    </li>
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: #1d4ed8; font-weight: 700;">✓</span>
+                        <span><strong>Early Warning Arrears:</strong> Automated biological mortality and growth deficit flags mitigate NPL risk.</span>
+                    </li>
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: #1d4ed8; font-weight: 700;">✓</span>
+                        <span><strong>Multi-Tenant Isolation:</strong> Strict bank portfolio privacy conforming to NDPA 2023 regulations.</span>
+                    </li>
                 </ul>
-                <a href="{% url 'contact' %}" class="btn btn-secondary" style="margin-top: auto;">Partner on Agri-Credit</a>
+                <div style="margin-top: auto; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <a href="{% url 'lender-portal' %}" class="btn btn-primary btn-sm" style="background: #1d4ed8; border-color: #1e40af;">Lender Hub</a>
+                    <a href="{% url 'contact' %}" class="btn btn-secondary btn-sm">Credit Integration</a>
+                </div>
             </div>
 
-            <!-- Trainers -->
-            <div class="feature-card" style="padding: 36px;">
-                <div class="feature-icon-wrapper">🎓</div>
-                <h3 style="margin-bottom: 14px;">For Trainers & Extension Teams</h3>
-                <ul style="color: var(--color-text-muted); list-style-position: inside; line-height: 1.8; margin-bottom: 24px;">
-                    <li><strong>Digital Attendance:</strong> Instant mobile check-in replaces fragile paper attendance sheets.</li>
-                    <li><strong>Competency Records:</strong> Track assessment scores and link farmer training to loan readiness.</li>
-                    <li><strong>Prioritized Field Routing:</strong> Intelligent dispatching sends officers to at-risk farms first.</li>
-                    <li><strong>M&E Reporting:</strong> Export standardized progress reports for donor and government partners.</li>
+            <!-- Pillar 4: Extension & Field Ops -->
+            <div class="feature-card" style="padding: 40px 32px;">
+                <div class="feature-icon-wrapper" style="background: #fef3c7; color: #b45309;">🚜</div>
+                <h3 style="margin-bottom: 16px; font-size: 1.35rem;">Extension Teams &amp; M&amp;E</h3>
+                <ul style="color: var(--color-text-muted); list-style: none; line-height: 1.8; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px;">
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: #b45309; font-weight: 700;">✓</span>
+                        <span><strong>Geofenced Visit Logs:</strong> Ensure field agents are physically inside the farm perimeter (&lt; 200m).</span>
+                    </li>
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: #b45309; font-weight: 700;">✓</span>
+                        <span><strong>Prioritized Dispatch Queue:</strong> Intelligent scoring routes agents to high-risk ponds first.</span>
+                    </li>
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: #b45309; font-weight: 700;">✓</span>
+                        <span><strong>Digital Attendance &amp; Badges:</strong> Issue cryptographically verifiable training certificates with QR codes.</span>
+                    </li>
+                    <li style="display: flex; gap: 8px;">
+                        <span style="color: #b45309; font-weight: 700;">✓</span>
+                        <span><strong>Donor Indicator Reporting:</strong> Automated GIZ and PIND Foundation quarterly Excel &amp; PDF exports.</span>
+                    </li>
                 </ul>
-                <a href="{% url 'contact' %}" class="btn btn-secondary" style="margin-top: auto;">Connect with DFAC Ops</a>
+                <div style="margin-top: auto; display: flex; gap: 12px; flex-wrap: wrap;">
+                    <a href="{% url 'fieldops-portal' %}" class="btn btn-primary btn-sm" style="background: #b45309; border-color: #92400e;">Field Ops</a>
+                    <a href="{% url 'reporting-portal' %}" class="btn btn-secondary btn-sm">Donor Reporting</a>
+                </div>
             </div>
         </div>
     </div>

@@ -1,109 +1,166 @@
 {% extends 'portal/base.html' %}
 
 {% block content %}
-<section style="padding-block: 64px; background: #ffffff; border-bottom: 1px solid var(--color-border);">
-    <div class="container" style="max-width: 840px; text-align: center;">
-        <div class="section-tag">Agricultural Enterprises</div>
-        <h1 style="margin-bottom: 20px;">Specialized Niger Delta Value Chains</h1>
-        <p style="font-size: 1.2rem; color: var(--color-text-muted);">
-            Each agricultural enterprise is supported with rigorous biometric benchmarks, input quality checks, and tailored off-take quality grading.
+<!-- Page Header (Greenola / Loraic Style) -->
+<section style="padding-block: 72px 56px; background: linear-gradient(135deg, #071f14 0%, #0b291b 100%); color: #ffffff;">
+    <div class="container" style="max-width: 920px; text-align: center;">
+        <span class="portal-badge portal-badge-green" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.4); margin-bottom: 16px;">
+            Agribusiness Enterprises
+        </span>
+        <h1 style="color: #ffffff; margin-bottom: 20px;">Specialized Niger Delta Value Chains</h1>
+        <p style="font-size: 1.15rem; color: #a7f3d0; line-height: 1.7;">
+            Each agricultural enterprise is backed by rigorous biometric growth models, Rule-08 input quality certification, automated FCR benchmarks, and guaranteed off-take contracts.
         </p>
     </div>
 </section>
 
-<section style="padding-block: 64px;">
-    <div class="container">
-        <div style="display: flex; flex-direction: column; gap: 40px;">
-            <!-- Aquaculture -->
-            <div style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 40px; box-shadow: var(--shadow-sm);">
+<section style="padding-block: 72px; background: var(--color-bg-page);">
+    <div class="container" style="max-width: 1040px;">
+        <div style="display: flex; flex-direction: column; gap: 48px;">
+            <!-- 1. Aquaculture (Catfish) -->
+            <div id="catfish" style="background: #ffffff; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: 44px; box-shadow: var(--shadow-md); scroll-margin-top: 100px;">
                 <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
-                    <div style="width: 64px; height: 64px; background: #e0f2fe; color: #0284c7; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px;">
+                    <div style="width: 68px; height: 68px; background: linear-gradient(135deg, #0b291b 0%, #15803d 100%); color: #ffffff; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 34px; box-shadow: 0 4px 14px rgba(21, 128, 61, 0.3);">
                         🐟
                     </div>
                     <div style="flex: 1; min-width: 280px;">
-                        <span class="badge" style="background: #e0f2fe; color: #0369a1; font-weight: 700; margin-bottom: 8px;">AQUACULTURE VALUE CHAIN</span>
-                        <h2 style="margin-bottom: 12px;">African Catfish (Clarias gariepinus) & Tilapia</h2>
-                        <p style="margin-bottom: 20px;">
-                            Aquaculture represents the economic lifeblood of Niger Delta communities. DFAC AgriDEP manages the complete farming cycle: from certified hatchery fingerling procurement, water parameters (dissolved oxygen, pH, temperature, and ammonia control), to high-efficiency feed conversion and sorting into table-size Grade A harvests.
+                        <span class="portal-badge portal-badge-green" style="margin-bottom: 10px; display: inline-block;">FLAGSHIP AQUACULTURE</span>
+                        <h2 style="margin-bottom: 14px; font-size: 1.75rem;">African Catfish (Clarias gariepinus) &amp; Heterobranchus</h2>
+                        <p style="margin-bottom: 24px; font-size: 1.05rem; line-height: 1.7;">
+                            Aquaculture is the cornerstone of Niger Delta protein production. AgriDEP tracks the entire biological life cycle: from certified hatchery fingerlings (7-10g), water parameter telemetry (DO &gt; 4.0 mg/L, pH 6.8 - 7.5, ammonia &lt; 0.05 mg/L), to extruded floating feed conversion rates and sorting into Grade A table-size harvests.
                         </p>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; background: #f8fafc; padding: 20px; border-radius: 8px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; background: var(--color-bg-page); padding: 22px; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
                             <div>
-                                <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Production Cycle</span>
-                                <div style="font-size: 1.25rem; font-weight: 800; color: #007a33;">150 Days</div>
+                                <span style="font-size: 0.825rem; color: var(--color-text-light); font-weight: 700; text-transform: uppercase;">Standard Cycle</span>
+                                <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-primary-dark); margin-top: 4px;">150 - 180 Days</div>
                             </div>
                             <div>
-                                <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Target Average Weight</span>
-                                <div style="font-size: 1.25rem; font-weight: 800; color: #007a33;">1.0 – 1.2 kg</div>
+                                <span style="font-size: 0.825rem; color: var(--color-text-light); font-weight: 700; text-transform: uppercase;">Harvest Target Weight</span>
+                                <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-primary-dark); margin-top: 4px;">1.1 - 1.4 kg / fish</div>
                             </div>
                             <div>
-                                <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Benchmark FCR</span>
-                                <div style="font-size: 1.25rem; font-weight: 800; color: #007a33;">1.25</div>
+                                <span style="font-size: 0.825rem; color: var(--color-text-light); font-weight: 700; text-transform: uppercase;">Benchmark Target FCR</span>
+                                <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-primary-dark); margin-top: 4px;">1.08 - 1.18</div>
                             </div>
                             <div>
-                                <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Standard Packaging</span>
-                                <div style="font-size: 1.25rem; font-weight: 800; color: #007a33;">Live / Fresh / Smoked</div>
+                                <span style="font-size: 0.825rem; color: var(--color-text-light); font-weight: 700; text-transform: uppercase;">Primary Off-taker Type</span>
+                                <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-primary-dark); margin-top: 4px;">Smoked / Live Fish Markets</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 24px; display: flex; gap: 14px; flex-wrap: wrap;">
+                            <a href="{% url 'inputs-portal' %}" class="btn btn-primary btn-sm">Procure Feeds &amp; Fingerlings</a>
+                            <a href="{% url 'buyer-portal' %}" class="btn btn-secondary btn-sm">Pre-Contract Catfish Volume</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Cassava Outgrowers -->
+            <div id="cassava" style="background: #ffffff; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: 44px; box-shadow: var(--shadow-md); scroll-margin-top: 100px;">
+                <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
+                    <div style="width: 68px; height: 68px; background: linear-gradient(135deg, #166534 0%, #22c55e 100%); color: #ffffff; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 34px; box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);">
+                        🌿
+                    </div>
+                    <div style="flex: 1; min-width: 280px;">
+                        <span class="portal-badge portal-badge-green" style="margin-bottom: 10px; display: inline-block;">INDUSTRIAL STAPLE CROP</span>
+                        <h2 style="margin-bottom: 14px; font-size: 1.75rem;">Cassava Outgrower Schemes (TME 419 &amp; Vitamin A)</h2>
+                        <p style="margin-bottom: 24px; font-size: 1.05rem; line-height: 1.7;">
+                            Supporting smallholder cassava outgrowers across Delta and Bayelsa with certified disease-free stem cuttings, soil pH amendments, selective herbicide scheduling, and guaranteed off-take to regional industrial starch extraction mills.
+                        </p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; background: var(--color-bg-page); padding: 22px; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+                            <div>
+                                <span style="font-size: 0.825rem; color: var(--color-text-light); font-weight: 700; text-transform: uppercase;">Maturity Window</span>
+                                <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-primary-dark); margin-top: 4px;">10 - 12 Months</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.825rem; color: var(--color-text-light); font-weight: 700; text-transform: uppercase;">Expected Yield / Ha</span>
+                                <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-primary-dark); margin-top: 4px;">25 - 32 Tonnes / Ha</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.825rem; color: var(--color-text-light); font-weight: 700; text-transform: uppercase;">Starch Content</span>
+                                <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-primary-dark); margin-top: 4px;">22% - 26% Dry Basis</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.825rem; color: var(--color-text-light); font-weight: 700; text-transform: uppercase;">Primary Off-taker Type</span>
+                                <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-primary-dark); margin-top: 4px;">Industrial Starch &amp; HQCF</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 24px; display: flex; gap: 14px; flex-wrap: wrap;">
+                            <a href="{% url 'inputs-portal' %}" class="btn btn-primary btn-sm">Order Certified Stem Bundles</a>
+                            <a href="{% url 'buyer-portal' %}" class="btn btn-secondary btn-sm">Mill Supply Contract</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Poultry & Broilers -->
+            <div id="poultry" style="background: #ffffff; border-radius: var(--radius-xl); border: 1px solid var(--color-border); padding: 44px; box-shadow: var(--shadow-md); scroll-margin-top: 100px;">
+                <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
+                    <div style="width: 68px; height: 68px; background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%); color: #ffffff; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 34px; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);">
+                        🍗
+                    </div>
+                    <div style="flex: 1; min-width: 280px;">
+                        <span class="portal-badge portal-badge-gold" style="margin-bottom: 10px; display: inline-block;">FAST-CYCLE LIVESTOCK</span>
+                        <h2 style="margin-bottom: 14px; font-size: 1.75rem;">Poultry Broilers &amp; Commercial Egg Layers</h2>
+                        <p style="margin-bottom: 24px; font-size: 1.05rem; line-height: 1.7;">
+                            Rapid protein turnover across Delta and Rivers State. Day-old-chick (DOC) delivery tracking, biosecurity auditing, digital vaccination calendars (Gumboro, Lasota), and automated off-take coordination with hospitality chains.
+                        </p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; background: var(--color-bg-page); padding: 22px; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+                            <div>
+                                <span style="font-size: 0.825rem; color: var(--color-text-light); font-weight: 700; text-transform: uppercase;">Broiler Cycle</span>
+                                <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-primary-dark); margin-top: 4px;">42 - 49 Days</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.825rem; color: var(--color-text-light); font-weight: 700; text-transform: uppercase;">Finished Live Weight</span>
+                                <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-primary-dark); margin-top: 4px;">2.2 - 2.6 kg</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.825rem; color: var(--color-text-light); font-weight: 700; text-transform: uppercase;">Flock Mortality Rate</span>
+                                <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-primary-dark); margin-top: 4px;">&lt; 3.5% Target</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.825rem; color: var(--color-text-light); font-weight: 700; text-transform: uppercase;">Primary Off-taker Type</span>
+                                <div style="font-size: 1.35rem; font-weight: 800; color: var(--color-primary-dark); margin-top: 4px;">Hotels &amp; QSR Processors</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Snail Farming -->
-            <div style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 40px; box-shadow: var(--shadow-sm);">
-                <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
-                    <div style="width: 64px; height: 64px; background: #fef3c7; color: #d97706; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px;">
-                        🐌
-                    </div>
-                    <div style="flex: 1; min-width: 280px;">
-                        <span class="badge" style="background: #fef3c7; color: #b45309; font-weight: 700; margin-bottom: 8px;">SPECIALTY LIVESTOCK</span>
-                        <h2 style="margin-bottom: 12px;">Giant African Land Snail (Archachatina marginata)</h2>
-                        <p style="margin-bottom: 20px;">
-                            Heliculture provides high-margin commercial opportunities for smallholders and cooperatives. AgriDEP tracks humidity-controlled pen enclosures, egg clutch hatching rates, calcium-fortified feeding regimes, and clean processing for premium hospitality and export off-takers.
-                        </p>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; background: #f8fafc; padding: 20px; border-radius: 8px;">
-                            <div>
-                                <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Growing Period</span>
-                                <div style="font-size: 1.25rem; font-weight: 800; color: #d97706;">8 – 12 Months</div>
-                            </div>
-                            <div>
-                                <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Target Mature Weight</span>
-                                <div style="font-size: 1.25rem; font-weight: 800; color: #d97706;">400g – 600g</div>
-                            </div>
-                            <div>
-                                <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Feed Base</span>
-                                <div style="font-size: 1.25rem; font-weight: 800; color: #d97706;">Pawpaw / Fortified Mash</div>
-                            </div>
-                        </div>
+            <!-- 4. Regional Price Index Benchmark -->
+            <div id="prices" style="background: linear-gradient(135deg, #071f14 0%, #0b291b 100%); color: #ffffff; border-radius: var(--radius-xl); padding: 44px; box-shadow: var(--shadow-xl); scroll-margin-top: 100px;">
+                <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 24px;">
+                    <div style="font-size: 32px;">📈</div>
+                    <div>
+                        <span class="portal-badge portal-badge-green" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.4);">
+                            Weekly Intelligence
+                        </span>
+                        <h3 style="color: #ffffff; font-size: 1.5rem; margin-top: 6px;">Regional Commodity Market Price Benchmarks</h3>
                     </div>
                 </div>
-            </div>
-
-            <!-- Crops -->
-            <div style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 40px; box-shadow: var(--shadow-sm);">
-                <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
-                    <div style="width: 64px; height: 64px; background: #dcfce7; color: #15803d; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px;">
-                        🌾
+                <p style="color: #a7f3d0; font-size: 1.05rem; margin-bottom: 28px;">
+                    DFAC collects real-time wholesale and farm-gate transactions across the Niger Delta to eliminate price gouging and ensure outgrowers receive fair, transparent compensation.
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px;">
+                    <div style="background: rgba(255, 255, 255, 0.08); padding: 20px; border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.15);">
+                        <span style="font-size: 0.85rem; color: #94a3b8; font-weight: 700;">Warri Central Market (Delta)</span>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: #34d399; margin-top: 4px;">₦2,450 / kg</div>
+                        <span style="font-size: 0.775rem; color: #cbd5e1;">Live Catfish (1.0kg+ grade)</span>
                     </div>
-                    <div style="flex: 1; min-width: 280px;">
-                        <span class="badge" style="background: #dcfce7; color: #15803d; font-weight: 700; margin-bottom: 8px;">ARABLE CROPS</span>
-                        <h2 style="margin-bottom: 12px;">Improved Cassava & Arable Farming</h2>
-                        <p style="margin-bottom: 20px;">
-                            Supporting smallholder clusters with certified TME 419 cassava stem cuttings resistant to mosaic disease, fertilizer timing logs, yield forecasting per hectare, and industrial starch/flour off-take agreements.
-                        </p>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; background: #f8fafc; padding: 20px; border-radius: 8px;">
-                            <div>
-                                <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Maturity Window</span>
-                                <div style="font-size: 1.25rem; font-weight: 800; color: #15803d;">10 – 12 Months</div>
-                            </div>
-                            <div>
-                                <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Average Yield</span>
-                                <div style="font-size: 1.25rem; font-weight: 800; color: #15803d;">22 – 28 Tonnes / Ha</div>
-                            </div>
-                            <div>
-                                <span style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Primary Off-take</span>
-                                <div style="font-size: 1.25rem; font-weight: 800; color: #15803d;">Starch & Garri Mills</div>
-                            </div>
-                        </div>
+                    <div style="background: rgba(255, 255, 255, 0.08); padding: 20px; border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.15);">
+                        <span style="font-size: 0.85rem; color: #94a3b8; font-weight: 700;">Swali Market (Yenagoa)</span>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: #34d399; margin-top: 4px;">₦2,550 / kg</div>
+                        <span style="font-size: 0.775rem; color: #cbd5e1;">Live Catfish (1.0kg+ grade)</span>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.08); padding: 20px; border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.15);">
+                        <span style="font-size: 0.85rem; color: #94a3b8; font-weight: 700;">Mile 1 Market (Port Harcourt)</span>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: #34d399; margin-top: 4px;">₦2,700 / kg</div>
+                        <span style="font-size: 0.775rem; color: #cbd5e1;">Live Catfish (1.0kg+ grade)</span>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.08); padding: 20px; border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.15);">
+                        <span style="font-size: 0.85rem; color: #94a3b8; font-weight: 700;">Ughelli Starch Gate</span>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: #fde68a; margin-top: 4px;">₦85,000 / t</div>
+                        <span style="font-size: 0.775rem; color: #cbd5e1;">Raw Cassava Roots (24% starch)</span>
                     </div>
                 </div>
             </div>

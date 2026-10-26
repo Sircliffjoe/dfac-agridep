@@ -1,22 +1,28 @@
 {% extends 'portal/base.html' %}
 
 {% block content %}
-<section style="padding-block: 64px; background: #ffffff; border-bottom: 1px solid var(--color-border);">
-    <div class="container" style="max-width: 840px; text-align: center;">
-        <div class="section-tag">Get in Touch</div>
-        <h1 style="margin-bottom: 20px;">Contact DFAC & Partner With Us</h1>
-        <p style="font-size: 1.2rem; color: var(--color-text-muted);">
-            Whether you are a commercial off-taker, agricultural financial institution, or smallholder cooperative leader, our field coordinators are ready to assist.
+<!-- Page Header (Greenola / Loraic Style) -->
+<section style="padding-block: 72px 56px; background: linear-gradient(135deg, #071f14 0%, #0b291b 100%); color: #ffffff;">
+    <div class="container" style="max-width: 920px; text-align: center;">
+        <span class="portal-badge portal-badge-green" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.4); margin-bottom: 16px;">
+            Get In Touch
+        </span>
+        <h1 style="color: #ffffff; margin-bottom: 20px;">Contact DFAC &amp; Field Coordination Desks</h1>
+        <p style="font-size: 1.15rem; color: #a7f3d0; line-height: 1.7;">
+            Whether you are a commercial fish processor, agricultural lending institution, or outgrower cooperative leader, our field agronomists and coordinators are ready to support you.
         </p>
     </div>
 </section>
 
-<section style="padding-block: 64px;">
-    <div class="container">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: flex-start;">
-            <!-- Form -->
-            <div class="form-card" style="margin-inline: 0; max-width: 100%;">
-                <h3 style="margin-bottom: 20px;">Send Us an Inquiry</h3>
+<section style="padding-block: 72px; background: var(--color-bg-page);">
+    <div class="container" style="max-width: 1120px;">
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: flex-start;">
+            <!-- Inquiry Form Card -->
+            <div class="form-card" style="margin-inline: 0; max-width: 100%; padding: 44px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 24px;">
+                    <span style="font-size: 24px;">✉️</span>
+                    <h3 style="font-size: 1.5rem;">Send Us an Inquiry</h3>
+                </div>
                 <form method="POST">
                     {% csrf_token %}
                     <div class="form-group">
@@ -32,54 +38,86 @@
                     <div class="form-group">
                         <label class="form-label" for="id_category">Stakeholder Category *</label>
                         <select id="id_category" name="category" class="form-select">
-                            <option value="Commercial Off-taker / Processor">Commercial Off-taker / Processor</option>
-                            <option value="Agricultural Lender / Bank">Agricultural Lender / Bank</option>
+                            <option value="Commercial Off-taker / Processor">Commercial Off-taker / Processor (Fish / Cassava)</option>
+                            <option value="Agricultural Lender / Bank">Agricultural Lender / Bank (Credit Facility Monitoring)</option>
                             <option value="Smallholder Producer / Cooperative">Smallholder Producer / Cooperative</option>
-                            <option value="Development Partner / Donor Agency">Development Partner / Donor Agency</option>
-                            <option value="Extension Agent / Specialist">Extension Agent / Specialist</option>
-                            <option value="General Inquiry">General Inquiry</option>
+                            <option value="Development Partner / Donor Agency">Development Partner / Donor Agency (PIND / GIZ)</option>
+                            <option value="Input Supplier">Input Supplier (Feed Mills / Hatcheries / Agro-Dealers)</option>
+                            <option value="General Inquiry">General Agribusiness Inquiry</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="id_message">Message & Inquiry Details *</label>
-                        <textarea id="id_message" name="message" class="form-textarea" rows="4" required placeholder="Tell us about your volume requirements, farm location, or financing partnership scope..."></textarea>
+                        <label class="form-label" for="id_message">Message &amp; Scope Details *</label>
+                        <textarea id="id_message" name="message" class="form-textarea" rows="4" required placeholder="Describe your required off-take tonnage, farm cluster location, or loan monitoring parameters..."></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary" style="width: 100%; padding-block: 14px;">
-                        Submit Inquiry
+                    <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+                        <span>Send Official Inquiry &rarr;</span>
                     </button>
                 </form>
             </div>
 
-            <!-- Regional Offices -->
+            <!-- Regional Coordination Hubs -->
             <div>
-                <h3 style="margin-bottom: 24px;">Our Field Coordination Hubs</h3>
+                <span class="section-tag">Agronomy Hubs</span>
+                <h3 style="margin-bottom: 24px; font-size: 1.6rem;">Regional Field Desks</h3>
 
                 <div style="display: flex; flex-direction: column; gap: 20px;">
-                    <div style="background: white; border-radius: var(--radius-md); border: 1px solid var(--color-border); padding: 24px;">
-                        <h4 style="color: var(--color-primary-dark); margin-bottom: 6px;">Delta State Central Office</h4>
-                        <p style="margin-bottom: 8px; font-size: 0.95rem;">Warri South & Ughelli Coordination Hub</p>
-                        <p style="font-size: 0.85rem; color: #64748b;">Aquaculture clusters, pond bio-inspections & fingerling verification</p>
+                    <!-- Delta Desk -->
+                    <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 26px; box-shadow: var(--shadow-sm);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                            <h4 style="color: var(--color-primary-dark); font-size: 1.15rem;">Delta State Headquarters</h4>
+                            <span class="portal-badge portal-badge-green">Central HQ</span>
+                        </div>
+                        <p style="margin-bottom: 6px; font-weight: 600; color: var(--color-text-main); font-size: 0.95rem;">
+                            14 Deco Road, Warri South LGA, Delta State
+                        </p>
+                        <p style="font-size: 0.85rem; color: var(--color-text-light);">
+                            Aquaculture demonstration ponds, fingerling quarantine, and central GIS operations center.
+                        </p>
                     </div>
 
-                    <div style="background: white; border-radius: var(--radius-md); border: 1px solid var(--color-border); padding: 24px;">
-                        <h4 style="color: var(--color-primary-dark); margin-bottom: 6px;">Bayelsa State Office</h4>
-                        <p style="margin-bottom: 8px; font-size: 0.95rem;">Yenagoa Waterfront & Swali Fisheries Center</p>
-                        <p style="font-size: 0.85rem; color: #64748b;">Riverine smallholder enrollment, water quality testing & feed linkages</p>
+                    <!-- Bayelsa Desk -->
+                    <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 26px; box-shadow: var(--shadow-sm);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                            <h4 style="color: var(--color-primary-dark); font-size: 1.15rem;">Bayelsa State Office</h4>
+                            <span class="portal-badge portal-badge-green">Field Desk</span>
+                        </div>
+                        <p style="margin-bottom: 6px; font-weight: 600; color: var(--color-text-main); font-size: 0.95rem;">
+                            Mbiama-Yenagoa Road, Swali Waterfront, Yenagoa
+                        </p>
+                        <p style="font-size: 0.85rem; color: var(--color-text-light);">
+                            Riverine outgrower mobilization, water telemetry calibration, and feed delivery gates.
+                        </p>
                     </div>
 
-                    <div style="background: white; border-radius: var(--radius-md); border: 1px solid var(--color-border); padding: 24px;">
-                        <h4 style="color: var(--color-primary-dark); margin-bottom: 6px;">Rivers State Office</h4>
-                        <p style="margin-bottom: 8px; font-size: 0.95rem;">Port Harcourt Agribusiness Center</p>
-                        <p style="font-size: 0.85rem; color: #64748b;">Off-taker commercial aggregation, processing linkages & lender relations</p>
+                    <!-- Rivers Desk -->
+                    <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 26px; box-shadow: var(--shadow-sm);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                            <h4 style="color: var(--color-primary-dark); font-size: 1.15rem;">Rivers State Office</h4>
+                            <span class="portal-badge portal-badge-green">Commercial Desk</span>
+                        </div>
+                        <p style="margin-bottom: 6px; font-weight: 600; color: var(--color-text-main); font-size: 0.95rem;">
+                            Trans-Amadi Industrial Layout, Port Harcourt
+                        </p>
+                        <p style="font-size: 0.85rem; color: var(--color-text-light);">
+                            Commercial off-taker aggregation, institutional bank syndications, and hotel procurement.
+                        </p>
                     </div>
                 </div>
 
-                <div style="margin-top: 32px; background: #f8fafc; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 20px;">
-                    <h5 style="color: var(--color-text-main); margin-bottom: 6px;">Operational Enquiries</h5>
-                    <p style="font-size: 0.9rem; margin-bottom: 4px;"><strong>Email:</strong> operations@dfac.ng</p>
-                    <p style="font-size: 0.9rem;"><strong>Direct Line:</strong> +234 803 000 0001</p>
+                <div style="margin-top: 28px; background: var(--color-primary-light); border: 1.5px solid var(--color-primary-border); border-radius: var(--radius-lg); padding: 24px;">
+                    <h5 style="color: var(--color-primary-dark); margin-bottom: 8px; font-size: 1.05rem;">Direct Assistance Hotlines</h5>
+                    <p style="font-size: 0.925rem; color: var(--color-text-muted); margin-bottom: 6px;">
+                        <strong>Field Emergency Desk:</strong> <a href="tel:+2348035551122" style="color: var(--color-primary); font-weight: 700;">+234 (0) 803 555 1122</a>
+                    </p>
+                    <p style="font-size: 0.925rem; color: var(--color-text-muted); margin-bottom: 6px;">
+                        <strong>Official Email:</strong> <a href="mailto:info@dfac.ng" style="color: var(--color-primary); font-weight: 700;">info@dfac.ng</a>
+                    </p>
+                    <p style="font-size: 0.925rem; color: var(--color-text-muted);">
+                        <strong>Offline USSD Channel:</strong> <span style="color: var(--color-primary-dark); font-weight: 700;">*384*40#</span>
+                    </p>
                 </div>
             </div>
         </div>
