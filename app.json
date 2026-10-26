@@ -1,10 +1,10 @@
 {
-  "name": "dfac-agridep",
+  "name": "agridep",
   "description": "Doctor Fish Agricultural Consult (DFAC) AgriDEP Platform",
   "keywords": ["agriculture", "nigeria", "aquaculture", "django", "dokku"],
   "scripts": {
     "dokku": {
-      "postdeploy": "python manage.py migrate --noinput && python manage.py collectstatic --noinput"
+      "postdeploy": "python manage.py migrate --noinput"
     }
   }
 }
