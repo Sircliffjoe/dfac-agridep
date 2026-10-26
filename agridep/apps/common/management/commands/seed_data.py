@@ -47,6 +47,7 @@ from agridep.apps.market.services import (
     propose_buyer_matches_for_demand,
     confirm_produce_match,
 )
+from agridep.apps.common.parameters import seed_system_parameters
 
 User = get_user_model()
 
@@ -55,6 +56,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write("Starting DFAC AgriDEP Nigerian seed data generation...")
+
+        # 0. Seed dynamic system parameters
+        params_created = seed_system_parameters()
+        self.stdout.write(f"Seeded {params_created} dynamic system parameters into database.")
 
         # 1. Superuser / DFAC Admin
         admin, _ = User.objects.get_or_create(
