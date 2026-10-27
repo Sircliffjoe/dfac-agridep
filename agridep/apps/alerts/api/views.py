@@ -17,6 +17,7 @@ class USSDWebhookView(APIView):
     Receives HTTP POST requests when a farmer dials *384*223# or responds to a prompt.
     Returns plain text responses prefixed with 'CON ' or 'END '.
     """
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -40,6 +41,7 @@ class USSDWebhookView(APIView):
 
 class InboundSMSWebhookView(APIView):
     """Africa's Talking incoming two-way SMS webhook."""
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
@@ -51,6 +53,7 @@ class InboundSMSWebhookView(APIView):
 
 class DeliveryReportWebhookView(APIView):
     """Africa's Talking delivery report callback."""
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):

@@ -1,0 +1,405 @@
+{% extends "portal/base.html" %}
+{% load humanize %}
+
+{% block content %}
+<div class="container" style="padding: 32px 16px 80px;">
+
+    <!-- Executive Admin Header -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--color-border-subtle);">
+        <div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <span class="badge" style="background: rgba(99, 102, 241, 0.12); color: #4f46e5; border: 1px solid rgba(99, 102, 241, 0.3); font-weight: 700;">
+                    SYSTEM SUPER-ADMINISTRATION
+                </span>
+                <span class="badge" style="background: rgba(22, 163, 74, 0.12); color: #16a34a; border: 1px solid rgba(22, 163, 74, 0.3); font-weight: 700;">
+                    NDPA 2023 COMPLIANT
+                </span>
+            </div>
+            <h1 style="font-size: 2rem; font-weight: 800; color: var(--color-text-main); margin: 0 0 6px 0;">
+                Executive Administration Console
+            </h1>
+            <p style="color: var(--color-text-light); margin: 0; font-size: 0.95rem;">
+                Universal identity directory, role access control, smallholder verification review, and platform audit stream.
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onclick="document.getElementById('newUserModal').style.display='flex'" class="btn btn-primary" style="background: #4f46e5; border-color: #4338ca; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                <span>+ Register New Stakeholder</span>
+            </button>
+            <a href="{% url 'cockpit' %}" class="btn btn-secondary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                <span>Spatial Cockpit</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Platform KPI Overview -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px;">
+        <div class="card" style="padding: 18px; border-left: 4px solid #4f46e5;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--color-text-light);">Total Stakeholders</span>
+            <div style="font-size: 1.85rem; font-weight: 800; color: var(--color-text-main); margin-top: 4px;">{{ stats.total_users }}</div>
+            <span style="font-size: 0.75rem; color: #4f46e5; font-weight: 600;">Active accounts across 6 roles</span>
+        </div>
+        <div class="card" style="padding: 18px; border-left: 4px solid #16a34a;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--color-text-light);">Verified Smallholders</span>
+            <div style="font-size: 1.85rem; font-weight: 800; color: #16a34a; margin-top: 4px;">{{ stats.verified_farmers }} / {{ stats.total_farmers }}</div>
+            <span style="font-size: 0.75rem; color: var(--color-text-light);">NDPA KYC Deduplicated</span>
+        </div>
+        <div class="card" style="padding: 18px; border-left: 4px solid #0284c7;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--color-text-light);">Farms &amp; Ponds</span>
+            <div style="font-size: 1.85rem; font-weight: 800; color: var(--color-text-main); margin-top: 4px;">{{ stats.total_farms }}</div>
+            <span style="font-size: 0.75rem; color: var(--color-text-light);">GPS Demarcated clusters</span>
+        </div>
+        <div class="card" style="padding: 18px; border-left: 4px solid #f59e0b;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--color-text-light);">Production Cycles</span>
+            <div style="font-size: 1.85rem; font-weight: 800; color: var(--color-text-main); margin-top: 4px;">{{ stats.total_cycles }}</div>
+            <span style="font-size: 0.75rem; color: var(--color-text-light);">Aquaculture, Cassava, Broiler</span>
+        </div>
+        <div class="card" style="padding: 18px; border-left: 4px solid #10b981;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--color-text-light);">Off-take Matches</span>
+            <div style="font-size: 1.85rem; font-weight: 800; color: var(--color-text-main); margin-top: 4px;">{{ stats.total_matches }}</div>
+            <span style="font-size: 0.75rem; color: var(--color-text-light);">Guaranteed commercial contracts</span>
+        </div>
+    </div>
+
+    <!-- Section 1: User & Stakeholder Directory -->
+    <div class="card" style="padding: 24px; margin-bottom: 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+            <div>
+                <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 4px 0; color: var(--color-text-main);">
+                    User Identity &amp; Role Management
+                </h2>
+                <p style="margin: 0; font-size: 0.85rem; color: var(--color-text-light);">
+                    Filter, inspect, modify roles, or toggle account status for all ecosystem stakeholders.
+                </p>
+            </div>
+
+            <!-- Role Quick Filter Pills -->
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <a href="?{% if search_query %}q={{ search_query }}&{% endif %}" class="badge {% if not selected_role %}badge-primary{% endif %}" style="text-decoration: none; padding: 6px 12px; font-size: 0.8rem; cursor: pointer;">
+                    All ({{ total_user_count }})
+                </a>
+                <a href="?role=DFAC_ADMIN{% if search_query %}&q={{ search_query }}{% endif %}" class="badge" style="text-decoration: none; padding: 6px 10px; font-size: 0.8rem; {% if selected_role == 'DFAC_ADMIN' %}background: #4f46e5; color: white;{% else %}background: #eef2ff; color: #4338ca;{% endif %}">
+                    Admins ({{ role_counts.admin }})
+                </a>
+                <a href="?role=FIELD_OFFICER{% if search_query %}&q={{ search_query }}{% endif %}" class="badge" style="text-decoration: none; padding: 6px 10px; font-size: 0.8rem; {% if selected_role == 'FIELD_OFFICER' %}background: #0284c7; color: white;{% else %}background: #e0f2fe; color: #0369a1;{% endif %}">
+                    Field Officers ({{ role_counts.officer }})
+                </a>
+                <a href="?role=TRAINER{% if search_query %}&q={{ search_query }}{% endif %}" class="badge" style="text-decoration: none; padding: 6px 10px; font-size: 0.8rem; {% if selected_role == 'TRAINER' %}background: #d97706; color: white;{% else %}background: #fef3c7; color: #b45309;{% endif %}">
+                    Trainers ({{ role_counts.trainer }})
+                </a>
+                <a href="?role=LENDER{% if search_query %}&q={{ search_query }}{% endif %}" class="badge" style="text-decoration: none; padding: 6px 10px; font-size: 0.8rem; {% if selected_role == 'LENDER' %}background: #16a34a; color: white;{% else %}background: #dcfce7; color: #15803d;{% endif %}">
+                    Lenders ({{ role_counts.lender }})
+                </a>
+                <a href="?role=BUYER{% if search_query %}&q={{ search_query }}{% endif %}" class="badge" style="text-decoration: none; padding: 6px 10px; font-size: 0.8rem; {% if selected_role == 'BUYER' %}background: #0d9488; color: white;{% else %}background: #ccfbf1; color: #0f766e;{% endif %}">
+                    Buyers ({{ role_counts.buyer }})
+                </a>
+                <a href="?role=FARMER{% if search_query %}&q={{ search_query }}{% endif %}" class="badge" style="text-decoration: none; padding: 6px 10px; font-size: 0.8rem; {% if selected_role == 'FARMER' %}background: #059669; color: white;{% else %}background: #d1fae5; color: #047857;{% endif %}">
+                    Farmers ({{ role_counts.farmer }})
+                </a>
+            </div>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <form method="GET" style="display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap;">
+            {% if selected_role %}<input type="hidden" name="role" value="{{ selected_role }}">{% endif %}
+            <div style="flex: 1; min-width: 240px;">
+                <input type="text" name="q" value="{{ search_query }}" placeholder="Search by name, username, phone, or email..." class="form-input" style="width: 100%;">
+            </div>
+            <select name="status" class="form-input" style="width: 150px;">
+                <option value="">All Statuses</option>
+                <option value="active" {% if selected_status == 'active' %}selected{% endif %}>Active Only</option>
+                <option value="inactive" {% if selected_status == 'inactive' %}selected{% endif %}>Suspended Only</option>
+            </select>
+            <button type="submit" class="btn btn-secondary">Filter</button>
+            {% if search_query or selected_role or selected_status %}
+                <a href="{% url 'admin-console' %}" class="btn btn-outline" style="border: 1px solid var(--color-border-subtle);">Reset</a>
+            {% endif %}
+        </form>
+
+        <!-- User Table -->
+        <div class="table-responsive">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--color-border-subtle); text-align: left; font-size: 0.8rem; color: var(--color-text-light); text-transform: uppercase;">
+                        <th style="padding: 12px 14px;">User / Identity</th>
+                        <th style="padding: 12px 14px;">Role &amp; Desk</th>
+                        <th style="padding: 12px 14px;">Jurisdiction</th>
+                        <th style="padding: 12px 14px;">Phone / Contact</th>
+                        <th style="padding: 12px 14px;">Status</th>
+                        <th style="padding: 12px 14px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr style="border-bottom: 1px solid var(--color-border-subtle); font-size: 0.9rem;">
+                        <td style="padding: 12px 14px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="width: 36px; height: 36px; border-radius: 50%; background: #4f46e5; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">
+                                    {{ u.username|slice:":2"|upper }}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 700; color: var(--color-text-main);">
+                                        {{ u.get_full_name|default:u.username }}
+                                    </div>
+                                    <div style="font-size: 0.78rem; color: var(--color-text-light);">
+                                        @{{ u.username }} {% if u.is_superuser %}<span style="color: #ef4444; font-weight: 700;">(Superuser)</span>{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding: 12px 14px;">
+                            <form method="POST" action="{% url 'admin-change-role' u.id %}" style="display: flex; align-items: center; gap: 6px; margin: 0;">
+                                {% csrf_token %}
+                                <select name="role" onchange="this.form.submit()" class="form-input" style="padding: 4px 8px; font-size: 0.78rem; height: auto; border-radius: 6px; font-weight: 600;">
+                                    {% for code, label in roles %}
+                                        <option value="{{ code }}" {% if u.role == code %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </td>
+                        <td style="padding: 12px 14px; color: var(--color-text-light); font-size: 0.85rem;">
+                            {{ u.lga|default:"Regional" }}, {{ u.state|default:"Delta" }}
+                        </td>
+                        <td style="padding: 12px 14px; font-size: 0.85rem;">
+                            <div>{{ u.phone_number|default:"—" }}</div>
+                            <div style="font-size: 0.75rem; color: var(--color-text-light);">{{ u.email|default:"" }}</div>
+                        </td>
+                        <td style="padding: 12px 14px;">
+                            {% if u.is_active %}
+                                <span class="badge" style="background: rgba(22, 163, 74, 0.12); color: #16a34a; font-weight: 700; font-size: 0.75rem;">Active</span>
+                            {% else %}
+                                <span class="badge" style="background: rgba(239, 68, 68, 0.12); color: #ef4444; font-weight: 700; font-size: 0.75rem;">Suspended</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 12px 14px;">
+                            <form method="POST" action="{% url 'admin-toggle-user-status' u.id %}" style="margin: 0; display: inline;">
+                                {% csrf_token %}
+                                {% if u.is_active %}
+                                    <button type="submit" class="btn btn-secondary" style="font-size: 0.75rem; padding: 4px 10px; color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
+                                        Suspend
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-secondary" style="font-size: 0.75rem; padding: 4px 10px; color: #16a34a; border-color: rgba(22, 163, 74, 0.3);">
+                                        Activate
+                                    </button>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="padding: 24px; text-align: center; color: var(--color-text-light);">
+                            No stakeholders found matching the specified query.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section 2: Smallholder Verification & Deduplication Desk -->
+    <div class="card" style="padding: 24px; margin-bottom: 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 4px 0; color: var(--color-text-main);">
+                    Smallholder KYC Verification Queue
+                </h2>
+                <p style="margin: 0; font-size: 0.85rem; color: var(--color-text-light);">
+                    Pending review farmers and deduplication flags requiring administrative approval.
+                </p>
+            </div>
+            <span class="badge badge-warning" style="font-weight: 700;">{{ pending_farmers.count }} Awaiting Review</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--color-border-subtle); text-align: left; font-size: 0.8rem; color: var(--color-text-light); text-transform: uppercase;">
+                        <th style="padding: 10px 14px;">Farmer Reference</th>
+                        <th style="padding: 10px 14px;">Full Name</th>
+                        <th style="padding: 10px 14px;">Location / LGA</th>
+                        <th style="padding: 10px 14px;">NIN Deterministic Hash</th>
+                        <th style="padding: 10px 14px;">Current Status</th>
+                        <th style="padding: 10px 14px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in pending_farmers %}
+                    <tr style="border-bottom: 1px solid var(--color-border-subtle); font-size: 0.88rem;">
+                        <td style="padding: 10px 14px; font-weight: 700; color: #4f46e5;">
+                            #{{ f.reference_code|default:f.id|slice:":8" }}
+                        </td>
+                        <td style="padding: 10px 14px; font-weight: 600;">
+                            {{ f.first_name }} {{ f.last_name }}
+                        </td>
+                        <td style="padding: 10px 14px; color: var(--color-text-light);">
+                            {{ f.community_address }}, {{ f.lga }} ({{ f.state }})
+                        </td>
+                        <td style="padding: 10px 14px; font-family: monospace; font-size: 0.78rem; color: var(--color-text-light);">
+                            {{ f.nin_hash|slice:":16" }}...
+                        </td>
+                        <td style="padding: 10px 14px;">
+                            {% if f.verification_status == 'FLAGGED_DUPLICATE' %}
+                                <span class="badge" style="background: rgba(239, 68, 68, 0.12); color: #ef4444; font-weight: 700;">Flagged Duplicate</span>
+                            {% else %}
+                                <span class="badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706; font-weight: 700;">Pending Review</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 10px 14px;">
+                            <form method="POST" action="{% url 'admin-verify-farmer' f.id %}" style="margin: 0; display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary" style="font-size: 0.75rem; padding: 4px 10px; background: #16a34a; border-color: #15803d;">
+                                    ✓ Approve &amp; Verify
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="padding: 24px; text-align: center; color: var(--color-text-light);">
+                            All registered smallholders are verified! No pending verification or deduplication flags.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section 3: NDPA 2023 System Audit Stream -->
+    <div class="card" style="padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div>
+                <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 4px 0; color: var(--color-text-main);">
+                    NDPA 2023 Immutable Audit Stream
+                </h2>
+                <p style="margin: 0; font-size: 0.85rem; color: var(--color-text-light);">
+                    Cryptographic and timestamped trail of data access, financial disbursements, and identity changes.
+                </p>
+            </div>
+            <span class="badge badge-success" style="font-weight: 700;">Real-time Telemetry</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--color-border-subtle); text-align: left; font-size: 0.8rem; color: var(--color-text-light); text-transform: uppercase;">
+                        <th style="padding: 10px 14px;">Timestamp</th>
+                        <th style="padding: 10px 14px;">Actor</th>
+                        <th style="padding: 10px 14px;">Audit Action</th>
+                        <th style="padding: 10px 14px;">Target Resource</th>
+                        <th style="padding: 10px 14px;">IP Signature</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for evt in audit_events %}
+                    <tr style="border-bottom: 1px solid var(--color-border-subtle); font-size: 0.85rem;">
+                        <td style="padding: 10px 14px; color: var(--color-text-light);">
+                            {{ evt.timestamp|date:"Y-m-d H:i:s" }}
+                        </td>
+                        <td style="padding: 10px 14px; font-weight: 600;">
+                            {{ evt.user.username|default:"System Engine" }}
+                        </td>
+                        <td style="padding: 10px 14px;">
+                            <span class="badge" style="background: rgba(99, 102, 241, 0.12); color: #4f46e5; font-size: 0.72rem; font-weight: 700;">
+                                {{ evt.get_action_display }}
+                            </span>
+                        </td>
+                        <td style="padding: 10px 14px; font-family: monospace; font-size: 0.78rem;">
+                            {{ evt.resource_type }}:{{ evt.resource_id|slice:":8" }}
+                        </td>
+                        <td style="padding: 10px 14px; color: var(--color-text-light); font-size: 0.78rem;">
+                            {{ evt.ip_address|default:"127.0.0.1 (Loopback)" }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="padding: 20px; text-align: center; color: var(--color-text-light);">
+                            System initialized. All actions are securely logged in real-time.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Register New Stakeholder -->
+<div id="newUserModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+    <div class="card" style="width: 100%; max-width: 520px; padding: 28px; background: white; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--color-text-main);">
+                Register New Ecosystem Stakeholder
+            </h3>
+            <button type="button" onclick="document.getElementById('newUserModal').style.display='none'" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--color-text-light);">&times;</button>
+        </div>
+
+        <form method="POST" action="{% url 'admin-create-user' %}">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label">Username *</label>
+                    <input type="text" name="username" class="form-input" required placeholder="e.g. officer_bayelsa">
+                </div>
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label">Role *</label>
+                    <select name="role" class="form-input" required>
+                        {% for code, label in roles %}
+                            <option value="{{ code }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label">First Name</label>
+                    <input type="text" name="first_name" class="form-input" placeholder="e.g. Emmanuel">
+                </div>
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" name="last_name" class="form-input" placeholder="e.g. Okonkwo">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" name="phone_number" class="form-input" placeholder="+2348030000000">
+                </div>
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-input" placeholder="officer@dfac.ng">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label">State</label>
+                    <input type="text" name="state" value="Delta" class="form-input">
+                </div>
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label">LGA</label>
+                    <input type="text" name="lga" placeholder="e.g. Warri South" class="form-input">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label class="form-label">Temporary Password</label>
+                <input type="password" name="password" value="password123" class="form-input">
+                <span style="font-size: 0.75rem; color: var(--color-text-light);">Default is 'password123'. User can change it upon login.</span>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" onclick="document.getElementById('newUserModal').style.display='none'" class="btn btn-secondary">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="background: #4f46e5; border-color: #4338ca;">Create Account</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -7,6 +7,18 @@ from .views import (
     impact_view,
     contact_view,
     portal_login_view,
+    portal_logout_view,
+    portal_dashboard_view,
+    trainer_portal_view,
+    trainer_schedule_session_portal,
+    trainer_issue_certificate_portal,
+    farmer_portal_view,
+    user_profile_view,
+    admin_console_view,
+    admin_toggle_user_status_view,
+    admin_change_user_role_view,
+    admin_create_user_view,
+    admin_verify_farmer_view,
     cockpit_view,
     farms_geojson_view,
     resolve_duplicate_view,
@@ -24,6 +36,7 @@ from .views import (
     donor_reporting_portal_view,
     inputs_portal_view,
     confirm_input_delivery_portal,
+    download_apk_view,
 )
 
 urlpatterns = [
@@ -34,7 +47,17 @@ urlpatterns = [
     path('impact/', impact_view, name='impact'),
     path('contact/', contact_view, name='contact'),
     path('login/', portal_login_view, name='portal-login'),
-    
+    path('logout/', portal_logout_view, name='portal-logout'),
+    path('portal/dashboard/', portal_dashboard_view, name='portal-dashboard'),
+    path('portal/profile/', user_profile_view, name='portal-profile'),
+
+    # Custom Professional Admin Management Console
+    path('portal/admin/', admin_console_view, name='admin-console'),
+    path('portal/admin/toggle-user/<uuid:user_id>/', admin_toggle_user_status_view, name='admin-toggle-user-status'),
+    path('portal/admin/change-role/<uuid:user_id>/', admin_change_user_role_view, name='admin-change-role'),
+    path('portal/admin/create-user/', admin_create_user_view, name='admin-create-user'),
+    path('portal/admin/verify-farmer/<uuid:farmer_id>/', admin_verify_farmer_view, name='admin-verify-farmer'),
+
     # Milestone M2: DFAC Operational Cockpit & Map
     path('cockpit/', cockpit_view, name='cockpit'),
     path('cockpit/resolve-duplicate/<uuid:farmer_id>/', resolve_duplicate_view, name='cockpit-resolve-duplicate'),
@@ -57,6 +80,12 @@ urlpatterns = [
     path('portal/fieldops/report-incident/', fieldops_report_incident_portal, name='fieldops-report-incident-portal'),
     path('portal/fieldops/auto-dispatch/', fieldops_auto_dispatch_portal, name='fieldops-auto-dispatch-portal'),
 
+    # Milestone M5: Trainer & Smallholder Farmer Portals
+    path('portal/trainer/', trainer_portal_view, name='trainer-portal'),
+    path('portal/trainer/schedule/', trainer_schedule_session_portal, name='trainer-schedule-session'),
+    path('portal/trainer/issue-cert/', trainer_issue_certificate_portal, name='trainer-issue-cert'),
+    path('portal/farmer/', farmer_portal_view, name='farmer-portal'),
+
     # Milestone M6: USSD & SMS Simulator
     path('portal/ussd-simulator/', ussd_simulator_view, name='ussd-simulator'),
 
@@ -64,4 +93,7 @@ urlpatterns = [
     path('portal/reporting/', donor_reporting_portal_view, name='reporting-portal'),
     path('portal/inputs/', inputs_portal_view, name='inputs-portal'),
     path('portal/inputs/confirm-delivery/<uuid:order_id>/', confirm_input_delivery_portal, name='portal-confirm-input-delivery'),
+
+    # Mobile Field Operations APK Download
+    path('download/apk/', download_apk_view, name='download-apk'),
 ]

@@ -66,7 +66,7 @@
                     </svg>
                 </div>
                 <div class="brand-text-wrap">
-                    <span class="brand-name">DFAC AgriDEP<sup>TM</sup></span>
+                    <span class="brand-name">DFAC AgriDEP<sup style="font-size: x-small;">TM</sup></span>
                 </div>
             </a>
 
@@ -83,7 +83,7 @@
                     <!-- 2. Portals & Operations ▾ -->
                     <li class="nav-item has-dropdown">
                         <button class="nav-link {% if 'cockpit' in request.path or 'portal' in request.path %}active{% endif %}" aria-haspopup="true">
-                            <span>Portals &amp; Operations</span>
+                            <span>Operations</span>
                             <span class="dropdown-arrow">▼</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-wide">
@@ -149,6 +149,45 @@
                                     <div class="dropdown-text-wrap">
                                         <span class="dropdown-item-title">Input Supply &amp; Catalogs</span>
                                         <span class="dropdown-item-desc">Fingerlings, high-protein feed, agrochemicals &amp; delivery gates</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'trainer-portal' %}" class="dropdown-item">
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="dropdown-text-wrap">
+                                        <span class="dropdown-item-title">Trainer &amp; Accreditation Desk</span>
+                                        <span class="dropdown-item-desc">GAP training cohorts, attendance rosters &amp; verifiable badges</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'farmer-portal' %}" class="dropdown-item">
+                                    <div class="dropdown-icon-box">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/>
+                                        </svg>
+                                    </div>
+                                    <div class="dropdown-text-wrap">
+                                        <span class="dropdown-item-title">Smallholder Farmer Desk</span>
+                                        <span class="dropdown-item-desc">Pond monitoring, production cycles, loan tranches &amp; offtake</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'admin-console' %}" class="dropdown-item">
+                                    <div class="dropdown-icon-box" style="background: rgba(99, 102, 241, 0.12); color: #4f46e5;">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/>
+                                        </svg>
+                                    </div>
+                                    <div class="dropdown-text-wrap">
+                                        <span class="dropdown-item-title" style="color: #4f46e5;">Executive Admin Console</span>
+                                        <span class="dropdown-item-desc">Universal user management, KYC review &amp; platform audit</span>
                                     </div>
                                 </a>
                             </li>
@@ -332,7 +371,7 @@
 
             <!-- Header Action CTAs -->
             <div class="nav-actions">
-                <a href="{% url 'verify-certificate' %}" class="btn btn-secondary" style="font-size: 0.85rem; padding: 8px 16px;">
+                <a href="{% url 'verify-certificate' %}" class="btn btn-secondary nav-action-btn" style="font-size: 0.85rem; padding: 8px 16px;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>
                     </svg>
@@ -340,17 +379,64 @@
                 </a>
 
                 {% if user.is_authenticated %}
-                    {% if user.is_staff or user.role == 'DFAC_ADMIN' %}
-                        <a href="/admin/" class="btn btn-primary" style="font-size: 0.85rem; padding: 8px 18px;">
-                            <span>Operations Console</span>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'portal-login' %}" class="btn btn-primary" style="font-size: 0.85rem; padding: 8px 18px;">
-                            <span>My Account</span>
-                        </a>
-                    {% endif %}
+                    <!-- Logged In User Avatar with Dropdown -->
+                    <div class="user-menu-container" style="position: relative;">
+                        <button type="button" class="user-avatar-btn" id="userMenuToggle" aria-haspopup="true" style="display: flex; align-items: center; gap: 8px; background: rgba(22, 163, 74, 0.08); border: 1px solid rgba(22, 163, 74, 0.25); padding: 4px 12px 4px 6px; border-radius: 9999px; cursor: pointer; transition: all 0.2s ease;">
+                            <div style="position: relative;">
+                                <div style="width: 32px; height: 32px; border-radius: 50%; background: #16a34a; color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.82rem;">
+                                    {{ user.username|slice:":2"|upper }}
+                                </div>
+                                <span style="position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; background: #22c55e; border: 1.5px solid #ffffff; border-radius: 50%;"></span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left;">
+                                <span style="font-size: 0.82rem; font-weight: 700; color: var(--color-text-main); line-height: 1.1;">
+                                    {{ user.first_name|default:user.username }}
+                                </span>
+                                <span style="font-size: 0.68rem; font-weight: 700; color: #16a34a; text-transform: uppercase; letter-spacing: 0.03em;">
+                                    {{ user.get_role_display|slice:":0" }}
+                                </span>
+                            </div>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left: 2px; color: var(--color-text-light);"><path d="m6 9 6 6 6-6"/></svg>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div id="userMenuDropdown" class="user-dropdown" style="display: none; position: absolute; right: 0; top: calc(100% + 8px); width: 250px; background: #ffffff; border: 1px solid var(--color-border-subtle); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.12); padding: 8px; z-index: 1000;">
+                            <div style="padding: 10px 12px; background: #f8fafc; border-radius: 8px; margin-bottom: 6px;">
+                                <div style="font-weight: 700; font-size: 0.9rem; color: var(--color-text-main);">{{ user.get_full_name|default:user.username }}</div>
+                                <div style="font-size: 0.75rem; color: var(--color-text-light); margin-top: 2px;">@{{ user.username }} &bull; {{ user.get_role_display }}</div>
+                            </div>
+
+                            <a href="{% url 'portal-dashboard' %}" class="dropdown-item" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; text-decoration: none; color: var(--color-text-main);">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                                <span>My Operational Desk</span>
+                            </a>
+
+                            {% if user.role == 'DFAC_ADMIN' or user.is_superuser %}
+                                <a href="{% url 'admin-console' %}" class="dropdown-item" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; text-decoration: none; color: #4f46e5;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+                                    <span>Executive Admin Console</span>
+                                </a>
+                                <a href="{% url 'cockpit' %}" class="dropdown-item" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; text-decoration: none; color: var(--color-text-main);">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="12 6 12 12 16 14"/></svg>
+                                    <span>Spatial Cockpit</span>
+                                </a>
+                            {% endif %}
+
+                            <a href="{% url 'portal-profile' %}" class="dropdown-item" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; text-decoration: none; color: var(--color-text-main);">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <span>My Profile &amp; Security</span>
+                            </a>
+
+                            <div style="height: 1px; background: var(--color-border-subtle); margin: 6px 0;"></div>
+
+                            <a href="{% url 'portal-logout' %}" class="dropdown-item" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; text-decoration: none; color: #dc2626;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                                <span>Sign Out</span>
+                            </a>
+                        </div>
+                    </div>
                 {% else %}
-                    <a href="{% url 'portal-login' %}" class="btn btn-primary" style="font-size: 0.85rem; padding: 8px 18px;">
+                    <a href="{% url 'portal-login' %}" class="btn btn-primary nav-action-btn" style="font-size: 0.85rem; padding: 8px 18px;">
                         <span>Sign In</span>
                     </a>
                 {% endif %}
@@ -366,35 +452,126 @@
     </header>
 
     <!-- Mobile Drawer Navigation -->
-    <div id="mobileDrawer" style="display: none; background: #ffffff; border-bottom: 2px solid var(--color-primary-border); padding: 20px 24px;">
-        <div style="display: flex; flex-direction: column; gap: 14px;">
-            <a href="{% url 'home' %}" style="font-weight: 700; font-size: 1.1rem; color: var(--color-text-main);">Home</a>
-            <div style="border-top: 1px solid var(--color-border); padding-top: 10px;">
-                <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--color-primary);">Portals &amp; Operations</span>
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-left: 10px;">
-                    <a href="{% url 'cockpit' %}">Executive Cockpit</a>
-                    <a href="{% url 'fieldops-portal' %}">Field Operations Hub</a>
-                    <a href="{% url 'lender-portal' %}">Lender Portfolio Hub</a>
-                    <a href="{% url 'buyer-portal' %}">Buyer &amp; Off-taker Hub</a>
-                    <a href="{% url 'inputs-portal' %}">Input Supply &amp; Catalogs</a>
-                    <a href="{% url 'ussd-simulator' %}">USSD &amp; SMS Simulator</a>
+    <div id="mobileDrawer" class="mobile-drawer" style="display: none;">
+        <div class="mobile-drawer-actions">
+            <a href="{% url 'verify-certificate' %}" class="btn btn-secondary" style="width: 100%; justify-content: center; padding: 10px 16px; font-size: 0.9rem;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>
+                </svg>
+                <span>Verify Credential</span>
+            </a>
+
+            {% if user.is_authenticated %}
+                <div style="background: rgba(22, 163, 74, 0.08); border: 1px solid rgba(22, 163, 74, 0.25); border-radius: 10px; padding: 12px; margin-bottom: 4px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: #16a34a; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem;">
+                            {{ user.username|slice:":2"|upper }}
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-main);">{{ user.get_full_name|default:user.username }}</div>
+                            <span class="badge" style="background: #16a34a; color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 6px;">{{ user.get_role_display }}</span>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
+                        <a href="{% url 'portal-dashboard' %}" class="btn btn-primary" style="font-size: 0.8rem; padding: 6px 10px; justify-content: center;">My Desk</a>
+                        <a href="{% url 'portal-profile' %}" class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 10px; justify-content: center;">Profile</a>
+                    </div>
+                    {% if user.role == 'DFAC_ADMIN' or user.is_superuser %}
+                        <a href="{% url 'admin-console' %}" class="btn" style="width: 100%; justify-content: center; padding: 6px 12px; font-size: 0.8rem; margin-top: 8px; background: #e0e7ff; color: #4338ca; border-color: #c7d2fe;">
+                            Executive Admin Console
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'portal-logout' %}" class="btn" style="width: 100%; justify-content: center; padding: 6px 12px; font-size: 0.8rem; margin-top: 8px; background: #fee2e2; color: #dc2626; border-color: #fca5a5;">
+                        Sign Out
+                    </a>
+                </div>
+            {% else %}
+                <a href="{% url 'portal-login' %}" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 10px 18px; font-size: 0.9rem;">
+                    <span>Sign In to Operational Desk &rarr;</span>
+                </a>
+            {% endif %}
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+            <a href="{% url 'home' %}" class="mobile-drawer-link" style="font-weight: 700; font-size: 1.05rem; color: var(--color-primary-dark);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>Home</span>
+            </a>
+
+            <!-- Portals & Operations -->
+            <div class="mobile-drawer-section">
+                <span class="mobile-drawer-label">Portals &amp; Operations</span>
+                <div class="mobile-drawer-links">
+                    <a href="{% url 'cockpit' %}" class="mobile-drawer-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        <span>Executive Cockpit</span>
+                    </a>
+                    <a href="{% url 'fieldops-portal' %}" class="mobile-drawer-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                        <span>Field Operations Hub</span>
+                    </a>
+                    <a href="{% url 'lender-portal' %}" class="mobile-drawer-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m2 7 10-5 10 5v2H2z"/><path d="M4 11v7"/><path d="M8 11v7"/><path d="M12 11v7"/><path d="M16 11v7"/><path d="M20 11v7"/><path d="M2 20h20v2H2z"/></svg>
+                        <span>Lender Portfolio Hub</span>
+                    </a>
+                    <a href="{% url 'buyer-portal' %}" class="mobile-drawer-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m11 17 2 2a1 1 0 0 0 1.42 0l6.58-6.59a1 1 0 0 0 0-1.41l-2-2a1 1 0 0 0-1.41 0L13 11.59"/><path d="m16 8-2-2a1 1 0 0 0-1.41 0L6 12.59a1 1 0 0 0 0 1.41l2 2a1 1 0 0 0 1.42 0L12 13.41"/><path d="M2 12h3"/><path d="M19 12h3"/></svg>
+                        <span>Buyer &amp; Off-taker Hub</span>
+                    </a>
+                    <a href="{% url 'inputs-portal' %}" class="mobile-drawer-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                        <span>Input Supply &amp; Catalogs</span>
+                    </a>
+                    <a href="{% url 'ussd-simulator' %}" class="mobile-drawer-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+                        <span>USSD &amp; SMS Simulator</span>
+                    </a>
+                    <a href="{% url 'download-apk' %}" class="mobile-drawer-link" style="background: rgba(22, 163, 74, 0.18); border: 1px solid rgba(74, 222, 128, 0.35); color: #4ade80; font-weight: 600;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        <span>Download Field App (Android APK)</span>
+                    </a>
                 </div>
             </div>
-            <div style="border-top: 1px solid var(--color-border); padding-top: 10px;">
-                <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--color-primary);">Value Chains &amp; Impact</span>
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-left: 10px;">
-                    <a href="{% url 'value-chains' %}">Aquaculture, Cassava &amp; Poultry</a>
-                    <a href="{% url 'reporting-portal' %}">Donor M&amp;E Hub (PIND &amp; GIZ)</a>
-                    <a href="{% url 'verify-certificate' %}">Verify Credential</a>
-                    <a href="{% url 'impact' %}">Socio-Economic Impact</a>
+
+            <!-- Value Chains & Impact -->
+            <div class="mobile-drawer-section">
+                <span class="mobile-drawer-label">Value Chains &amp; Impact</span>
+                <div class="mobile-drawer-links">
+                    <a href="{% url 'value-chains' %}" class="mobile-drawer-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6Z"/><path d="M2 12h4.5"/></svg>
+                        <span>Aquaculture, Cassava &amp; Poultry</span>
+                    </a>
+                    <a href="{% url 'reporting-portal' %}" class="mobile-drawer-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        <span>Donor M&amp;E Hub (PIND &amp; GIZ)</span>
+                    </a>
+                    <a href="{% url 'verify-certificate' %}" class="mobile-drawer-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                        <span>Verify Credential</span>
+                    </a>
+                    <a href="{% url 'impact' %}" class="mobile-drawer-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                        <span>Socio-Economic Impact</span>
+                    </a>
                 </div>
             </div>
-            <div style="border-top: 1px solid var(--color-border); padding-top: 10px;">
-                <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--color-primary);">DFAC Agribusiness</span>
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-left: 10px;">
-                    <a href="{% url 'about' %}">About DFAC</a>
-                    <a href="{% url 'solutions' %}">Ecosystem Solutions</a>
-                    <a href="{% url 'contact' %}">Field Coordination Desks</a>
+
+            <!-- DFAC Agribusiness -->
+            <div class="mobile-drawer-section">
+                <span class="mobile-drawer-label">DFAC Agribusiness</span>
+                <div class="mobile-drawer-links">
+                    <a href="{% url 'about' %}" class="mobile-drawer-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/></svg>
+                        <span>About DFAC</span>
+                    </a>
+                    <a href="{% url 'solutions' %}" class="mobile-drawer-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                        <span>Ecosystem Solutions</span>
+                    </a>
+                    <a href="{% url 'contact' %}" class="mobile-drawer-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        <span>Field Coordination Desks</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -451,21 +628,39 @@
                                 <path d="M2 9.5l3 2.5-3 2.5"/>
                             </svg>
                         </div>
-                        <h4 style="color: #ffffff; font-size: 1.35rem; font-family: var(--font-heading); margin: 0;">DFAC AgriDEP<sup>TM</sup></h4>
+                        <h4 style="color: #ffffff; font-size: 1.35rem; font-family: var(--font-heading); margin: 0;">DFAC AgriDEP<sup style="font-size: x-small;">TM</sup></h4>
                     </div>
                     <p>Connecting farmers, field data, commercial off-takers, and financial institutions across the Niger Delta agricultural corridor.</p>
+                    <div style="margin-top: 18px;">
+                        <a href="{% url 'download-apk' %}" style="display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: #ffffff; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35); border: 1px solid rgba(74, 222, 128, 0.4); transition: transform 0.15s ease, box-shadow 0.15s ease;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            <span>Download Field App (APK v1.0.0)</span>
+                        </a>
+                        <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 8px; display: flex; align-items: center; gap: 6px;">
+                            <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #4ade80;"></span>
+                            <span>Offline-First • GPS Verification • Android 5.0+</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Column 1: Core Portals -->
                 <div>
                     <h5 class="footer-heading">Portals &amp; Hubs</h5>
                     <ul class="footer-links">
+                        <li><a href="{% url 'admin-console' %}" class="footer-link" style="color: #818cf8; font-weight: 600;">Executive Admin Console</a></li>
                         <li><a href="{% url 'cockpit' %}" class="footer-link">Operational Cockpit</a></li>
                         <li><a href="{% url 'fieldops-portal' %}" class="footer-link">Field Operations</a></li>
+                        <li><a href="{% url 'trainer-portal' %}" class="footer-link">Trainer &amp; Accreditation Desk</a></li>
                         <li><a href="{% url 'lender-portal' %}" class="footer-link">Lender Portfolio Hub</a></li>
                         <li><a href="{% url 'buyer-portal' %}" class="footer-link">Buyer &amp; Off-taker Hub</a></li>
+                        <li><a href="{% url 'farmer-portal' %}" class="footer-link">Farmer Self-Service Desk</a></li>
                         <li><a href="{% url 'inputs-portal' %}" class="footer-link">Input Supply Catalogs</a></li>
                         <li><a href="{% url 'ussd-simulator' %}" class="footer-link">USSD Dial Simulator</a></li>
+                        <li><a href="{% url 'download-apk' %}" class="footer-link" style="color: #4ade80; font-weight: 600;">⬇ Download Field APK</a></li>
                     </ul>
                 </div>
 
@@ -540,6 +735,26 @@
                     }
                 });
             });
+
+            // User Profile Menu Dropdown Toggle
+            var userToggle = document.getElementById('userMenuToggle');
+            var userDropdown = document.getElementById('userMenuDropdown');
+            if (userToggle && userDropdown) {
+                userToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (userDropdown.style.display === 'none' || userDropdown.style.display === '') {
+                        userDropdown.style.display = 'block';
+                    } else {
+                        userDropdown.style.display = 'none';
+                    }
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!userToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+                        userDropdown.style.display = 'none';
+                    }
+                });
+            }
         });
     </script>
 </body>

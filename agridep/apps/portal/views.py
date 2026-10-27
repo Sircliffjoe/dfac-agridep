@@ -3,11 +3,15 @@ from decimal import Decimal
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Sum, Count, Q
-from django.contrib.auth import authenticate, login
-from django.http import JsonResponse, HttpResponse
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, HttpResponse, FileResponse, Http404
 from django.views.decorators.http import require_POST
 from django.utils import timezone
 
+from agridep.apps.accounts.models import User, UserRole, ConsentRecord
+from agridep.apps.accounts.permissions import role_required, admin_required, get_user_dashboard_url_name
+from agridep.apps.audit.models import AuditEvent, AuditAction
 from agridep.apps.registry.models import Farmer, Farm, EnterpriseType, Buyer, VerificationStatus
 from agridep.apps.production.models import ProductionCycle, ProduceBatch, CycleStage
 from agridep.apps.training.models import (
@@ -117,19 +121,23 @@ def contact_view(request):
 
 def portal_login_view(request):
     if request.user.is_authenticated:
-        if request.user.is_staff or getattr(request.user, 'role', '') == 'DFAC_ADMIN':
-            return redirect('cockpit')
-        messages.info(request, f"Welcome back, {request.user.username}!")
-        return redirect('cockpit')
+        return redirect(get_user_dashboard_url_name(request.user))
 
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '').strip()
         user = authenticate(request, username=username, password=password)
         if user is not None:
+            if not user.is_active:
+                messages.error(request, "This account has been deactivated. Please contact the DFAC Administrator.")
+                return render(request, 'portal/login.html', {'page_title': 'Stakeholder Portal Login - DFAC AgriDEP'})
             login(request, user)
-            messages.success(request, f"Welcome, {user.get_full_name() or user.username}!")
-            return redirect('cockpit')
+            role_title = user.get_role_display() if hasattr(user, 'get_role_display') else "AgriDEP"
+            messages.success(request, f"Welcome back, {user.get_full_name() or user.username}! Connected to {role_title} desk.")
+            next_url = request.GET.get('next')
+            if next_url and next_url.startswith('/'):
+                return redirect(next_url)
+            return redirect(get_user_dashboard_url_name(user))
         else:
             messages.error(request, "Invalid username or password. Please verify your credentials or contact your field coordinator.")
 
@@ -138,6 +146,20 @@ def portal_login_view(request):
     })
 
 
+def portal_logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+        messages.success(request, "You have been securely signed out.")
+    return redirect('home')
+
+
+@login_required
+def portal_dashboard_view(request):
+    """Dynamic router: directs logged-in user directly to their respective operational dashboard."""
+    return redirect(get_user_dashboard_url_name(request.user))
+
+
+@role_required(UserRole.DFAC_ADMIN)
 def cockpit_view(request):
     """
     DFAC Management Operational Cockpit:
@@ -323,6 +345,7 @@ def verify_certificate_view(request, code=None):
     })
 
 
+@role_required(UserRole.LENDER, UserRole.DFAC_ADMIN)
 def lender_portal_view(request):
     """
     Role-Scoped Lender Credit Portfolio Portal:
@@ -379,6 +402,7 @@ def lender_portal_view(request):
     })
 
 
+@role_required(UserRole.BUYER, UserRole.DFAC_ADMIN)
 def buyer_portal_view(request):
     """
     Role-Scoped Commercial Buyer & Off-taker Portal:
@@ -456,6 +480,7 @@ def trigger_auto_match_portal(request, demand_id):
     return redirect('buyer-portal')
 
 
+@role_required(UserRole.FIELD_OFFICER, UserRole.DFAC_ADMIN)
 def field_officer_portal_view(request):
     """
     Milestone M4: Field Extension Officer daily inspection and priority queue cockpit.
@@ -463,7 +488,7 @@ def field_officer_portal_view(request):
     from agridep.apps.fieldops.models import FarmVisit, IncidentReport, VisitAssignment
     from agridep.apps.fieldops.services import build_visit_priority_queue
 
-    officer = request.user if request.user.is_authenticated and request.user.role == UserRole.FIELD_OFFICER else None
+    officer = request.user if request.user.is_authenticated and getattr(request.user, 'role', '') == UserRole.FIELD_OFFICER else None
     priority_queue = build_visit_priority_queue(officer=officer, limit=20)
     assignments = VisitAssignment.objects.select_related('farm', 'farm__farmer', 'assigned_officer').order_by('-priority_score', 'due_date')[:15]
     recent_visits = FarmVisit.objects.select_related('farm', 'farm__farmer', 'officer').order_by('-actual_visit_date', '-created_at')[:15]
@@ -583,6 +608,7 @@ def ussd_simulator_view(request):
     })
 
 
+@role_required(UserRole.DFAC_ADMIN)
 def donor_reporting_portal_view(request):
     """
     Milestone M7: Automated Donor Reporting Portal (PIND & GIZ M&E Indicators).
@@ -597,6 +623,7 @@ def donor_reporting_portal_view(request):
     })
 
 
+@role_required(UserRole.DFAC_ADMIN, UserRole.FIELD_OFFICER)
 def inputs_portal_view(request):
     """
     Milestone M7: Input Supplier Directory & In-Kind Order Fulfillment Portal.
@@ -628,6 +655,378 @@ def confirm_input_delivery_portal(request, order_id):
     )
     messages.success(request, f"Order {order.order_code} delivery confirmed! Linked loan tranche unblocked.")
     return redirect('inputs-portal')
+
+
+def download_apk_view(request):
+    """
+    Serves the compiled DFAC AgriDEP Field Android APK (v1.0.0) for download.
+    """
+    import os
+    from django.conf import settings
+
+    apk_path = os.path.join(settings.BASE_DIR, 'agridep', 'static', 'downloads', 'dfac-agridep-field-v1.0.0.apk')
+    if not os.path.exists(apk_path):
+        raise Http404("DFAC AgriDEP Field APK is not available. Please trigger the APK build.")
+
+    response = FileResponse(
+        open(apk_path, 'rb'),
+        content_type='application/vnd.android.package-archive',
+        as_attachment=True,
+        filename='dfac-agridep-field-v1.0.0.apk'
+    )
+    response['Content-Length'] = os.path.getsize(apk_path)
+    return response
+
+
+# =============================================================================
+# Milestone M5: Trainer & Extension Specialist Portal
+# =============================================================================
+@role_required(UserRole.TRAINER, UserRole.DFAC_ADMIN)
+def trainer_portal_view(request):
+    """
+    Capacity Building & Accreditation Desk:
+    Allows training specialists to schedule curriculum cohorts,
+    manage attendance rosters, record competency test scores,
+    and issue tamper-evident verifiable credentials.
+    """
+    programmes = TrainingProgramme.objects.filter(is_active=True).order_by('title')
+    sessions = TrainingSession.objects.all().select_related('programme', 'trainer').order_by('-start_date')
+    if getattr(request.user, 'role', '') == UserRole.TRAINER and not request.user.is_superuser:
+        sessions = sessions.filter(trainer=request.user)
+
+    certificates = Certificate.objects.all().select_related('farmer', 'programme', 'session').order_by('-created_at')[:25]
+    farmers = Farmer.objects.filter(verification_status=VerificationStatus.VERIFIED).order_by('first_name', 'last_name')[:60]
+
+    total_sessions = sessions.count()
+    completed_sessions = sessions.filter(status='COMPLETED').count()
+    total_certs = Certificate.objects.count()
+    total_trainees = Attendance.objects.filter(status='PRESENT').values('farmer').distinct().count()
+
+    return render(request, 'portal/trainer_portal.html', {
+        'page_title': 'Extension & Training Accreditation Desk - DFAC AgriDEP',
+        'programmes': programmes,
+        'sessions': sessions[:15],
+        'certificates': certificates,
+        'farmers': farmers,
+        'stats': {
+            'total_sessions': total_sessions,
+            'completed_sessions': completed_sessions,
+            'total_certs': total_certs,
+            'total_trainees': total_trainees,
+        }
+    })
+
+
+@require_POST
+@role_required(UserRole.TRAINER, UserRole.DFAC_ADMIN)
+def trainer_schedule_session_portal(request):
+    """Schedules a new cohort training workshop."""
+    programme_id = request.POST.get('programme_id')
+    programme = get_object_or_404(TrainingProgramme, id=programme_id)
+    title = request.POST.get('title', '').strip() or f"{programme.title} - Cohort"
+    location = request.POST.get('location', '').strip()
+    start_date = request.POST.get('start_date') or timezone.now().date()
+    end_date = request.POST.get('end_date') or timezone.now().date()
+    total_days = int(request.POST.get('total_scheduled_days', 5))
+
+    session = TrainingSession.objects.create(
+        programme=programme,
+        trainer=request.user,
+        title=title,
+        location=location,
+        start_date=start_date,
+        end_date=end_date,
+        total_scheduled_days=total_days
+    )
+    messages.success(request, f"Cohort session '{session.title}' scheduled successfully at {location}!")
+    return redirect('trainer-portal')
+
+
+@require_POST
+@role_required(UserRole.TRAINER, UserRole.DFAC_ADMIN)
+def trainer_issue_certificate_portal(request):
+    """Issues a verifiable digital certificate to a trained smallholder."""
+    import random
+    from datetime import timedelta
+    session_id = request.POST.get('session_id')
+    farmer_id = request.POST.get('farmer_id')
+    session = get_object_or_404(TrainingSession, id=session_id)
+    farmer = get_object_or_404(Farmer, id=farmer_id)
+
+    short_code = f"CERT-DFAC-{random.randint(10000, 99999)}"
+    enterprise_code = session.programme.enterprise_type.code if (session.programme and session.programme.enterprise_type) else 'GAP'
+    cert_no = f"DFAC-{enterprise_code}-2026-{random.randint(1000, 9999)}"
+
+    cert = Certificate.objects.create(
+        farmer=farmer,
+        programme=session.programme,
+        session=session,
+        certificate_number=cert_no,
+        verification_code=short_code,
+        issue_date=timezone.now().date(),
+        expiry_date=timezone.now().date() + timedelta(days=730),
+        is_valid=True
+    )
+    messages.success(request, f"Verifiable Certificate #{cert.certificate_number} issued for {farmer.full_name}! Verification Code: {cert.verification_code}")
+    return redirect('trainer-portal')
+
+
+# =============================================================================
+# Milestone M5: Smallholder Farmer Self-Service Portal
+# =============================================================================
+@role_required(UserRole.FARMER, UserRole.FIELD_OFFICER, UserRole.DFAC_ADMIN)
+def farmer_portal_view(request):
+    """
+    Smallholder Self-Service Desk:
+    Gives verified farmers transparency over their registered ponds/plots,
+    active production cycles, biometrics, input vouchers, loan facilities,
+    and guaranteed offtake contracts.
+    """
+    farmer = getattr(request.user, 'farmer_profile', None)
+    if not farmer:
+        farmer = Farmer.objects.filter(verification_status=VerificationStatus.VERIFIED).first()
+
+    farms = farmer.farms.all() if farmer else []
+    cycles = ProductionCycle.objects.filter(farm__farmer=farmer).select_related('farm', 'enterprise_type') if farmer else []
+    loans = farmer.loans.all().prefetch_related('tranches') if farmer else []
+    certificates = farmer.certificates.all().select_related('programme', 'session') if farmer else []
+    matches = ProduceMatch.objects.filter(produce_batch__farm__farmer=farmer).select_related('buyer_demand', 'buyer_demand__buyer') if farmer else []
+
+    return render(request, 'portal/farmer_portal.html', {
+        'page_title': f'Smallholder Desk: {farmer.first_name if farmer else "Farmer"} - DFAC AgriDEP',
+        'farmer': farmer,
+        'farms': farms,
+        'cycles': cycles,
+        'loans': loans,
+        'certificates': certificates,
+        'matches': matches,
+    })
+
+
+# =============================================================================
+# User Profile & Security Settings
+# =============================================================================
+@login_required
+def user_profile_view(request):
+    """
+    User Account Profile & Security Settings:
+    Allows all authenticated stakeholders to update personal contact details,
+    view assigned role permissions, review NDPA consent status, and change password.
+    """
+    user = request.user
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'update_profile':
+            first_name = request.POST.get('first_name', '').strip()
+            last_name = request.POST.get('last_name', '').strip()
+            email = request.POST.get('email', '').strip()
+            phone_number = request.POST.get('phone_number', '').strip()
+            state = request.POST.get('state', '').strip()
+            lga = request.POST.get('lga', '').strip()
+
+            user.first_name = first_name
+            user.last_name = last_name
+            user.email = email
+            user.phone_number = phone_number
+            user.state = state or "Delta"
+            user.lga = lga
+            user.save()
+
+            messages.success(request, "Your profile details have been successfully updated.")
+            return redirect('portal-profile')
+
+        elif action == 'change_password':
+            old_password = request.POST.get('old_password', '')
+            new_password = request.POST.get('new_password', '')
+            confirm_password = request.POST.get('confirm_password', '')
+
+            if not user.check_password(old_password):
+                messages.error(request, "Current password does not match.")
+            elif len(new_password) < 6:
+                messages.error(request, "New password must be at least 6 characters long.")
+            elif new_password != confirm_password:
+                messages.error(request, "New passwords do not match.")
+            else:
+                user.set_password(new_password)
+                user.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, "Password changed successfully! Session preserved.")
+                return redirect('portal-profile')
+
+    consents = ConsentRecord.objects.filter(user=user)[:5] if user.is_authenticated else []
+
+    return render(request, 'portal/profile.html', {
+        'page_title': f'User Profile: {user.username} - DFAC AgriDEP',
+        'user_obj': user,
+        'consents': consents,
+    })
+
+
+# =============================================================================
+# Custom Professional Admin Management Console
+# =============================================================================
+@admin_required
+def admin_console_view(request):
+    """
+    Professional Custom Admin Management Console:
+    Full-fledged replacement for standard Django admin.
+    Features: User management, role modification, status toggle,
+    registry verification desk, system audit trail, and ecosystem health.
+    """
+    # 1. User & Stakeholder Management
+    users_qs = User.objects.all().order_by('-date_joined')
+    
+    role_filter = request.GET.get('role', '')
+    search_query = request.GET.get('q', '').strip()
+    status_filter = request.GET.get('status', '')
+
+    if role_filter:
+        users_qs = users_qs.filter(role=role_filter)
+    if search_query:
+        users_qs = users_qs.filter(
+            Q(username__icontains=search_query) |
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(phone_number__icontains=search_query)
+        )
+    if status_filter == 'active':
+        users_qs = users_qs.filter(is_active=True)
+    elif status_filter == 'inactive':
+        users_qs = users_qs.filter(is_active=False)
+
+    # 2. Smallholder Verification Queue
+    pending_farmers = Farmer.objects.filter(
+        verification_status__in=[VerificationStatus.PENDING_REVIEW, VerificationStatus.FLAGGED_DUPLICATE]
+    ).order_by('-created_at')[:20]
+
+    # 3. System Audit Trail
+    audit_events = AuditEvent.objects.all().select_related('user').order_by('-timestamp')[:25]
+
+    # 4. Global Platform KPI Counters
+    total_users = User.objects.count()
+    total_farmers = Farmer.objects.count()
+    verified_farmers = Farmer.objects.filter(verification_status=VerificationStatus.VERIFIED).count()
+    total_farms = Farm.objects.count()
+    total_cycles = ProductionCycle.objects.count()
+    total_loans = LoanRecord.objects.count()
+    total_matches = ProduceMatch.objects.count()
+
+    role_counts = {
+        'admin': User.objects.filter(role=UserRole.DFAC_ADMIN).count(),
+        'officer': User.objects.filter(role=UserRole.FIELD_OFFICER).count(),
+        'trainer': User.objects.filter(role=UserRole.TRAINER).count(),
+        'lender': User.objects.filter(role=UserRole.LENDER).count(),
+        'buyer': User.objects.filter(role=UserRole.BUYER).count(),
+        'farmer': User.objects.filter(role=UserRole.FARMER).count(),
+    }
+
+    return render(request, 'portal/admin_console.html', {
+        'page_title': 'DFAC Executive Administration Console',
+        'users': users_qs[:40],
+        'total_user_count': total_users,
+        'role_counts': role_counts,
+        'selected_role': role_filter,
+        'search_query': search_query,
+        'selected_status': status_filter,
+        'pending_farmers': pending_farmers,
+        'audit_events': audit_events,
+        'roles': UserRole.choices,
+        'stats': {
+            'total_users': total_users,
+            'total_farmers': total_farmers,
+            'verified_farmers': verified_farmers,
+            'total_farms': total_farms,
+            'total_cycles': total_cycles,
+            'total_loans': total_loans,
+            'total_matches': total_matches,
+        }
+    })
+
+
+@require_POST
+@admin_required
+def admin_toggle_user_status_view(request, user_id):
+    """Toggles active/inactive state of a system user."""
+    target_user = get_object_or_404(User, id=user_id)
+    if target_user == request.user:
+        messages.error(request, "Security protection: You cannot deactivate your own administrative account.")
+        return redirect('admin-console')
+
+    target_user.is_active = not target_user.is_active
+    target_user.save()
+    status_str = "activated" if target_user.is_active else "deactivated"
+    messages.success(request, f"User {target_user.username} has been {status_str}.")
+    return redirect('admin-console')
+
+
+@require_POST
+@admin_required
+def admin_change_user_role_view(request, user_id):
+    """Updates the role assigned to a stakeholder user."""
+    target_user = get_object_or_404(User, id=user_id)
+    new_role = request.POST.get('role')
+    if new_role in dict(UserRole.choices):
+        target_user.role = new_role
+        target_user.save()
+        messages.success(request, f"Role for {target_user.username} updated to '{target_user.get_role_display()}'.")
+    else:
+        messages.error(request, "Invalid role specified.")
+    return redirect('admin-console')
+
+
+@require_POST
+@admin_required
+def admin_create_user_view(request):
+    """Creates a new stakeholder account directly from the Custom Admin Console."""
+    username = request.POST.get('username', '').strip()
+    first_name = request.POST.get('first_name', '').strip()
+    last_name = request.POST.get('last_name', '').strip()
+    email = request.POST.get('email', '').strip()
+    phone_number = request.POST.get('phone_number', '').strip()
+    role = request.POST.get('role', UserRole.FIELD_OFFICER)
+    password = request.POST.get('password', '').strip() or 'password123'
+    state = request.POST.get('state', 'Delta').strip()
+    lga = request.POST.get('lga', '').strip()
+
+    if not username:
+        messages.error(request, "Username is required.")
+        return redirect('admin-console')
+
+    if User.objects.filter(username=username).exists():
+        messages.error(request, f"Username '{username}' already exists. Please pick another.")
+        return redirect('admin-console')
+
+    new_user = User.objects.create_user(
+        username=username,
+        email=email,
+        password=password,
+        first_name=first_name,
+        last_name=last_name,
+        role=role,
+        phone_number=phone_number or None,
+        state=state,
+        lga=lga,
+        is_active=True
+    )
+    messages.success(request, f"New {new_user.get_role_display()} account created for '{new_user.username}'!")
+    return redirect('admin-console')
+
+
+@require_POST
+@admin_required
+def admin_verify_farmer_view(request, farmer_id):
+    """Admin 1-click verification of smallholder identity."""
+    farmer = get_object_or_404(Farmer, id=farmer_id)
+    farmer.verification_status = VerificationStatus.VERIFIED
+    farmer.duplicate_review_notes = f"Verified by Administrator {request.user.username} on {timezone.now().strftime('%Y-%m-%d %H:%M')}"
+    farmer.save()
+    messages.success(request, f"Farmer {farmer.full_name} (#{farmer.reference_code}) has been marked as VERIFIED!")
+    return redirect('admin-console')
+
+
 
 
 

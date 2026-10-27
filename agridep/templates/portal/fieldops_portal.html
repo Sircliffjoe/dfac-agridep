@@ -120,12 +120,72 @@
         text-decoration: none;
         border: none;
     }
-    .btn-primary { background: #059669; color: #ffffff; }
-    .btn-primary:hover { background: #047857; }
-    .btn-secondary { background: #2563eb; color: #ffffff; }
-    .btn-secondary:hover { background: #1d4ed8; }
-    .btn-warning { background: #ea580c; color: #ffffff; }
-    .btn-warning:hover { background: #c2410c; }
+    .btn-act-primary { background: #059669; color: #ffffff; }
+    .btn-act-primary:hover { background: #047857; }
+    .btn-act-secondary { background: #2563eb; color: #ffffff; }
+    .btn-act-secondary:hover { background: #1d4ed8; }
+    .btn-act-warning { background: #ea580c; color: #ffffff; }
+    .btn-act-warning:hover { background: #c2410c; }
+    .btn-act-muted { background: #f1f5f9; color: #475569; }
+    .btn-act-muted:hover { background: #e2e8f0; }
+    .fieldops-two-col {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+        gap: 24px;
+    }
+    @media (max-width: 768px) {
+        .fieldops-two-col {
+            grid-template-columns: 1fr;
+        }
+    }
+    .fieldops-icon {
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(4px);
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+    .modal-backdrop.hidden {
+        display: none !important;
+    }
+    .fieldops-header-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+    }
+    .fieldops-header-actions form {
+        display: inline-flex;
+        margin: 0;
+        padding: 0;
+    }
+    .fieldops-header-actions .btn-action {
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    @media (max-width: 640px) {
+        .fieldops-header-actions {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 6px;
+        }
+        .fieldops-header-actions .btn-action {
+            font-size: 12px;
+            padding: 7px 12px;
+        }
+    }
     .score-pill {
         font-weight: 800;
         font-size: 14px;
@@ -138,7 +198,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="fieldops-wrap max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="container fieldops-wrap">
 
     <!-- Header -->
     <div class="portal-header">
@@ -153,16 +213,16 @@
                 ({{ request.user.get_role_display }}) • Assigned Region: <strong>{{ request.user.lga|default:"Delta State Central" }}</strong>
             </p>
         </div>
-        <div class="flex flex-wrap items-center gap-3">
-            <form method="POST" action="{% url 'fieldops-auto-dispatch-portal' %}" class="inline">
+        <div class="fieldops-header-actions">
+            <form method="POST" action="{% url 'fieldops-auto-dispatch-portal' %}">
                 {% csrf_token %}
-                <button type="submit" class="btn-action btn-primary shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    Run Priority Scanner & Auto-Dispatch
+                <button type="submit" class="btn-action btn-act-primary shadow-sm">
+                    <svg class="fieldops-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    Run Priority Scanner &amp; Auto-Dispatch
                 </button>
             </form>
-            <button onclick="document.getElementById('incidentModal').classList.remove('hidden')" class="btn-action btn-warning shadow-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <button onclick="document.getElementById('incidentModal').classList.remove('hidden')" class="btn-action btn-act-warning shadow-sm">
+                <svg class="fieldops-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 Report Emergency Incident
             </button>
         </div>
@@ -208,7 +268,7 @@
         <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
             <div>
                 <h2 class="card-title mb-0">
-                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    <svg class="fieldops-icon" style="color: #4f46e5;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                     Daily Visit Priority Queue (Multi-Factor Scoring)
                 </h2>
                 <p class="text-xs text-slate-500 mt-0.5">Calculated dynamically using admin-configurable weights (Overdue + Risks + Harvest + Incidents)</p>
@@ -216,7 +276,7 @@
             <span class="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">Live Engine Ranking</span>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="table-responsive">
             <table class="table-custom">
                 <thead>
                     <tr>
@@ -273,7 +333,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <button onclick="openCheckinModal('{{ item.farm_id }}', '{{ item.farm_name|escapejs }}', '{{ item.farmer_name|escapejs }}')" class="btn-action btn-secondary text-xs">
+                            <button onclick="openCheckinModal('{{ item.farm_id }}', '{{ item.farm_name|escapejs }}', '{{ item.farmer_name|escapejs }}')" class="btn-action btn-act-secondary text-xs">
                                 Check In & Inspect
                             </button>
                         </td>
@@ -291,15 +351,15 @@
     </div>
 
     <!-- Active Assignments & Recent Visits Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="fieldops-two-col">
         
         <!-- Assigned Dispatch Orders -->
         <div class="card-box">
             <h2 class="card-title">
-                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <svg class="fieldops-icon" style="color: #d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 Current Field Visit Assignments
             </h2>
-            <div class="overflow-x-auto">
+            <div class="table-responsive">
                 <table class="table-custom">
                     <thead>
                         <tr>
@@ -339,10 +399,10 @@
         <!-- Recent Completed Visits & Geofence Logs -->
         <div class="card-box">
             <h2 class="card-title">
-                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                <svg class="fieldops-icon" style="color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
                 Recent Visits & GPS Geofence Verification
             </h2>
-            <div class="overflow-x-auto">
+            <div class="table-responsive">
                 <table class="table-custom">
                     <thead>
                         <tr>
@@ -389,40 +449,40 @@
 </div>
 
 <!-- Modal 1: Check-in & Log Inspection -->
-<div id="checkinModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-        <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-200">
+<div id="checkinModal" class="modal-backdrop hidden">
+    <div style="background:#ffffff; border-radius:16px; max-width:600px; width:100%; padding:24px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); max-height:90vh; overflow-y:auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid #e2e8f0;">
             <div>
-                <h3 class="text-lg font-bold text-slate-900" id="modalFarmTitle">Extension Check-in & Inspection</h3>
-                <p class="text-xs text-slate-500" id="modalFarmerSub"></p>
+                <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin:0;" id="modalFarmTitle">Extension Check-in &amp; Inspection</h3>
+                <p style="font-size:12px; color:#64748b; margin:4px 0 0;" id="modalFarmerSub"></p>
             </div>
-            <button onclick="document.getElementById('checkinModal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 font-bold text-xl">✕</button>
+            <button onclick="document.getElementById('checkinModal').classList.add('hidden')" style="background:none; border:none; color:#94a3b8; font-size:20px; font-weight:700; cursor:pointer;">✕</button>
         </div>
 
-        <form method="POST" action="{% url 'fieldops-log-visit-portal' %}" class="space-y-4">
+        <form method="POST" action="{% url 'fieldops-log-visit-portal' %}" style="display:flex; flex-direction:column; gap:16px;">
             {% csrf_token %}
             <input type="hidden" name="farm_id" id="modalFarmId">
 
-            <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 text-xs text-blue-800">
+            <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px; padding:12px; font-size:12px; color:#1e40af;">
                 <strong>GPS Geofence Verification:</strong> Enter check-in coordinates to verify on-site presence.
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Check-in Latitude</label>
-                    <input type="number" step="0.000001" name="latitude" id="inputLat" required class="w-full text-xs p-2 border border-slate-300 rounded-lg">
+                    <label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:4px;">Check-in Latitude</label>
+                    <input type="number" step="0.000001" name="latitude" id="inputLat" required style="width:100%; font-size:12px; padding:8px; border:1px solid #cbd5e1; border-radius:8px;">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Check-in Longitude</label>
-                    <input type="number" step="0.000001" name="longitude" id="inputLon" required class="w-full text-xs p-2 border border-slate-300 rounded-lg">
+                    <label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:4px;">Check-in Longitude</label>
+                    <input type="number" step="0.000001" name="longitude" id="inputLon" required style="width:100%; font-size:12px; padding:8px; border:1px solid #cbd5e1; border-radius:8px;">
                 </div>
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Visit Purpose</label>
-                <select name="purpose" class="w-full text-xs p-2 border border-slate-300 rounded-lg">
-                    <option value="ROUTINE_EXTENSION">Routine Extension & Advisory</option>
-                    <option value="BIOSECURITY_INSPECTION">Biosecurity & Water Quality Audit</option>
+                <label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:4px;">Visit Purpose</label>
+                <select name="purpose" style="width:100%; font-size:12px; padding:8px; border:1px solid #cbd5e1; border-radius:8px;">
+                    <option value="ROUTINE_EXTENSION">Routine Extension &amp; Advisory</option>
+                    <option value="BIOSECURITY_INSPECTION">Biosecurity &amp; Water Quality Audit</option>
                     <option value="DISEASE_INVESTIGATION">Disease / Mortality Investigation</option>
                     <option value="HARVEST_VERIFICATION">Pre-Harvest Yield Verification</option>
                     <option value="LOAN_ARREARS_FOLLOWUP">Lender Credit Risk Follow-up</option>
@@ -430,70 +490,70 @@
             </div>
 
             <!-- Quantitative Aquaculture Parameters -->
-            <div class="border-t border-slate-200 pt-3">
-                <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Water Biometrics & Measurements</h4>
-                <div class="grid grid-cols-3 gap-2">
+            <div style="border-top:1px solid #e2e8f0; padding-top:12px;">
+                <h4 style="font-size:12px; font-weight:700; color:#1e293b; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Water Biometrics &amp; Measurements</h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Water pH (6.5-8.5)</label>
-                        <input type="number" step="0.1" name="water_ph" value="7.2" class="w-full text-xs p-1.5 border border-slate-300 rounded-lg">
+                        <label style="display:block; font-size:11px; font-weight:600; color:#475569; margin-bottom:2px;">Water pH (6.5-8.5)</label>
+                        <input type="number" step="0.1" name="water_ph" value="7.2" style="width:100%; font-size:12px; padding:6px; border:1px solid #cbd5e1; border-radius:8px;">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Temp (°C)</label>
-                        <input type="number" step="0.1" name="water_temp" value="28.5" class="w-full text-xs p-1.5 border border-slate-300 rounded-lg">
+                        <label style="display:block; font-size:11px; font-weight:600; color:#475569; margin-bottom:2px;">Temp (°C)</label>
+                        <input type="number" step="0.1" name="water_temp" value="28.5" style="width:100%; font-size:12px; padding:6px; border:1px solid #cbd5e1; border-radius:8px;">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">DO (mg/L > 3.0)</label>
-                        <input type="number" step="0.1" name="dissolved_oxygen" value="5.5" class="w-full text-xs p-1.5 border border-slate-300 rounded-lg">
+                        <label style="display:block; font-size:11px; font-weight:600; color:#475569; margin-bottom:2px;">DO (mg/L > 3.0)</label>
+                        <input type="number" step="0.1" name="dissolved_oxygen" value="5.5" style="width:100%; font-size:12px; padding:6px; border:1px solid #cbd5e1; border-radius:8px;">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-2 mt-2">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;">
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Avg Fish Weight (g)</label>
-                        <input type="number" step="1" name="avg_weight_g" value="650" class="w-full text-xs p-1.5 border border-slate-300 rounded-lg">
+                        <label style="display:block; font-size:11px; font-weight:600; color:#475569; margin-bottom:2px;">Avg Fish Weight (g)</label>
+                        <input type="number" step="1" name="avg_weight_g" value="650" style="width:100%; font-size:12px; padding:6px; border:1px solid #cbd5e1; border-radius:8px;">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Observed Mortality</label>
-                        <input type="number" step="1" name="mortality_count" value="0" class="w-full text-xs p-1.5 border border-slate-300 rounded-lg">
+                        <label style="display:block; font-size:11px; font-weight:600; color:#475569; margin-bottom:2px;">Observed Mortality</label>
+                        <input type="number" step="1" name="mortality_count" value="0" style="width:100%; font-size:12px; padding:6px; border:1px solid #cbd5e1; border-radius:8px;">
                     </div>
                 </div>
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Officer Advisory Notes</label>
-                <textarea name="officer_notes" rows="2" placeholder="Recommendations on feeding schedule, pond flushing, or harvesting..." class="w-full text-xs p-2 border border-slate-300 rounded-lg"></textarea>
+                <label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:4px;">Officer Advisory Notes</label>
+                <textarea name="officer_notes" rows="2" placeholder="Recommendations on feeding schedule, pond flushing, or harvesting..." style="width:100%; font-size:12px; padding:8px; border:1px solid #cbd5e1; border-radius:8px;"></textarea>
             </div>
 
-            <div class="flex justify-end gap-2 pt-2">
-                <button type="button" onclick="document.getElementById('checkinModal').classList.add('hidden')" class="btn-action bg-slate-100 text-slate-700">Cancel</button>
-                <button type="submit" class="btn-action btn-primary">Complete Visit & Verification</button>
+            <div style="display:flex; justify-content:flex-end; gap:8px; padding-top:8px;">
+                <button type="button" onclick="document.getElementById('checkinModal').classList.add('hidden')" class="btn-action btn-act-muted">Cancel</button>
+                <button type="submit" class="btn-action btn-act-primary">Complete Visit &amp; Verification</button>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Modal 2: Report Incident -->
-<div id="incidentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl">
-        <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-200">
-            <h3 class="text-lg font-bold text-slate-900">Report Emergency Field Incident</h3>
-            <button onclick="document.getElementById('incidentModal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 font-bold text-xl">✕</button>
+<div id="incidentModal" class="modal-backdrop hidden">
+    <div style="background:#ffffff; border-radius:16px; max-width:540px; width:100%; padding:24px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid #e2e8f0;">
+            <h3 style="font-size:18px; font-weight:700; color:#0f172a; margin:0;">Report Emergency Field Incident</h3>
+            <button onclick="document.getElementById('incidentModal').classList.add('hidden')" style="background:none; border:none; color:#94a3b8; font-size:20px; font-weight:700; cursor:pointer;">✕</button>
         </div>
 
-        <form method="POST" action="{% url 'fieldops-report-incident-portal' %}" class="space-y-4">
+        <form method="POST" action="{% url 'fieldops-report-incident-portal' %}" style="display:flex; flex-direction:column; gap:16px;">
             {% csrf_token %}
             <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Affected Farm</label>
-                <select name="farm_id" required class="w-full text-xs p-2 border border-slate-300 rounded-lg">
+                <label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:4px;">Affected Farm</label>
+                <select name="farm_id" required style="width:100%; font-size:12px; padding:8px; border:1px solid #cbd5e1; border-radius:8px;">
                     {% for item in priority_queue %}
                     <option value="{{ item.farm_id }}">{{ item.farm_name }} ({{ item.farmer_name }})</option>
                     {% endfor %}
                 </select>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Incident Type</label>
-                    <select name="incident_type" class="w-full text-xs p-2 border border-slate-300 rounded-lg">
+                    <label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:4px;">Incident Type</label>
+                    <select name="incident_type" style="width:100%; font-size:12px; padding:8px; border:1px solid #cbd5e1; border-radius:8px;">
                         <option value="DISEASE_OUTBREAK">Disease Outbreak</option>
                         <option value="MASS_MORTALITY">Mass Mortality</option>
                         <option value="WATER_CONTAMINATION">Water Inflow Contamination</option>
@@ -503,8 +563,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Severity</label>
-                    <select name="severity" class="w-full text-xs p-2 border border-slate-300 rounded-lg">
+                    <label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:4px;">Severity</label>
+                    <select name="severity" style="width:100%; font-size:12px; padding:8px; border:1px solid #cbd5e1; border-radius:8px;">
                         <option value="CRITICAL">CRITICAL (Mass loss / Urgent)</option>
                         <option value="HIGH">HIGH (Acute Symptoms)</option>
                         <option value="MEDIUM">MEDIUM (Sub-optimal)</option>
@@ -514,18 +574,18 @@
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Incident Title</label>
-                <input type="text" name="title" required placeholder="e.g. Columnaris outbreak in Pond 2" class="w-full text-xs p-2 border border-slate-300 rounded-lg">
+                <label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:4px;">Incident Title</label>
+                <input type="text" name="title" required placeholder="e.g. Columnaris outbreak in Pond 2" style="width:100%; font-size:12px; padding:8px; border:1px solid #cbd5e1; border-radius:8px;">
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Description & Immediate Action Taken</label>
-                <textarea name="description" rows="3" required placeholder="Describe clinical signs, estimated loss, water appearance..." class="w-full text-xs p-2 border border-slate-300 rounded-lg"></textarea>
+                <label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:4px;">Description &amp; Immediate Action Taken</label>
+                <textarea name="description" rows="3" required placeholder="Describe clinical signs, estimated loss, water appearance..." style="width:100%; font-size:12px; padding:8px; border:1px solid #cbd5e1; border-radius:8px;"></textarea>
             </div>
 
-            <div class="flex justify-end gap-2 pt-2">
-                <button type="button" onclick="document.getElementById('incidentModal').classList.add('hidden')" class="btn-action bg-slate-100 text-slate-700">Cancel</button>
-                <button type="submit" class="btn-action btn-warning">Submit Incident Alert</button>
+            <div style="display:flex; justify-content:flex-end; gap:8px; padding-top:8px;">
+                <button type="button" onclick="document.getElementById('incidentModal').classList.add('hidden')" class="btn-action btn-act-muted">Cancel</button>
+                <button type="submit" class="btn-action btn-act-warning">Submit Incident Alert</button>
             </div>
         </form>
     </div>

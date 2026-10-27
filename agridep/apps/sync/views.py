@@ -15,6 +15,7 @@ class KoboWebhookView(APIView):
     KoboToolbox & ODK Collect webhook endpoint.
     Accepts automated form submissions from rural field enumerators.
     """
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     @extend_schema(

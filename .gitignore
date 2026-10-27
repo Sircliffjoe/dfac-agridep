@@ -8,6 +8,7 @@ build/
 develop-eggs/
 dist/
 downloads/
+!agridep/static/downloads/
 eggs/
 .eggs/
 lib/
@@ -48,6 +49,12 @@ htmlcov/
 .vscode/
 *.swp
 *.swo
+
+# Mobile builds
+mobile/builder/
+mobile/build/
+.dart_tool/
+
 
 # Mobile / Flutter
 mobile/.dart_tool/

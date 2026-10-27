@@ -44,13 +44,53 @@
                 </button>
             </form>
 
+            <!-- Quick Demo Testing Switcher -->
+            <div style="margin-top: 24px; padding: 16px; background: var(--color-bg-subtle); border-radius: var(--radius-md); border: 1px dashed var(--color-primary-border);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-primary);">Demo Test Accounts</span>
+                    <span style="font-size: 0.72rem; color: var(--color-text-light);">Click to fill credentials</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                    <button type="button" onclick="fillDemo('admin', 'admin12345')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px 10px; border-radius: 6px; justify-content: flex-start; text-align: left;">
+                        <strong>Admin</strong> (Executive Console)
+                    </button>
+                    <button type="button" onclick="fillDemo('officer_delta', 'password123')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px 10px; border-radius: 6px; justify-content: flex-start; text-align: left;">
+                        <strong>Field Officer</strong> (Field Operations)
+                    </button>
+                    <button type="button" onclick="fillDemo('trainer_john', 'password123')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px 10px; border-radius: 6px; justify-content: flex-start; text-align: left;">
+                        <strong>Trainer</strong> (Accreditation Desk)
+                    </button>
+                    <button type="button" onclick="fillDemo('lender_bank', 'password123')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px 10px; border-radius: 6px; justify-content: flex-start; text-align: left;">
+                        <strong>Lender</strong> (Credit Portfolio)
+                    </button>
+                    <button type="button" onclick="fillDemo('buyer_aggregator', 'password123')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px 10px; border-radius: 6px; justify-content: flex-start; text-align: left;">
+                        <strong>Buyer</strong> (Off-take Demands)
+                    </button>
+                    <button type="button" onclick="fillDemo('farmer_delta', 'password123')" class="btn btn-secondary" style="font-size: 0.75rem; padding: 6px 10px; border-radius: 6px; justify-content: flex-start; text-align: left;">
+                        <strong>Farmer</strong> (Smallholder Desk)
+                    </button>
+                </div>
+            </div>
+
             <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--color-border-subtle); text-align: center; font-size: 0.85rem; color: var(--color-text-light);">
                 <p>Protected under the <strong>Nigeria Data Protection Act (NDPA 2023)</strong>. All login attempts, IP signatures, and queries are permanently audited.</p>
-                <div style="margin-top: 16px;">
-                    <a href="{% url 'contact' %}" style="color: var(--color-primary); font-weight: 700;">Need field credentials? Request Agronomy Desk Access</a>
+                <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 8px;">
+                    <a href="{% url 'contact' %}" style="color: var(--color-primary); font-weight: 700;">
+                        Partner Onboarding: Register as Lender, Off-taker, or Agro-Dealer &rarr;
+                    </a>
+                    <span style="font-size: 0.78rem; color: var(--color-text-light);">
+                        Smallholder farmers are onboarded directly at the pond/plot by Extension Officers or via USSD dial (<strong>*384*223#</strong>).
+                    </span>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<script>
+    function fillDemo(user, pass) {
+        document.getElementById('username').value = user;
+        document.getElementById('password').value = pass;
+    }
+</script>
 {% endblock %}

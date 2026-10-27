@@ -1,0 +1,283 @@
+{% extends "portal/base.html" %}
+{% load humanize %}
+
+{% block content %}
+<div class="container" style="padding: 32px 16px 80px;">
+
+    <!-- Farmer Profile Hero Card -->
+    <div class="card" style="padding: 28px; margin-bottom: 30px; background: linear-gradient(135deg, #0d2818 0%, #164024 100%); color: #ffffff; border: 1px solid rgba(74, 222, 128, 0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px;">
+            <div style="display: flex; gap: 18px; align-items: center;">
+                <div style="width: 68px; height: 68px; border-radius: 50%; background: #22c55e; color: #052e16; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 800; border: 3px solid rgba(255,255,255,0.4);">
+                    {{ farmer.first_name|slice:":1" }}{{ farmer.last_name|slice:":1" }}
+                </div>
+                <div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap;">
+                        <h1 style="font-size: 1.85rem; font-weight: 800; color: #ffffff; margin: 0;">
+                            {{ farmer.first_name }} {{ farmer.last_name }}
+                        </h1>
+                        <span class="badge" style="background: rgba(34, 197, 94, 0.25); color: #86efac; border: 1px solid rgba(74, 222, 128, 0.5); font-weight: 700;">
+                            ✓ VERIFIED SMALLHOLDER
+                        </span>
+                        <span class="badge" style="background: rgba(255, 255, 255, 0.15); color: #f1f5f9; font-weight: 600;">
+                            #{{ farmer.reference_code|default:farmer.id|slice:":8" }}
+                        </span>
+                    </div>
+                    <div style="display: flex; gap: 18px; flex-wrap: wrap; font-size: 0.9rem; color: #cbd5e1;">
+                        <div>📍 {{ farmer.community_address|default:"Rural Cluster" }}, {{ farmer.lga }} ({{ farmer.state }})</div>
+                        <div>👥 Cohort: {{ farmer.cohort.name|default:"Delta Smallholder Cluster" }}</div>
+                        <div>🛡️ NDPA Protected Identity</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: right; background: rgba(0,0,0,0.25); padding: 14px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; font-weight: 700;">Assigned Field Officer</div>
+                <div style="font-size: 1.05rem; font-weight: 700; color: #4ade80; margin-top: 2px;">
+                    {% if farmer.assigned_officer %}{{ farmer.assigned_officer.get_full_name|default:farmer.assigned_officer.username }}{% else %}Officer Delta (Regional Lead){% endif %}
+                </div>
+                <div style="font-size: 0.8rem; color: #cbd5e1;">Extension Desk: +234 803 555 1122</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metric Counters -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px;">
+        <div class="card" style="padding: 18px; border-left: 4px solid #16a34a;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--color-text-light);">Registered Ponds / Plots</span>
+            <div style="font-size: 1.85rem; font-weight: 800; color: var(--color-text-main); margin-top: 4px;">{{ farms.count }}</div>
+            <span style="font-size: 0.75rem; color: #16a34a; font-weight: 600;">GPS Demarcated &amp; Audited</span>
+        </div>
+        <div class="card" style="padding: 18px; border-left: 4px solid #0284c7;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--color-text-light);">Active Production Cycles</span>
+            <div style="font-size: 1.85rem; font-weight: 800; color: #0284c7; margin-top: 4px;">{{ cycles.count }}</div>
+            <span style="font-size: 0.75rem; color: var(--color-text-light);">Catfish Grow-out / Cropping</span>
+        </div>
+        <div class="card" style="padding: 18px; border-left: 4px solid #f59e0b;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--color-text-light);">Credit Facilities</span>
+            <div style="font-size: 1.85rem; font-weight: 800; color: var(--color-text-main); margin-top: 4px;">{{ loans.count }}</div>
+            <span style="font-size: 0.75rem; color: var(--color-text-light);">Supervised In-Kind Tranches</span>
+        </div>
+        <div class="card" style="padding: 18px; border-left: 4px solid #4f46e5;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--color-text-light);">Accredited Certificates</span>
+            <div style="font-size: 1.85rem; font-weight: 800; color: #4f46e5; margin-top: 4px;">{{ certificates.count }}</div>
+            <span style="font-size: 0.75rem; color: var(--color-text-light);">Good Agronomic Practices</span>
+        </div>
+    </div>
+
+    <!-- Section 1: Active Production Cycles & Biometrics -->
+    <div class="card" style="padding: 24px; margin-bottom: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 4px 0; color: var(--color-text-main);">
+                    Active Production Cycles &amp; Biometrics
+                </h2>
+                <p style="margin: 0; font-size: 0.85rem; color: var(--color-text-light);">
+                    Field biometric samples, live biomass estimates, and projected harvest windows.
+                </p>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--color-border-subtle); text-align: left; font-size: 0.8rem; color: var(--color-text-light); text-transform: uppercase;">
+                        <th style="padding: 12px 14px;">Cycle Name / Farm</th>
+                        <th style="padding: 12px 14px;">Enterprise</th>
+                        <th style="padding: 12px 14px;">Live Stock Count</th>
+                        <th style="padding: 12px 14px;">Current Avg. Weight</th>
+                        <th style="padding: 12px 14px;">Harvest Window</th>
+                        <th style="padding: 12px 14px;">Stage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in cycles %}
+                    <tr style="border-bottom: 1px solid var(--color-border-subtle); font-size: 0.9rem;">
+                        <td style="padding: 12px 14px;">
+                            <div style="font-weight: 700; color: var(--color-text-main);">{{ c.cycle_name }}</div>
+                            <div style="font-size: 0.78rem; color: var(--color-text-light);">{{ c.farm.name }}</div>
+                        </td>
+                        <td style="padding: 12px 14px; font-weight: 600;">
+                            {{ c.enterprise_type.name }}
+                        </td>
+                        <td style="padding: 12px 14px; font-weight: 700; color: #16a34a;">
+                            {{ c.current_stock_count|intcomma }} / {{ c.initial_stock_count|intcomma }}
+                        </td>
+                        <td style="padding: 12px 14px; font-weight: 700;">
+                            {{ c.current_average_weight_g }}g
+                        </td>
+                        <td style="padding: 12px 14px; font-size: 0.85rem; color: var(--color-text-light);">
+                            {{ c.projected_harvest_date|date:"M d, Y" }}
+                        </td>
+                        <td style="padding: 12px 14px;">
+                            <span class="badge" style="background: rgba(2, 132, 199, 0.12); color: #0284c7; font-weight: 700;">
+                                {{ c.get_status_display }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="padding: 24px; text-align: center; color: var(--color-text-light);">
+                            No production cycles currently active. Consult with your extension officer to record pond stocking.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section 2: Credit Facility & Input Tranches -->
+    <div class="card" style="padding: 24px; margin-bottom: 30px;">
+        <div style="margin-bottom: 18px;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 4px 0; color: var(--color-text-main);">
+                Financing &amp; Input Voucher Tranches
+            </h2>
+            <p style="margin: 0; font-size: 0.85rem; color: var(--color-text-light);">
+                Tranche disbursement progress linked to on-farm biometric milestone inspections.
+            </p>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--color-border-subtle); text-align: left; font-size: 0.8rem; color: var(--color-text-light); text-transform: uppercase;">
+                        <th style="padding: 12px 14px;">Facility Code</th>
+                        <th style="padding: 12px 14px;">Lender Partner</th>
+                        <th style="padding: 12px 14px;">Principal Amount</th>
+                        <th style="padding: 12px 14px;">Disbursed Tranches</th>
+                        <th style="padding: 12px 14px;">Total Repaid</th>
+                        <th style="padding: 12px 14px;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for l in loans %}
+                    <tr style="border-bottom: 1px solid var(--color-border-subtle); font-size: 0.9rem;">
+                        <td style="padding: 12px 14px; font-weight: 700; color: #4f46e5; font-family: monospace;">
+                            {{ l.facility_code }}
+                        </td>
+                        <td style="padding: 12px 14px; font-weight: 600;">
+                            {{ l.lender.institution_name }}
+                        </td>
+                        <td style="padding: 12px 14px; font-weight: 700;">
+                            ₦{{ l.principal_amount_naira|intcomma }}
+                        </td>
+                        <td style="padding: 12px 14px; font-size: 0.85rem;">
+                            {{ l.tranches.count }} Milestone Tranches
+                        </td>
+                        <td style="padding: 12px 14px; font-weight: 600; color: #16a34a;">
+                            ₦{{ l.total_repaid_naira|intcomma }}
+                        </td>
+                        <td style="padding: 12px 14px;">
+                            <span class="badge" style="background: rgba(22, 163, 74, 0.12); color: #16a34a; font-weight: 700;">
+                                {{ l.get_status_display }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="padding: 24px; text-align: center; color: var(--color-text-light);">
+                            No active loan facilities assigned.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section 3: Training Accreditation & Verifiable Certificates -->
+    <div class="card" style="padding: 24px; margin-bottom: 30px;">
+        <div style="margin-bottom: 18px;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 4px 0; color: var(--color-text-main);">
+                Accredited Badges &amp; Certificates
+            </h2>
+            <p style="margin: 0; font-size: 0.85rem; color: var(--color-text-light);">
+                Tamper-evident credentials proving completion of Good Agronomic Practices (GAP) training.
+            </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+            {% for cert in certificates %}
+            <div style="border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <span class="badge" style="background: rgba(22, 163, 74, 0.12); color: #16a34a; font-weight: 700;">VERIFIED CREDENTIAL</span>
+                    <span style="font-family: monospace; font-size: 0.8rem; color: var(--color-text-light);">{{ cert.issue_date|date:"Y-m-d" }}</span>
+                </div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-text-main); margin: 0 0 6px 0;">
+                    {{ cert.programme.title }}
+                </h3>
+                <div style="font-size: 0.85rem; color: var(--color-text-light); margin-bottom: 12px;">
+                    Cert No: <strong style="color: #0f172a;">{{ cert.certificate_number }}</strong>
+                </div>
+                <div style="padding: 8px 12px; background: #f8fafc; border-radius: 6px; font-family: monospace; font-size: 0.85rem; color: #4f46e5; margin-bottom: 14px; font-weight: 700;">
+                    Code: {{ cert.verification_code }}
+                </div>
+                <a href="{% url 'verify-certificate-detail' cert.verification_code %}" target="_blank" class="btn btn-secondary" style="width: 100%; justify-content: center; font-size: 0.85rem;">
+                    Validate Certificate Seal &rarr;
+                </a>
+            </div>
+            {% empty %}
+            <div style="grid-column: 1 / -1; padding: 24px; text-align: center; color: var(--color-text-light);">
+                No training certificates earned yet. Attend an upcoming cohort workshop to receive accreditation.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Section 4: Guaranteed Commercial Off-take Contracts -->
+    <div class="card" style="padding: 24px;">
+        <div style="margin-bottom: 18px;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0 0 4px 0; color: var(--color-text-main);">
+                Guaranteed Commercial Off-take Matches
+            </h2>
+            <p style="margin: 0; font-size: 0.85rem; color: var(--color-text-light);">
+                Forward purchase contracts established with institutional food processors and restaurant aggregators.
+            </p>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--color-border-subtle); text-align: left; font-size: 0.8rem; color: var(--color-text-light); text-transform: uppercase;">
+                        <th style="padding: 12px 14px;">Buyer Aggregator</th>
+                        <th style="padding: 12px 14px;">Allocated Volume</th>
+                        <th style="padding: 12px 14px;">Agreed Price / Kg</th>
+                        <th style="padding: 12px 14px;">Total Contract Value</th>
+                        <th style="padding: 12px 14px;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in matches %}
+                    <tr style="border-bottom: 1px solid var(--color-border-subtle); font-size: 0.9rem;">
+                        <td style="padding: 12px 14px; font-weight: 700;">
+                            {{ m.buyer_demand.buyer.company_name }}
+                        </td>
+                        <td style="padding: 12px 14px; font-weight: 700; color: #16a34a;">
+                            {{ m.allocated_volume_kg|intcomma }} kg
+                        </td>
+                        <td style="padding: 12px 14px;">
+                            ₦{{ m.buyer_demand.offered_price_per_kg_naira|intcomma }}
+                        </td>
+                        <td style="padding: 12px 14px; font-weight: 700; color: #0284c7;">
+                            ₦{{ m.total_contract_value_naira|intcomma }}
+                        </td>
+                        <td style="padding: 12px 14px;">
+                            <span class="badge" style="background: rgba(22, 163, 74, 0.12); color: #16a34a; font-weight: 700;">
+                                {{ m.get_status_display }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="padding: 24px; text-align: center; color: var(--color-text-light);">
+                            No active off-take matches. Once your fish reach harvest weight (>500g), DFAC auto-matches with buyers.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
