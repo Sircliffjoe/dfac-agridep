@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
 from django.http import JsonResponse
 from django.conf import settings
 from django.conf.urls.static import static
@@ -22,8 +23,9 @@ urlpatterns = [
     # Public & Stakeholder Portal Pages
     path('', include('agridep.apps.portal.urls')),
     
-    # Operations Administration
-    path('admin/', admin.site.urls),
+    # Operations Administration (Redirects default /admin/ directly to custom Executive Console)
+    path('admin/', lambda request: redirect('admin-console')),
+    path('django-admin-internal/', admin.site.urls),
     
     # Internal Healthcheck
     path('api/v1/health/', health_check, name='health-check'),
